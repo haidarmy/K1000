@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
     illustration: {
       width: 342,
       height: 342,
-      backgroundColor: 'purple'
     }
   })
     

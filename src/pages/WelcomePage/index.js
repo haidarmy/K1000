@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
 import { colors } from '../../utils';
-import { WelcomePageIllustration } from '../../assets'
+import {WelcomePageIllustration} from '../../assets'
 import ActionButton from './ActionButton'
 
 
 const WelcomePage = ({navigation}) => {
     return (
         <View style={styles.wrapper.container}>
-               <Image source={WelcomePageIllustration} style={styles.wrapper.illustration}></Image>
+               <WelcomePageIllustration width= {331} height= {258}/>
            <View style={styles.wrapper.text}>
                <Text style={styles.text}>Temukan hasil laut dalam genggaman tangan Anda </Text>
            </View>

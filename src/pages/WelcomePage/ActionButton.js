@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 
 const ActionButton = ({bgColor, borderWidth, borderColor, txtcolor, label, onPress}) => {
     return (
