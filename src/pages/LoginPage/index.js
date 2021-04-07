@@ -16,7 +16,7 @@ const LoginPage = ({navigation}) => {
                     </View>
                 </View>
                 <View style={styles.buttton}>
-                    <Button label="Masuk" onPress={() => navigation.navigate('HomePage')}/>
+                    <Button label="Masuk" onPress={() => navigation.replace('HomePage')}/>
                 </View>
                 <View style={{flexDirection:'row', justifyContent:'center'}}>
                     <Text style={{textAlign:'center', color:colors.grey}}>Tidak memiliki akun? </Text>
