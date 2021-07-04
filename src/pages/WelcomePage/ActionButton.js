@@ -9,7 +9,7 @@ const ActionButton = ({bgColor, borderWidth, borderColor, txtcolor, label, onPre
               backgroundColor:bgColor, 
               borderWidth:borderWidth, 
               borderColor:borderColor, 
-              borderRadius:20, 
+              borderRadius:10, 
               width:158, 
               height:58, 
             }}  onPress={onPress}  

@@ -1,22 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { colors } from '../../utils';
-import { InputField, Button } from '../../components';
+import { InputField, SubmitButton } from '../../components';
+import { Eye, InactiveEye } from '../../assets'
 
 const LoginPage = ({navigation}) => {
+const [isSecureEntry,setIsSecureEntry] = useState(true)
     return (
         <View style={styles.container}>
             <View style={styles.wrapper}>
                 <View style={styles.input}>
-                    <View>
-                        <InputField placeholder="Email" label="Email"/>
-                    </View>
-                    <View>
-                        <InputField placeholder="Password" label="Password"/>
-                    </View>
+                        <InputField 
+                            placeholder="Email" 
+                            label="Email"
+                        />
+                        <View style={{position: 'relative'}}>
+                            <InputField 
+                                placeholder="Password" 
+                                label="Password" 
+                                hide={isSecureEntry} 
+                                maxlength={16}
+                            />
+                            <TouchableOpacity style={styles.eye} onPress={() => {setIsSecureEntry((toggle) => !toggle)}}>
+                                {isSecureEntry ? <Eye/> : <InactiveEye/>}
+                            </TouchableOpacity>
+                        </View>
                 </View>
                 <View style={styles.buttton}>
-                    <Button label="Masuk" onPress={() => navigation.replace('HomePage')}/>
+                    <SubmitButton label="Masuk" onPress={() => navigation.replace('HomePage')}/>
                 </View>
                 <View style={{flexDirection:'row', justifyContent:'center'}}>
                     <Text style={{textAlign:'center', color:colors.grey}}>Tidak memiliki akun? </Text>
@@ -48,6 +59,13 @@ const styles = StyleSheet.create({
         height: 58,
         marginTop: 82,
         marginBottom: 32
+    },
+    eye: {
+        width: 24, 
+        height: 24, 
+        position: 'absolute', 
+        top: 60, 
+        right: 15
     }
 })
 

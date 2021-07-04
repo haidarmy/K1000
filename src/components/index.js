@@ -1,4 +1,5 @@
 import InputField from './InputField'
-import Button from './Button'
+import SubmitButton from './SubmitButton'
+import BottomNavigation from './BottomNavigation'
 
-export { InputField, Button }
+export { InputField, SubmitButton, BottomNavigation }

@@ -1,8 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
-import {colors} from '../../utils/'
+import {colors} from '../../utils'
 
-const Button = ({label, onPress}) => {
+const SubmitButton = ({label, onPress}) => {
     return (
        <TouchableOpacity style={styles.button} onPress={onPress}>
        <Text style={styles.text}>{label}</Text>
@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: colors.default,
         borderRadius: 10,
-        width: 334,
         height: 58,
         justifyContent:'center'
     },
@@ -26,6 +25,6 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Button
+export default SubmitButton
 
 

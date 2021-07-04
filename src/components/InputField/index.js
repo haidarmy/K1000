@@ -1,14 +1,16 @@
 import React from 'react'
 import { StyleSheet, Text, View, TextInput } from 'react-native'
 import {colors} from '../../utils/'
-const InputField = ({placeholder, label}) => {
+const InputField = ({placeholder, label, hide, maxlength}) => {
     return (
        <View>
-       <Text style={styles.text}>{label}</Text>
-       <TextInput style={styles.textinput}
-       placeholder={placeholder}
-       placeholderTextColor={colors.grey}
-       />
+         <Text style={styles.text}>{label}</Text>
+         <TextInput style={styles.textinput}
+            placeholder={placeholder}
+            placeholderTextColor={colors.grey}
+            secureTextEntry={hide}
+            maxLength={maxlength}
+         />
        </View>
     )
 }
@@ -25,7 +27,7 @@ const styles = StyleSheet.create({
          paddingVertical: 16,
          paddingHorizontal: 24,
          fontSize: 18,
-         color: colors.grey
+         color: colors.black
      }
 })
 
