@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { colors } from '../../utils';
 import { BottomNavigation } from '../../components'
-import { Trash, Ikan } from '../../assets'
+import { Ikan, IcTrash } from '../../assets'
 
 const CartPage = () => {
     return(
@@ -26,7 +26,7 @@ const CartPage = () => {
                             </View>
                         </View>
                         <View style={{width: 40, height: 40, backgroundColor: colors.white, borderRadius: 40, justifyContent: 'center', alignItems: 'center'}}>
-                            <Trash width={24} height={24}/>
+                            <IcTrash width={24} height={24}/>
                         </View>
                     </View>
                     <View style={{height: 144, backgroundColor: 'salmon', marginBottom: 16, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, justifyContent: 'space-between'}}>
@@ -45,7 +45,7 @@ const CartPage = () => {
                             </View>
                         </View>
                         <View style={{width: 40, height: 40, backgroundColor: colors.white, borderRadius: 40, justifyContent: 'center', alignItems: 'center'}}>
-                            <Trash width={24} height={24}/>
+                            <IcTrash width={24} height={24}/>
                         </View>
                     </View>
                 </View>
@@ -54,7 +54,6 @@ const CartPage = () => {
                 </View>
             </View>
             <View style={{height: 81, backgroundColor: colors.default}}>
-                <BottomNavigation/>
             </View>
         </View>
     )

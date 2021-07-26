@@ -4,7 +4,7 @@ import {colors} from '../../utils'
 
 const SubmitButton = ({label, onPress}) => {
     return (
-       <TouchableOpacity style={styles.button} onPress={onPress}>
+       <TouchableOpacity style={styles.button} onPress={onPress} activeOpacity={0.7}>
        <Text style={styles.text}>{label}</Text>
        </TouchableOpacity>
     )
@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "normal",
         color:colors.white,
-        textAlign: 'center'
+        textAlign: 'center',
+        fontFamily: 'Poppins-Medium'
     }
 })
 

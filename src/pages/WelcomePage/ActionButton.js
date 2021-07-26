@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 const ActionButton = ({bgColor, borderWidth, borderColor, txtcolor, label, onPress}) => {
     return (
         <View>
-          <TouchableOpacity style={{
+          <TouchableOpacity activeOpacity={0.7} style={{
               justifyContent:'center',
               backgroundColor:bgColor, 
               borderWidth:borderWidth, 
@@ -17,7 +17,8 @@ const ActionButton = ({bgColor, borderWidth, borderColor, txtcolor, label, onPre
             <Text style={{
                 fontSize:20, 
                 color:txtcolor, 
-                textAlign:'center'
+                textAlign:'center',
+                fontFamily:'Poppins-Medium'
                 }}
             >
             {label}</Text>

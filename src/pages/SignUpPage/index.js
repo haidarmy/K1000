@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { colors } from '../../utils'
 import { InputField, SubmitButton } from '../../components'
-import { Eye, InactiveEye } from '../../assets'
+import { IcEyeActive, IcEyeInactive } from '../../assets'
 
 const SignUpPage = ({navigation}) => {
 const [isSecureEntry,setIsSecureEntry] = useState(true)
@@ -20,8 +20,8 @@ const [isSecureEntry,setIsSecureEntry] = useState(true)
                         hide={isSecureEntry} 
                         maxlength={16}
                     />
-                    <TouchableOpacity style={styles.eye} onPress={() => {setIsSecureEntry((toggle) => !toggle)}}>
-                        {isSecureEntry ? <Eye/> : <InactiveEye/>}
+                    <TouchableOpacity activeOpacity={1} style={styles.eye} onPress={() => {setIsSecureEntry((toggle) => !toggle)}}>
+                        {isSecureEntry ? <IcEyeActive/> : <IcEyeInactive/>}
                     </TouchableOpacity>
                 </View>
                 <View style={{position: 'relative'}}>
@@ -30,16 +30,16 @@ const [isSecureEntry,setIsSecureEntry] = useState(true)
                         label="Password Confirmation" 
                         hide={isSecureEntry} 
                         maxlength={16}/>
-                    <TouchableOpacity style={styles.eye} onPress={() => {setIsSecureEntry((toggle) => !toggle)}}>
-                        {isSecureEntry ? <Eye/> : <InactiveEye/>}
+                    <TouchableOpacity activeOpacity={1} style={styles.eye} onPress={() => {setIsSecureEntry((toggle) => !toggle)}}>
+                        {isSecureEntry ? <IcEyeActive/> : <IcEyeInactive/>}
                     </TouchableOpacity>
                 </View>
                 <View style={{marginTop: 81, marginBottom: 32}}>
-                    <SubmitButton label="Daftar" onPress={() => navigation.replace('HomePage')}/>
+                    <SubmitButton label="Daftar" onPress={() => navigation.replace('MainApp')}/>
                 </View>
                 <View style={{flexDirection:'row', justifyContent:'center'}}>
-                    <Text style={{textAlign:'center', color:colors.grey}}>Sudah memiliki akun? </Text>
-                    <Text style={{textAlign:'center', color:colors.default}} onPress={() => navigation.navigate('LoginPage')}>Masuk</Text>
+                    <Text style={{textAlign:'center', color:colors.grey, fontFamily: 'Poppins-Medium', fontSize: 14}}>Sudah memiliki akun? </Text>
+                    <Text style={{textAlign:'center', color:colors.default, fontFamily: 'Poppins-Medium', fontSize: 14}} onPress={() => navigation.navigate('LoginPage')}>Masuk</Text>
                 </View>
             </View>
         </View>
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         width: 24, 
         height: 24, 
         position: 'absolute', 
-        top: 60, 
+        top: 65, 
         right: 15
     }
 })

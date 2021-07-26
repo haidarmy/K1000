@@ -17,7 +17,8 @@ const InputField = ({placeholder, label, hide, maxlength}) => {
 const styles = StyleSheet.create({
       text: {
          fontSize:18,
-         fontWeight: 'normal'
+         fontWeight: 'normal',
+         fontFamily: 'Poppins-Medium'
       },
       textinput : {
          backgroundColor: colors.lightgrey,
@@ -27,7 +28,8 @@ const styles = StyleSheet.create({
          paddingVertical: 16,
          paddingHorizontal: 24,
          fontSize: 18,
-         color: colors.black
+         color: colors.black,
+         fontFamily: 'Poppins-Regular'
      }
 })
 

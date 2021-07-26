@@ -10,7 +10,8 @@ const WelcomePage = ({navigation}) => {
         <View style={styles.wrapper.container}>
                <WelcomePageIllustration width= {331} height= {258}/>
            <View style={styles.wrapper.text}>
-               <Text style={styles.text}>Temukan hasil laut dalam genggaman tangan Anda </Text>
+               <Text style={styles.text}>Temukan hasil laut dalam</Text>
+               <Text style={styles.text}>genggaman tangan Anda</Text>
            </View>
            <View style={styles.wrapper.button}>
                <View style={{ marginHorizontal:16 }}>
@@ -55,9 +56,10 @@ const styles = ({
         text: {
             paddingHorizontal:24,
             justifyContent:'center', 
-            width:335, 
-            height:64, 
-            marginTop:75
+            // width:335, 
+            // height:64, 
+            marginTop:75,
+            
         },
         button: {
             justifyContent:'center',
@@ -66,9 +68,10 @@ const styles = ({
         }
     },
     text: {
-        fontSize:18, 
         color:colors.grey, 
-        textAlign:'center'
+        textAlign:'center',
+        fontFamily:'Poppins-Regular',
+        fontSize: 18
     }
   })
 
