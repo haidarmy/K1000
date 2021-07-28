@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
 import { colors } from '../../utils'
-import { SubmitButton, BottomNavigation } from '../../components';
+import { SearchBar } from '../../components';
 import Content from './Content'
 import Slider from './Slider'
 import FilterProduct from './FilterProduct'
 import Modal from 'react-native-modal'
-import SearchBar from './SearchBar'
 
 const HomePage = ({navigation}) => {
     const [isModalVisible, setModalVisible] = useState(false);
@@ -16,6 +15,7 @@ const HomePage = ({navigation}) => {
     };
     return (
         <View style={styles.container}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
            <Modal 
                 style={{margin: 0, justifyContent: 'flex-end'}} 
                 isVisible={isModalVisible} 
@@ -28,7 +28,7 @@ const HomePage = ({navigation}) => {
             <View style={{flex:1, backgroundColor: colors.white, paddingTop: 9}}>
                 <View style={{paddingHorizontal: 20}}>
                 {/* Search */}
-                <SearchBar onPress={toggleModal}/>
+                <SearchBar onPress={toggleModal} Filter/>
                 {/* Slider */}
                 <Slider/>
                 </View>
