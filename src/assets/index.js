@@ -23,6 +23,7 @@ import IcFilter from './Icons/ic-filter.svg'
 import IcSearch from './Icons/ic-search.svg'
 import IcSwiper from './Icons/ic-swiper.svg'
 import IcTrash from './Icons/ic-trash.svg'
+import ICTrashSolid from './Icons/ic-trash-solid.svg'
 import IcHeartSolid from './Icons/ic-heart-solid.svg'
 import IcHeartRed from './Icons/ic-heart-red.svg'
 import IcClose from './Icons/ic-close.svg'
@@ -45,6 +46,7 @@ export {WelcomePageIllustration,
         IcSearch,
         IcSwiper,
         IcTrash,
+        ICTrashSolid,
         IcHeartSolid,
         IcHeartRed,
         IcClose,
