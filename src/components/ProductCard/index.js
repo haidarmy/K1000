@@ -9,6 +9,8 @@ import {
   Filter,
   Swiper,
   IcHeartSolid,
+  IcCloseSolid,
+  IcEdit,
 } from '../../assets';
 import {
   StyleSheet,
@@ -20,7 +22,7 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 
-const ProductCard = ({image, name, price, weight}) => {
+const ProductCard = ({image, name, price, weight, store}) => {
   const navigation = useNavigation();
   const [isFavourite, setIsFavourite] = useState(false);
   return (
@@ -38,20 +40,30 @@ const ProductCard = ({image, name, price, weight}) => {
             <Text style={styles.text.price}>{price}</Text>
             <Text style={styles.text.weight}>{weight}</Text>
           </View>
-          <TouchableOpacity
-            style={{
-              width: 40,
-              height: 40,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-            onPress={() => {
-              setIsFavourite(toggle => !toggle);
-            }}>
-            {isFavourite ? <IcHeartSolid /> : <IcWishlistInactive />}
-          </TouchableOpacity>
+          {store ? (
+            <TouchableOpacity
+              style={styles.loveWrapper}
+              onPress={() => navigation.navigate('AddProductPage')}>
+              <IcEdit fill={colors.black} width={24} height={24} />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={styles.loveWrapper}
+              onPress={() => {
+                setIsFavourite(toggle => !toggle);
+              }}>
+              {isFavourite ? <IcHeartSolid /> : <IcWishlistInactive />}
+            </TouchableOpacity>
+          )}
         </View>
       </View>
+      {store && (
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={{position: 'absolute', top: -8, right: -8}}>
+          <IcCloseSolid fill={'#FF605C'} height={32} width={32} />
+        </TouchableOpacity>
+      )}
     </TouchableOpacity>
   );
 };
@@ -94,6 +106,12 @@ const styles = {
       color: colors.grey,
       fontFamily: 'Poppins-SemiBold',
     },
+  },
+  loveWrapper: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 };
 
