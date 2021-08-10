@@ -16,13 +16,13 @@ import Gap from '../Gap';
 const Icon = ({label, focus}) => {
   switch (label) {
     case 'HomePage':
-      return focus ? <IcHomeActive /> : <IcHomeInacctive />;
+      return focus ? <IcHomeActive fill={colors.default}/> : <IcHomeInacctive />;
     case 'CartPage':
-      return focus ? <IcCartActive /> : <IcCartInactive />;
+      return focus ? <IcCartActive fill={colors.default}/> : <IcCartInactive />;
     case 'WishlistPage':
-      return focus ? <IcWishlistActive /> : <IcWishlistInactive />;
+      return focus ? <IcWishlistActive fill={colors.default}/> : <IcWishlistInactive />;
     case 'ProfilePage':
-      return focus ? <IcProfileActive /> : <IcProfileInacctive />;
+      return focus ? <IcProfileActive fill={colors.default}/> : <IcProfileInacctive />;
     default:
       return <IcHomeInacctive />;
   }

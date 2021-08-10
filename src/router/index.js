@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { BottomNavigation } from '../components';
-import { AddAddressPage, AddProductPage,AddressPage, CartPage, HomePage, LoginPage, ProductPage, ProfileEditPage, ProfilePage, SignUpPage, SplashScreen, StorePage, WelcomePage, WishlistPage} from '../pages'
+import { AddAddressPage, AddProductPage,AddressPage, CartPage, HomePage, LoginPage, ProductPage, ProfileDetailPage, ProfilePage, SignUpPage, SplashScreen, StorePage, WelcomePage, WishlistPage} from '../pages'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -30,7 +30,7 @@ const Router = () => {
             <Stack.Screen name="AddressPage" component={ AddressPage } options={{headerShown: false}}/>
             <Stack.Screen name="LoginPage" component={ LoginPage } options={{headerShown: false}}/>
             <Stack.Screen name="ProductPage" component={ ProductPage } options={{headerShown: false}}/>
-            <Stack.Screen name="ProfileEditPage" component={ ProfileEditPage } options={{headerShown: false}}/>
+            <Stack.Screen name="ProfileDetailPage" component={ ProfileDetailPage } options={{headerShown: false}}/>
             <Stack.Screen name="SignUpPage" component={ SignUpPage } options={{headerShown: false}}/>
             <Stack.Screen name="StorePage" component={ StorePage } options={{headerShown: false}}/>
         </Stack.Navigator>

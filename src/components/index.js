@@ -5,5 +5,8 @@ import ProductCard from './ProductCard'
 import Categories from './Categories'
 import Gap from './Gap'
 import SearchBar from './SearchBar'
+import FilterProduct from './FilterProduct'
+import Header from './Header'
+import ImagePickerModal from './ImagePickerModal'
 
-export { InputField, SubmitButton, BottomNavigation, ProductCard, Categories, Gap, SearchBar }
+export { InputField, SubmitButton, BottomNavigation, ProductCard, Categories, Gap, SearchBar, FilterProduct, Header, ImagePickerModal }

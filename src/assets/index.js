@@ -7,6 +7,7 @@ import ProductDummy2 from './Dummy/ProductDummy2.jpg'
 import ProductDummy3 from './Dummy/ProductDummy3.jpg'
 import ProductDummy4 from './Dummy/ProductDummy4.jpg'
 import ProductDummy5 from './Dummy/ProductDummy5.jpg'
+import AvatarDummy from './Dummy/AvatarDummy.png'
 //Icons
 import IcHomeActive from './Icons/ic-home-active.svg'
 import IcHomeInacctive from './Icons/ic-home-inactive.svg'
@@ -27,6 +28,16 @@ import ICTrashSolid from './Icons/ic-trash-solid.svg'
 import IcHeartSolid from './Icons/ic-heart-solid.svg'
 import IcHeartRed from './Icons/ic-heart-red.svg'
 import IcClose from './Icons/ic-close.svg'
+import IcCloseSolid from './Icons/ic-close-solid.svg'
+import IcChevronRight from './Icons/ic-chevron-right.svg'
+import IcMap from './Icons/ic-map.svg'
+import IcFloatButton from './Icons/ic-float-button.svg'
+import IcCamera from './Icons/ic-camera.svg'
+import IcGallery from './Icons/ic-gallery.svg'
+import IcEdit from './Icons/ic-edit.svg'
+import IcPin from './Icons/ic-pin'
+import IcMan from './Icons/ic-man.svg'
+import IcWoman from './Icons/ic-woman.svg'
 
 
 export {WelcomePageIllustration, 
@@ -40,6 +51,7 @@ export {WelcomePageIllustration,
         IcProfileActive,
         IcProfileInacctive,
         IcBack,
+        IcChevronRight,
         IcEyeActive,
         IcEyeInactive,
         IcFilter,
@@ -50,9 +62,19 @@ export {WelcomePageIllustration,
         IcHeartSolid,
         IcHeartRed,
         IcClose,
+        IcCloseSolid,
+        IcMap,
+        IcCamera,
+        IcGallery,
+        IcEdit,
+        IcPin,
+        IcMan,
+        IcWoman,
+        IcFloatButton,
         ProductDummy1,
         ProductDummy2,
         ProductDummy3,
         ProductDummy4,
-        ProductDummy5
+        ProductDummy5,
+        AvatarDummy
     }

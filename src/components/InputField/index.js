@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, TextInput } from 'react-native'
 import {colors} from '../../utils/'
-const InputField = ({placeholder, label, hide, maxlength}) => {
+const InputField = ({placeholder, label, hide, maxlength, keyboard='default', multiline=false, numberOfLines=1}) => {
     return (
        <View>
          <Text style={styles.text}>{label}</Text>
@@ -10,6 +10,10 @@ const InputField = ({placeholder, label, hide, maxlength}) => {
             placeholderTextColor={colors.grey}
             secureTextEntry={hide}
             maxLength={maxlength}
+            keyboardType={keyboard}
+            multiline={multiline}
+            numberOfLines={numberOfLines}
+            textAlignVertical='top'
          />
        </View>
     )

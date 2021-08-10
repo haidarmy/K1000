@@ -1,13 +1,12 @@
 import React, {useState} from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity, StatusBar, Dimensions } from 'react-native';
 import { colors } from '../../utils'
-import { SearchBar } from '../../components';
+import { SearchBar, FilterProduct } from '../../components';
 import Content from './Content'
 import Slider from './Slider'
-import FilterProduct from './FilterProduct'
 import Modal from 'react-native-modal'
 
-const HomePage = ({navigation}) => {
+const StorePage = ({navigation}) => {
     const [isModalVisible, setModalVisible] = useState(false);
     
     const toggleModal = () => {
@@ -17,11 +16,14 @@ const HomePage = ({navigation}) => {
         <View style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
            <Modal 
+                statusBarTranslucent
                 style={{margin: 0, justifyContent: 'flex-end'}} 
                 isVisible={isModalVisible} 
                 onBackdropPress={() => setModalVisible(false)}
                 onSwipeComplete={() => setModalVisible(false)}
+                onBackButtonPress={() => setModalVisible(false)}
                 swipeDirection="down"
+                deviceHeight={Dimensions.get('screen').height}
             >
             <FilterProduct/>
             </Modal>
@@ -47,4 +49,4 @@ const styles = StyleSheet.create ({
     },
 })
 
-export default HomePage;
+export default StorePage;

@@ -1,12 +1,14 @@
 import React from 'react'
-import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 import { colors } from '../../utils'
 import { IcSwiper} from '../../assets'
-import { SubmitButton, BottomNavigation, Categories } from '../../components';
+import SubmitButton from '../SubmitButton'
+import Categories from '../Categories'
 
 
 const  FilterProduct = () => {
     return (
+        <KeyboardAvoidingView behavior='position' enabled>
         <View style={styles.container}>
             <View style={styles.swiper}>   
             <IcSwiper width={50} height={6}/>
@@ -42,12 +44,14 @@ const  FilterProduct = () => {
             </View>
             <SubmitButton label="Terapkan"/>
             </View>
+            </KeyboardAvoidingView>
     )
 }
 
 const styles = ({
     container: {
-        height: 420, 
+        height: 470, 
+        marginBottom: -50,
         backgroundColor: colors.white, 
         paddingHorizontal: 20, 
         paddingVertical: 16, 

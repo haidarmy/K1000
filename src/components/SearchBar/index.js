@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import {colors} from '../../utils';
 import {IcSearch, IcFilter, IcClose} from '../../assets';
-import {ProductCard} from '../../components';
 
 const SearchBar = ({onPress, Filter}) => {
   const [input, setInput] = useState('');

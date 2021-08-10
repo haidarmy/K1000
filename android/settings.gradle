@@ -1,3 +1,5 @@
 rootProject.name = 'K1000'
+include ':react-native-translucent-modal'
+project(':react-native-translucent-modal').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-translucent-modal/android')
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'

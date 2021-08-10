@@ -17,14 +17,13 @@ import {
   ProductDummy3,
   ProductDummy4,
 } from '../../assets';
+import { Header } from '../../components';
 
 const CartPage = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <View>
-        <Text style={styles.headerText}>Keranjang Saya</Text>
-      </View>
+      <Header label="Keranjang Saya"/>
       <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
         <CartItem item="Kakap Putih" price="Rp 40,000" image={ProductDummy1} />
         <CartItem
@@ -49,14 +48,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
-  },
-  headerText: {
-    color: colors.black,
-    fontFamily: 'Montserrat-Bold',
-    fontSize: 26,
-    textAlign: 'center',
-    paddingTop: 4,
-    paddingBottom: 32,
   },
   totalContainer: {
     justifyContent: 'space-between',

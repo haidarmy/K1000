@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, ScrollView, StatusBar } from 'react-native'
-import { SearchBar, ProductCard } from '../../components'
+import { SearchBar, ProductCard, Header } from '../../components'
 import { ProductDummy1, ProductDummy2, ProductDummy3, ProductDummy4, ProductDummy5 } from '../../assets'
 import { colors } from '../../utils'
 
@@ -8,7 +8,7 @@ const WishlistPage = () => {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-            <Text style={styles.header}>Wishlist</Text>
+            <Header label="Favorit"/>
             <SearchBar/>
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
                 <ProductCard image={ProductDummy1} name="Kerapu Cantang" price="Rp.80.000" weight="1000 g"/>
@@ -28,13 +28,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.white,
         paddingHorizontal: 20
-    },
-    header: {
-        fontFamily: 'Montserrat-Bold',
-        fontSize: 26,
-        textAlign: 'center',
-        marginTop: 4,
-        marginBottom: 32
     },
     content:{
         // height:698,
