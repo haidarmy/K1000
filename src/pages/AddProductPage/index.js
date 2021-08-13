@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   ImageBackground,
+  StatusBar,
 } from 'react-native';
 import {IcCloseSolid, IcFloatButton, ProductDummy1, ProductDummy2, ProductDummy3, ProductDummy4} from '../../assets';
 import Modal from 'react-native-modal';
@@ -28,6 +29,7 @@ const AddProductPage = ({navigation}) => {
   };
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <Header
         label="Tambah Produk"
         onPress={() => navigation.navigate('StorePage')}

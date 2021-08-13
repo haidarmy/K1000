@@ -17,13 +17,14 @@ import {
   ProductDummy3,
   ProductDummy4,
 } from '../../assets';
-import { Header } from '../../components';
+import { EmptyPage, Header } from '../../components';
 
 const CartPage = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <Header label="Keranjang Saya"/>
+      {/* <EmptyPage illustration="EmptyCart" text="Keranjang Anda Kosong"/> */}
       <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
         <CartItem item="Kakap Putih" price="Rp 40,000" image={ProductDummy1} />
         <CartItem

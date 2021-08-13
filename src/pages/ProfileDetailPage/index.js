@@ -5,7 +5,8 @@ import {
   View,
   Image,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from 'react-native';
 import Modal from 'react-native-modal';
 import {AvatarDummy, ProductDummy1} from '../../assets';
@@ -71,6 +72,7 @@ const ProfileDetailPage = ({navigation}) => {
         label="Profil Saya"
         onPress={() => navigation.goBack('ProfilePage')}
       />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <View style={styles.content}>
         <View style={styles.profileContainer}>
           <Image

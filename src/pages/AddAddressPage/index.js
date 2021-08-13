@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, ActivityIndicator} from 'react-native';
+import {StyleSheet, Text, View, ActivityIndicator, StatusBar} from 'react-native';
 import {IcPin} from '../../assets';
 import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
@@ -44,6 +44,7 @@ const AddAddressPage = () => {
   }, []);
   return pin.latitude ? (
     <View style={{flex: 1}}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <View style={{alignItems: 'center'}}>
         <GooglePlacesAutocomplete
           fetchDetails={true}

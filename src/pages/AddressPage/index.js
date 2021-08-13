@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {Header, SubmitButton} from '../../components';
+import {StatusBar, StyleSheet, Text, View} from 'react-native';
+import {EmptyPage, Header, SubmitButton} from '../../components';
 import {colors} from '../../utils';
 
 const AddressPage = ({navigation}) => {
@@ -10,7 +10,9 @@ const AddressPage = ({navigation}) => {
         label="Alamat Saya"
         onPress={() => navigation.goBack('ProfilePage')}
       />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <View style={styles.content}>
+        {/* <EmptyPage illustration="EmptyAddress" text="Alamat Tidak Ditemukan" /> */}
         <View style={styles.addresWrapper}>
           <Text style={styles.textName}>Haidar</Text>
           <Text style={styles.text}>081293302744</Text>

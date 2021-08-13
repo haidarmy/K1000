@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
 import { colors } from '../../utils'
-import { SearchBar, FilterProduct, Header } from '../../components';
+import { SearchBar, FilterProduct, Header, EmptyPage } from '../../components';
 import Content from './Content'
 import Slider from './Slider'
 import Modal from 'react-native-modal'
@@ -17,6 +17,7 @@ const HomePage = ({navigation}) => {
         <View style={styles.container}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
         <Header label="Toko Saya" onPress={() => navigation.navigate('ProfilePage')}/>
+        {/* <EmptyPage illustration="EmptyProduct" text="Toko Anda Kosong" /> */}
            <Modal 
                 statusBarTranslucent
                 style={{margin: 0, justifyContent: 'flex-end'}} 

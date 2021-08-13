@@ -12,6 +12,7 @@ import SplashScreen from './SplashScreen';
 import StorePage from './StorePage';
 import WelcomePage from './WelcomePage';
 import WishlistPage from './WishlistPage';
+import SuccessAddToCartPage from './SuccessAddToCartPage';
 
 export {
   AddAddressPage,
@@ -28,4 +29,5 @@ export {
   StorePage,
   WelcomePage,
   WishlistPage,
+  SuccessAddToCartPage
 };

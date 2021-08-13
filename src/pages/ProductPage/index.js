@@ -98,7 +98,7 @@ const ProductPage = ({navigation}) => {
 
   return (
     <View style={styles.page}>
-      <StatusBar barStyle='dark-content' translucent backgroundColor="rgba(0,0,0,0)"/>
+      <StatusBar barStyle='dark-content' translucent backgroundColor="rgba(0,0,0,0)" animated/>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <TouchableOpacity
           activeOpacity={1}
@@ -258,7 +258,7 @@ const ProductPage = ({navigation}) => {
             />
           </TouchableOpacity>
           <View style={styles.button}>
-            <SubmitButton label="Tambah ke Keranjang" />
+            <SubmitButton label="Tambah ke Keranjang" onPress={()=> navigation.replace('SuccessAddToCartPage')}/>
           </View>
         </View>
       </View>

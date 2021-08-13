@@ -1,31 +1,40 @@
-import React from 'react'
-import { StyleSheet, Text, TouchableOpacity } from 'react-native'
-import {colors} from '../../utils'
+import React from 'react';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {colors} from '../../utils';
 
-const SubmitButton = ({label, onPress}) => {
-    return (
-       <TouchableOpacity style={styles.button} onPress={onPress} activeOpacity={0.7}>
-       <Text style={styles.text}>{label}</Text>
-       </TouchableOpacity>
-    )
-}
+const SubmitButton = ({
+  label,
+  onPress,
+  buttonColor = colors.default,
+  labelColor = colors.white,
+}) => {
+  return (
+    <TouchableOpacity
+      style={styles.button(buttonColor)}
+      onPress={onPress}
+      activeOpacity={0.7}>
+      <Text style={styles.text(labelColor)}>{label}</Text>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
-    button: {
-        backgroundColor: colors.default,
-        borderRadius: 10,
-        height: 58,
-        justifyContent:'center'
-    },
-    text: {
-        fontSize: 20,
-        fontWeight: "normal",
-        color:colors.white,
-        textAlign: 'center',
-        fontFamily: 'Poppins-Medium'
-    }
-})
+  button: buttonColor => ({
+    backgroundColor: buttonColor,
+    borderRadius: 10,
+    height: 58,
+    justifyContent: 'center',
+    borderWidth: buttonColor ? 2 : 0,
+    borderColor: buttonColor ? colors.default : null,
+  }),
 
-export default SubmitButton
+  text: labelColor => ({
+    fontSize: 20,
+    fontWeight: 'normal',
+    color: labelColor,
+    textAlign: 'center',
+    fontFamily: 'Poppins-Medium',
+  }),
+});
 
-
+export default SubmitButton;

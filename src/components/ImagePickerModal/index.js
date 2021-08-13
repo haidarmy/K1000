@@ -1,11 +1,11 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {IcCamera, IcGallery} from '../../assets';
-import {Gap} from '../../components';
+import {Gap} from '../Gap';
 import {colors} from '../../utils';
 import ImagePicker from 'react-native-image-crop-picker';
 
-const ImagePickeModal = ({multiple}) => {
+const ImagePickerModal = ({multiple}) => {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
@@ -48,7 +48,7 @@ const ImagePickeModal = ({multiple}) => {
   );
 };
 
-export default ImagePickeModal;
+export default ImagePickerModal;
 
 const styles = StyleSheet.create({
   page: {

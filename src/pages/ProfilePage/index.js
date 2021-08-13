@@ -1,7 +1,7 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Gap} from '../../components';
-import {AvatarDummy, IcCartActive, IcChevronRight, IcMap, IcProfileActive, IcWishlistActive} from '../../assets';
+import {AvatarDummy, IcCartActive, IcChevronRight, IcLogout, IcMap, IcProfileActive, IcWishlistActive} from '../../assets';
 import {colors} from '../../utils';
 
 const Menu = ({label, icon, onPress}) => {
@@ -30,10 +30,10 @@ const Menu = ({label, icon, onPress}) => {
           <IcChevronRight />
         </TouchableOpacity>
       );
-    case 'Favourite':
+    case 'Logout':
       return (
         <TouchableOpacity onPress={onPress} activeOpacity={0.7} style={styles.menuWrapper}>
-          <IcWishlistActive fill={colors.black} style={{marginRight: 32}} />
+          <IcLogout fill={colors.black} width={24} height={24} style={{marginRight: 32}} />
           <Text style={styles.menuLabel}>{label}</Text>
           <IcChevronRight />
         </TouchableOpacity>
@@ -46,6 +46,7 @@ const Menu = ({label, icon, onPress}) => {
 const ProfilePage = ({navigation}) => {
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <Gap height={64} />
       <View style={styles.profileContainer}>
         <Image source={AvatarDummy} style={styles.image} />
@@ -55,7 +56,7 @@ const ProfilePage = ({navigation}) => {
         <Menu label="Profil Saya" icon={"Profile"} onPress={() => navigation.navigate('ProfileDetailPage')}/>
         <Menu label="Toko Saya" icon={"Store"} onPress={() => navigation.navigate('StorePage')}/>
         <Menu label="Alamat" icon={"Address"} onPress={() => navigation.navigate('AddressPage')}/>
-        <Menu label="Favorit" icon={"Favourite"} onPress={() => navigation.navigate('AddressPage')}/>
+        <Menu label="Logout" icon={"Logout"} />
       </View>
     </View>
   );

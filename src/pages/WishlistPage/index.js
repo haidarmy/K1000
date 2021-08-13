@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, ScrollView, StatusBar } from 'react-native'
-import { SearchBar, ProductCard, Header } from '../../components'
+import { SearchBar, ProductCard, Header, EmptyPage } from '../../components'
 import { ProductDummy1, ProductDummy2, ProductDummy3, ProductDummy4, ProductDummy5 } from '../../assets'
 import { colors } from '../../utils'
 
@@ -10,6 +10,7 @@ const WishlistPage = () => {
             <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
             <Header label="Favorit"/>
             <SearchBar/>
+            {/* <EmptyPage illustration="EmptyWishlist" text="Wishlist Anda Kosong"/> */}
             <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
                 <ProductCard image={ProductDummy1} name="Kerapu Cantang" price="Rp.80.000" weight="1000 g"/>
                 <ProductCard image={ProductDummy2} name="Kepiting" price="Rp.120.000" weight="1000 g"/>

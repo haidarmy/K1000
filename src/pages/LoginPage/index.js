@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, StatusBar} from 'react-native';
 import {colors} from '../../utils';
 import {InputField, SubmitButton} from '../../components';
 import {IcEyeActive, IcEyeInactive} from '../../assets';
@@ -8,6 +8,7 @@ const LoginPage = ({navigation}) => {
   const [isSecureEntry, setIsSecureEntry] = useState(true);
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <View style={styles.wrapper}>
         <View style={styles.input}>
           <InputField placeholder="Email" label="Email" />
