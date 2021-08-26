@@ -61,8 +61,13 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
   };
 
   const setImageToParent = (image, imageForDB) => {
-    setProfile({...profile, avatar: image, avatarForDB: imageForDB});
-    toggleModalPhoto();
+    if(image === "User cancelled image selection"){
+      toggleModalPhoto();
+    }
+    else {
+      setProfile({...profile, avatar: image, avatarForDB: imageForDB});
+      toggleModalPhoto();
+    }
   };
 
   const setDateToParent = childdata => {

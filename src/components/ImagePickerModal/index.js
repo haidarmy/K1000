@@ -5,7 +5,13 @@ import Gap from '../Gap';
 import {colors} from '../../utils';
 import ImagePicker from 'react-native-image-crop-picker';
 
-const ImagePickerModal = ({multiple = false, frontCamera = false, circleOverlay = false, hideBottomControls = false, setImageToParent}) => {
+const ImagePickerModal = ({
+  multiple = false,
+  frontCamera = false,
+  circleOverlay = false,
+  hideBottomControls = false,
+  setImageToParent,
+}) => {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
@@ -28,10 +34,14 @@ const ImagePickerModal = ({multiple = false, frontCamera = false, circleOverlay 
                 showCropFrame: false,
                 hideBottomControls: hideBottomControls,
                 includeBase64: true,
-                compressImageQuality: 0.5
-              }).then(image => {
-                setImageToParent(image.path, image.data);
+                compressImageQuality: 0.5,
               })
+                .then(image => {
+                  setImageToParent(image.path, image.data);
+                })
+                .catch(error => {
+                  setImageToParent(error.message);
+                })
             }>
             <IcCamera fill={colors.default} width={24} height={24} />
             <Text style={styles.text}>Ambil dari Camera</Text>
@@ -46,7 +56,7 @@ const ImagePickerModal = ({multiple = false, frontCamera = false, circleOverlay 
                 height: 375,
                 multiple: multiple,
                 cropping: true,
-                mediaType:'photo',
+                mediaType: 'photo',
                 cropperToolbarColor: colors.white,
                 cropperToolbarWidgetColor: colors.default,
                 cropperStatusBarColor: colors.white,
@@ -55,10 +65,14 @@ const ImagePickerModal = ({multiple = false, frontCamera = false, circleOverlay 
                 showCropFrame: false,
                 hideBottomControls: hideBottomControls,
                 includeBase64: true,
-                compressImageQuality: 0.5
-              }).then(image => {
-                setImageToParent(image.path);
+                compressImageQuality: 0.5,
               })
+                .then(image => {
+                  setImageToParent(image.path, image.data);
+                })
+                .catch(error => {
+                  setImageToParent(error.message);
+                })
             }>
             <IcGallery fill={colors.default} width={24} height={24} />
             <Text style={styles.text}>Pilih dari Galeri</Text>
