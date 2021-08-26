@@ -1,5 +1,5 @@
 import FIREBASE from '../../config/FIREBASE';
-import {showError, storeData} from '../../utils';
+import {dispatchClear, dispatchError, dispatchLoading, dispatchSuccess, showError, storeData} from '../../utils';
 
 export const REGISTER_USER = 'REGISTER_USER';
 export const LOGIN_USER = 'LOGIN_USER';
@@ -7,14 +7,7 @@ export const LOGIN_USER = 'LOGIN_USER';
 export const registerUser = form => {
   return dispatch => {
     //Loading
-    dispatch({
-      type: REGISTER_USER,
-      payload: {
-        loading: true,
-        data: false,
-        errorMessage: false,
-      },
-    });
+    dispatchLoading(dispatch, REGISTER_USER)
     //SignUp
     FIREBASE.auth()
       .createUserWithEmailAndPassword(form.email, form.password)
@@ -23,42 +16,20 @@ export const registerUser = form => {
           email: form.email,
           uid: success.user.uid,
         };
-        console.log('New Data', newData);
         //Save to RealtimeDatabase Firebase
         FIREBASE.database()
           .ref('users/' + success.user.uid)
           .set(newData);
         //Success
-        dispatch({
-          type: REGISTER_USER,
-          payload: {
-            loading: false,
-            data: newData,
-            errorMessage: false,
-          },
-        });
+        dispatchSuccess(dispatch, REGISTER_USER, newData)
         //Save to localStorage(Asyncstorage)
         storeData('user', newData);
         //Clear Data from redux
-        dispatch({
-          type: REGISTER_USER,
-          payload: {
-            loading: false,
-            data: false,
-            errorMessage: false,
-          },
-        });
+        dispatchClear(dispatch, REGISTER_USER)
       })
       .catch(error => {
         //Error
-        dispatch({
-          type: REGISTER_USER,
-          payload: {
-            loading: false,
-            data: false,
-            errorMessage: error.message,
-          },
-        });
+        dispatchError(dispatch, REGISTER_USER, error.message)
         showError(error.message);
       });
   };
@@ -68,14 +39,7 @@ export const loginUser = (email, password) => {
   console.log("halo from action");
   return dispatch => {
     //Loading
-    dispatch({
-      type: LOGIN_USER,
-      payload: {
-        loading: true,
-        data: false,
-        errorMessage: false,
-      },
-    });
+    dispatchLoading(dispatch, LOGIN_USER)
     //Login
     FIREBASE.auth()
       .signInWithEmailAndPassword(email, password)
@@ -86,51 +50,22 @@ export const loginUser = (email, password) => {
           .once('value')
           .then(resDB => {
             //Success
-            console.log("sukses cek login", resDB);
             if (resDB.val()) {
-              dispatch({
-                type: LOGIN_USER,
-                payload: {
-                  loading: false,
-                  data: resDB.val(),
-                  errorMessage: false,
-                },
-              });
+              dispatchSuccess(dispatch, LOGIN_USER, resDB.val())
               //Save to localStorage(Asyncstorage)
               storeData('user', resDB.val());
               //Clear Data from redux
-              dispatch({
-                type: LOGIN_USER,
-                payload: {
-                  loading: false,
-                  data: false,
-                  errorMessage: false,
-                },
-              });
+              dispatchClear(dispatch, LOGIN_USER)
             } else {
               //Error
-              dispatch({
-                type: LOGIN_USER,
-                payload: {
-                  loading: false,
-                  data: false,
-                  errorMessage: "User Data Not Found",
-                },
-              });
+              dispatchError(dispatch, LOGIN_USER, "User Data Not Found")
               showError("User Data Not Found");
             }
           });
       })
       .catch(error => {
         //Error
-        dispatch({
-          type: LOGIN_USER,
-          payload: {
-            loading: false,
-            data: false,
-            errorMessage: error.message,
-          },
-        });
+        dispatchError(dispatch, LOGIN_USER, error.message)
         showError(error.message);
       });
   };

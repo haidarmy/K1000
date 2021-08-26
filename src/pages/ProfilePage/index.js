@@ -83,6 +83,7 @@ const ProfilePage = ({navigation}) => {
   const [profile, setProfile] = useState({
     uid: '',
     avatar: '',
+    address: '',
     // updateAvatar: false,
     // oldAvatar: '',
     name: '',
@@ -99,6 +100,7 @@ const ProfilePage = ({navigation}) => {
         ...profile,
         uid: res.uid,
         avatar: res.avatar,
+        address: res.address ? res.address : '',
         name: res.name ? res.name : '',
         email: res.email,
         dateOfBirth: res.dateOfBirth ? res.dateOfBirth : '',

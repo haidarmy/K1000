@@ -26,7 +26,7 @@ const AddressPage = ({navigation, updateAddressResult}) => {
 
   useEffect(() => {
     getUserData()
-  }, [updateAddressResult])
+  }, [])
   return (
     <View style={styles.container}>
       <Header

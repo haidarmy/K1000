@@ -60,10 +60,9 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
     console.log(childdata);
   };
 
-  const setImageToParent = childdata => {
-    setProfile({...profile, avatar: childdata});
+  const setImageToParent = (image, imageForDB) => {
+    setProfile({...profile, avatar: image, avatarForDB: imageForDB});
     toggleModalPhoto();
-    console.log(childdata);
   };
 
   const setDateToParent = childdata => {
@@ -74,8 +73,7 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
   const [profile, setProfile] = useState({
     uid: '',
     avatar: '',
-    // updateAvatar: false,
-    // oldAvatar: '',
+    avatarForDB: '',
     name: '',
     email: '',
     dateOfBirth: '',
@@ -136,6 +134,7 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
   }, [updateProfileResult]);
   
   useEffect(() => {
+    console.log("Jalan bos")
     getUserData();
   },[])
 

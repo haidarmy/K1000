@@ -30,7 +30,7 @@ const ImagePickerModal = ({multiple = false, frontCamera = false, circleOverlay 
                 includeBase64: true,
                 compressImageQuality: 0.5
               }).then(image => {
-                setImageToParent(image.path);
+                setImageToParent(image.path, image.data);
               })
             }>
             <IcCamera fill={colors.default} width={24} height={24} />
