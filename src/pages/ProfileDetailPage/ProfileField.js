@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useState} from 'react/cjs/react.development';
+import TextInputMask from 'react-native-text-input-mask';
 import {colors} from '../../utils';
 
 const ProfileField = ({
@@ -15,39 +15,51 @@ const ProfileField = ({
   onPress,
   edit = false,
   disable,
-  option,
   keyboardType = 'default',
   onChangeText,
   placeholder,
-  maxLength
+  maxLength,
+  underline = 1,
+  textInputMask,
 }) => {
   const [press, setPress] = useState(false);
   return (
     <View style={styles.container}>
       <View style={{flex: 1}}>
-        <Text style={styles.label}>{label}</Text>
-        <TextInput
-          editable={edit}
-          style={styles.value}
-          keyboardType={keyboardType}
-          value={value}
-          onChangeText={onChangeText}
-          onPressIn={() => setPress(true)}
-          placeholder={placeholder}
-          maxLength={maxLength}
-        />
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={styles.label}>{label}</Text>
+          {!disable && (
+            <TouchableOpacity activeOpacity={0.7} onPress={onPress}>
+              <Text style={styles.option}>
+                {value.length < 1 && !press ? 'Atur Sekarang' : 'Ubah'}
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        {textInputMask ? (
+          <TextInputMask
+            style={styles.value(underline, edit)}
+            placeholder={placeholder}
+            keyboardType={keyboardType}
+            editable={edit}
+            value={value}
+            onPressIn={() => setPress(true)}
+            onChangeText={onChangeText}
+            mask={'+62 [000] [0000] [0000]'}
+          />
+        ) : (
+          <TextInput
+            editable={edit}
+            style={styles.value(underline, edit)}
+            keyboardType={keyboardType}
+            value={value}
+            onChangeText={onChangeText}
+            onPressIn={() => setPress(true)}
+            placeholder={placeholder}
+            maxLength={maxLength}
+          />
+        )}
       </View>
-      {!disable && (
-        <TouchableOpacity activeOpacity={0.7} onPress={onPress}>
-          <Text style={styles.option}>
-            {value.length < 1 && !press
-              ? 'Atur Sekarang'
-              : option
-              ? 'Simpan'
-              : 'Ubah'}
-          </Text>
-        </TouchableOpacity>
-      )}
     </View>
   );
 };
@@ -65,11 +77,13 @@ const styles = StyleSheet.create({
     color: colors.black,
     paddingLeft: 3,
   },
-  value: {
+  value: (underline, edit) => ({
     fontSize: 18,
     fontFamily: 'Poppins-Regular',
     color: colors.black,
-  },
+    borderBottomWidth: edit ? underline : 0,
+    borderBottomColor: colors.default,
+  }),
   option: {
     fontSize: 18,
     fontFamily: 'Poppins-Medium',

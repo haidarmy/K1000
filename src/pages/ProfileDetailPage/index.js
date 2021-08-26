@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,51 +6,45 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
-  StatusBar
+  StatusBar,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {AvatarDummy, ProductDummy1} from '../../assets';
+import {AvatarDummy, IllDefaultAvatar, ProductDummy1} from '../../assets';
 import {Gap, Header, SubmitButton, ImagePickerModal} from '../../components';
-import {colors} from '../../utils';
+import {
+  colors,
+  getData,
+  months,
+  showError,
+  showSucces,
+  stringToDate,
+  useForm,
+  usePrevious,
+} from '../../utils';
 import ProfileField from './ProfileField';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import GenderModal from './GenderModal';
-
-const ProfileDetailPage = ({navigation}) => {
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Okt',
-    'Nov',
-    'Des',
-  ];
+import {connect, useDispatch} from 'react-redux';
+import {updateProfile} from '../../redux/action/ProfileAction';
+const ProfileDetailPage = ({navigation, updateProfileResult}) => {
+  const dispatch = useDispatch();
   const [date, setDate] = useState(new Date());
   const [showDate, setShowDate] = useState(false);
-  const [textDate, setTextDate] = useState('');
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
-    setDate(currentDate);
     setShowDate(false);
+    console.log(date);
 
     let tempDate = new Date(currentDate);
     let fDate = `${tempDate.getDate()} ${
       months[tempDate.getMonth()]
     } ${tempDate.getFullYear()}`;
-    setTextDate(fDate);
+    setProfile({...profile, dateOfBirth: fDate});
   };
 
   const [editName, setEditName] = useState(false);
   const [editPhone, setEditPhone] = useState(false);
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
   const [isModalVisibleGender, setModalVisibleGender] = useState(false);
   const [isModalVisiblePhoto, setModalVisiblePhoto] = useState(false);
   const toggleModalGender = () => {
@@ -60,12 +54,96 @@ const ProfileDetailPage = ({navigation}) => {
     setModalVisiblePhoto(!isModalVisiblePhoto);
   };
 
-  const [gender, setGender] = useState('')
-  const childToParent = (childdata) => {
-    setGender(childdata)
-    toggleModalGender()
-    console.log(childdata)
-  }
+  const childToParent = childdata => {
+    setProfile({...profile, gender: childdata});
+    toggleModalGender();
+    console.log(childdata);
+  };
+
+  const setImageToParent = childdata => {
+    setProfile({...profile, avatar: childdata});
+    toggleModalPhoto();
+    console.log(childdata);
+  };
+
+  const setDateToParent = childdata => {
+    setDate(childdata);
+    console.log(childdata);
+  };
+
+  const [profile, setProfile] = useState({
+    uid: '',
+    avatar: '',
+    // updateAvatar: false,
+    // oldAvatar: '',
+    name: '',
+    email: '',
+    dateOfBirth: '',
+    gender: '',
+    number: '',
+  });
+
+  const getUserData = () => {
+    getData('user').then(res => {
+      console.log(res);
+      setProfile({
+        ...profile,
+        uid: res.uid,
+        avatar: res.avatar,
+        name: res.name ? res.name : '',
+        email: res.email,
+        dateOfBirth: res.dateOfBirth ? res.dateOfBirth : '',
+        gender: res.gender ? res.gender : '',
+        number: res.number ? res.number : '',
+      });
+      // setProfile(res);
+      // setForm('dateOfBirth', res.dateOfBirth)
+      // setForm('number', res.number)
+    });
+  };
+
+  const onSubmit = () => {
+    if(!(profile.name &&
+      profile.number &&
+      profile.dateOfBirth &&
+      profile.gender &&
+      profile.number)){
+        showError('Pastikan semua kolom terisi!');
+      }
+    else if (
+      profile.name ||
+      profile.number ||
+      profile.dateOfBirth ||
+      profile.gender ||
+      profile.number ||
+      profile.avatar
+    ) {
+      dispatch(updateProfile(profile));
+      setEditName(false);
+      setEditPhone(false);
+    } else {
+      showError('Harap isi kolom terlebih dahulu!');
+    }
+  };
+  const prevUpdateProfileResult = usePrevious(updateProfileResult);
+  useEffect(() => {
+    if (
+      updateProfileResult !== false &&
+      updateProfileResult !== prevUpdateProfileResult
+    ) {
+      showSucces('Berhasil update profile');
+    }
+  }, [updateProfileResult]);
+  
+  useEffect(() => {
+    getUserData();
+  },[])
+
+  useEffect(() => {
+    if(profile.dateOfBirth){
+      stringToDate(profile.dateOfBirth, setDateToParent)
+    }
+  }, [profile.dateOfBirth])
   return (
     <View style={styles.container}>
       <Header
@@ -76,12 +154,16 @@ const ProfileDetailPage = ({navigation}) => {
       <View style={styles.content}>
         <View style={styles.profileContainer}>
           <Image
-            source={AvatarDummy}
+            source={profile.avatar ? {uri: profile.avatar} : IllDefaultAvatar}
             style={{height: 120, width: 120, borderRadius: 60}}
           />
           <Gap height={12} />
           <TouchableOpacity activeOpacity={0.7} onPress={toggleModalPhoto}>
-            <Text style={styles.imageInput}>Ganti Foto</Text>
+            {profile.avatar ? (
+              <Text style={styles.imageInput}>Ubah Foto</Text>
+            ) : (
+              <Text style={styles.imageInput}>Tambah Foto</Text>
+            )}
           </TouchableOpacity>
         </View>
         <Gap height={34} />
@@ -91,15 +173,14 @@ const ProfileDetailPage = ({navigation}) => {
             value="1"
             onPress={() => setEditName(toggle => !toggle)}
             edit={editName}
-            option={editName}
-            value={name}
-            onChangeText={value => setName(value)}
+            value={profile.name}
+            onChangeText={value => setProfile({...profile, name: value})}
             placeholder={editName ? 'Masukkan Nama Anda' : null}
             maxLength={32}
           />
           <ProfileField
             label="Tanggal Lahir"
-            value={textDate}
+            value={profile.dateOfBirth}
             placeholder={`${date.getDate()} ${
               months[date.getMonth()]
             } ${date.getFullYear()}`}
@@ -113,14 +194,18 @@ const ProfileDetailPage = ({navigation}) => {
               maximumDate={new Date(2021, 10, 20)}
             />
           )}
-          <ProfileField label="Jenis Kelamin" value={gender} onPress={toggleModalGender}/>
+          <ProfileField
+            label="Jenis Kelamin"
+            value={profile.gender}
+            onPress={toggleModalGender}
+          />
           <Modal
             deviceHeight={Dimensions.get('screen').height}
             statusBarTranslucent
             isVisible={isModalVisibleGender}
             onBackdropPress={() => setModalVisibleGender(false)}
             onBackButtonPress={() => setModalVisibleGender(false)}>
-            <GenderModal childToParent={childToParent}/>
+            <GenderModal childToParent={childToParent} />
           </Modal>
           <Modal
             deviceHeight={Dimensions.get('screen').height}
@@ -128,32 +213,39 @@ const ProfileDetailPage = ({navigation}) => {
             isVisible={isModalVisiblePhoto}
             onBackdropPress={() => setModalVisiblePhoto(false)}
             onBackButtonPress={() => setModalVisiblePhoto(false)}>
-            <ImagePickerModal/>
+            <ImagePickerModal
+              setImageToParent={setImageToParent}
+              frontCamera
+              circleOverlay
+              hideBottomControls
+            />
           </Modal>
-          <ProfileField label="Email" value="tanya.hill@example.com" disable />
+          <ProfileField label="Email" value={profile.email} disable />
           <ProfileField
             label="No. Telepon"
-            value="081293302744"
             onPress={() => setEditPhone(toggle => !toggle)}
             edit={editPhone}
-            option={editPhone}
             keyboardType={'numeric'}
-            value={number}
-            onChangeText={value => setNumber(value)}
-            placeholder={editPhone ? 'contoh: 08123456789' : null}
+            value={profile.number}
+            onChangeText={({}, extracted) => setProfile({...profile, number: extracted})}
+            placeholder={editPhone ? "+62 8XX XXX XXXX" : null}
             maxLength={12}
+            textInputMask
           />
         </View>
-        <SubmitButton
-          label="Ubah Profil"
-          onPress={() => navigation.goBack('ProfilePage')}
-        />
+        <SubmitButton label="Simpan" onPress={onSubmit} />
       </View>
     </View>
   );
 };
 
-export default ProfileDetailPage;
+const mapStateToProps = state => ({
+  updateProfileLoading: state.ProfileReducer.updateProfileLoading,
+  updateProfileResult: state.ProfileReducer.updateProfileResult,
+  updateProfileError: state.ProfileReducer.updateProfileError,
+});
+
+export default connect(mapStateToProps, null)(ProfileDetailPage);
 
 const styles = StyleSheet.create({
   container: {

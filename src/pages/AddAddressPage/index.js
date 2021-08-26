@@ -5,7 +5,7 @@ import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import {colors} from '../../utils';
+import {colors, getData} from '../../utils';
 import AddressDetail from './AddressDetail';
 
 const AddAddressPage = () => {
@@ -18,6 +18,7 @@ const AddAddressPage = () => {
   });
   const [region, setRegion] = useState(false);
   const [address, setAddress] = useState('');
+  const [userData, setUserData] = useState('')
   const getAddress = (lat, lng) => {
     Geocoder.from(lat, lng)
       .then(json => {
@@ -27,7 +28,14 @@ const AddAddressPage = () => {
       })
       .catch(error => console.warn(error));
   };
+  const getUserData = () => {
+    getData('user').then(res => {
+      console.log('user Data', res)
+      setUserData(res)
+    });
+  };
   useEffect(() => {
+    getUserData()
     Geolocation.getCurrentPosition(
       position => {
         // alert(JSON.stringify(position));
@@ -114,7 +122,7 @@ const AddAddressPage = () => {
       <View style={styles.marker}>
         <IcPin fill={colors.default} width={48} height={48} />
       </View>
-      <AddressDetail alamat={`${address.split(',', 3)}`} />
+      <AddressDetail address={`${address.split(',', 3)}`} longAddress={address} userData={userData}/>
     </View>
   ) : (
     <ActivityIndicator style={{flex: 1}} animating size="large" />

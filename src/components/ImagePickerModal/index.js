@@ -1,11 +1,11 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {IcCamera, IcGallery} from '../../assets';
-import {Gap} from '../Gap';
+import Gap from '../Gap';
 import {colors} from '../../utils';
 import ImagePicker from 'react-native-image-crop-picker';
 
-const ImagePickerModal = ({multiple}) => {
+const ImagePickerModal = ({multiple = false, frontCamera = false, circleOverlay = false, hideBottomControls = false, setImageToParent}) => {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
@@ -18,8 +18,19 @@ const ImagePickerModal = ({multiple}) => {
                 width: 375,
                 height: 375,
                 cropping: true,
+                cropperToolbarColor: colors.white,
+                cropperToolbarWidgetColor: colors.default,
+                cropperStatusBarColor: colors.white,
+                cropperActiveWidgetColor: colors.default,
+                cropperCircleOverlay: circleOverlay,
+                useFrontCamera: frontCamera,
+                showCropGuidelines: false,
+                showCropFrame: false,
+                hideBottomControls: hideBottomControls,
+                includeBase64: true,
+                compressImageQuality: 0.5
               }).then(image => {
-                console.log(image);
+                setImageToParent(image.path);
               })
             }>
             <IcCamera fill={colors.default} width={24} height={24} />
@@ -33,10 +44,20 @@ const ImagePickerModal = ({multiple}) => {
               ImagePicker.openPicker({
                 width: 375,
                 height: 375,
-                multiple: {multiple},
+                multiple: multiple,
                 cropping: true,
+                mediaType:'photo',
+                cropperToolbarColor: colors.white,
+                cropperToolbarWidgetColor: colors.default,
+                cropperStatusBarColor: colors.white,
+                cropperActiveWidgetColor: colors.default,
+                showCropGuidelines: false,
+                showCropFrame: false,
+                hideBottomControls: hideBottomControls,
+                includeBase64: true,
+                compressImageQuality: 0.5
               }).then(image => {
-                console.log(image);
+                setImageToParent(image.path);
               })
             }>
             <IcGallery fill={colors.default} width={24} height={24} />

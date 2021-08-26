@@ -22,9 +22,9 @@ const MainApp = () => {
 const Router = () => {
     return (
         <Stack.Navigator>
-            {/* <Stack.Screen name="SplashScreen" component={ SplashScreen } options={{headerShown: false}}/> */}
-            <Stack.Screen name="WelcomePage" component={ WelcomePage } options={{headerShown: false}}/>
+            <Stack.Screen name="SplashScreen" component={ SplashScreen } options={{headerShown: false}}/>
             <Stack.Screen name="MainApp" component={ MainApp } options={{headerShown: false}}/>
+            <Stack.Screen name="WelcomePage" component={ WelcomePage } options={{headerShown: false}}/>
             <Stack.Screen name="AddAddressPage" component={ AddAddressPage } options={{headerShown: false}}/>
             <Stack.Screen name="AddProductPage" component={ AddProductPage } options={{headerShown: false}}/>
             <Stack.Screen name="AddressPage" component={ AddressPage } options={{headerShown: false}}/>

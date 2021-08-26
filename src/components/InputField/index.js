@@ -1,40 +1,70 @@
-import React from 'react'
-import { StyleSheet, Text, View, TextInput } from 'react-native'
-import {colors} from '../../utils/'
-const InputField = ({placeholder, label, hide, maxlength, keyboard='default', multiline=false, numberOfLines=1}) => {
-    return (
-       <View>
-         <Text style={styles.text}>{label}</Text>
-         <TextInput style={styles.textinput}
-            placeholder={placeholder}
-            placeholderTextColor={colors.grey}
-            secureTextEntry={hide}
-            maxLength={maxlength}
-            keyboardType={keyboard}
-            multiline={multiline}
-            numberOfLines={numberOfLines}
-            textAlignVertical='top'
-         />
-       </View>
-    )
-}
+import React, {useState} from 'react';
+import {StyleSheet, Text, View, TextInput} from 'react-native';
+import {colors} from '../../utils/';
+const InputField = ({
+  placeholder,
+  label,
+  hide,
+  maxlength,
+  keyboard = 'default',
+  multiline = false,
+  numberOfLines = 1,
+  value,
+  onChangeText,
+  returnKeyType,
+  paddingRight,
+  autoCapitalize
+}) => {
+  const [border, setBorder] = useState(colors.white);
+  const onFocusForm = () => {
+    setBorder(colors.default);
+  };
+  const onBlurForm = () => {
+   setBorder(colors.white);
+ };
+  return (
+    <View>
+      <Text style={styles.text}>{label}</Text>
+      <TextInput
+        style={styles.textinput(border,paddingRight)}
+        placeholder={placeholder}
+        placeholderTextColor={colors.grey}
+        secureTextEntry={hide}
+        maxLength={maxlength}
+        keyboardType={keyboard}
+        multiline={multiline}
+        numberOfLines={numberOfLines}
+        textAlignVertical="top"
+        value={value}
+        onChangeText={onChangeText}
+        onFocus={onFocusForm}
+        onBlur={onBlurForm}
+        returnKeyType={returnKeyType}
+        autoCapitalize={autoCapitalize}
+      />
+    </View>
+  );
+};
 const styles = StyleSheet.create({
-      text: {
-         fontSize:18,
-         fontWeight: 'normal',
-         fontFamily: 'Poppins-Medium'
-      },
-      textinput : {
-         backgroundColor: colors.lightgrey,
-         borderRadius: 10,
-         marginTop: 16,
-         marginBottom: 26,
-         paddingVertical: 16,
-         paddingHorizontal: 24,
-         fontSize: 18,
-         color: colors.black,
-         fontFamily: 'Poppins-Regular'
-     }
-})
+  text: {
+    fontSize: 18,
+    fontWeight: 'normal',
+    fontFamily: 'Poppins-Medium',
+  },
+  textinput: (border, paddingRight) => ({
+    backgroundColor: colors.lightgrey,
+    borderRadius: 10,
+    marginTop: 16,
+    marginBottom: 26,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    fontSize: 18,
+    color: colors.black,
+    fontFamily: 'Poppins-Regular',
+    borderWidth: 2,
+    borderColor: border,
+    paddingRight: paddingRight
+  }),
+});
 
-export default  InputField
+export default InputField;

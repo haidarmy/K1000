@@ -3,39 +3,44 @@ import {View, Text, Image, StatusBar} from 'react-native';
 import {colors} from '../../utils';
 import {IllWelcomePage} from '../../assets';
 import ActionButton from './ActionButton';
+import {Loading} from '../../components';
+import { showSucces } from '../../utils/showMessage';
 
 const WelcomePage = ({navigation}) => {
   return (
-    <View style={styles.wrapper.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <IllWelcomePage width={331} height={258} />
-      <View style={styles.wrapper.text}>
-        <Text style={styles.text}>Temukan hasil laut dalam</Text>
-        <Text style={styles.text}>genggaman tangan Anda</Text>
-      </View>
-      <View style={styles.wrapper.button}>
-        <View style={{marginHorizontal: 16}}>
-          <ActionButton
-            bgColor={colors.default}
-            borderWidth={0}
-            borderColor={false}
-            txtcolor={colors.white}
-            label="Masuk"
-            onPress={() => navigation.navigate('LoginPage')}
-          />
+    <>
+      <View style={styles.wrapper.container}>
+        {/* <StatusBar barStyle="dark-content" backgroundColor={colors.red} /> */}
+        <IllWelcomePage width={331} height={258} />
+        <View style={styles.wrapper.text}>
+          <Text style={styles.text}>Temukan hasil laut dalam</Text>
+          <Text style={styles.text}>genggaman tangan Anda</Text>
         </View>
-        <View style={{marginHorizontal: 16}}>
-          <ActionButton
-            bgColor={colors.white}
-            borderWidth={2}
-            borderColor={colors.default}
-            txtcolor={colors.default}
-            label="Daftar"
-            onPress={() => navigation.navigate('SignUpPage')}
-          />
+        <View style={styles.wrapper.button}>
+          <View style={{marginHorizontal: 16}}>
+            <ActionButton
+              bgColor={colors.default}
+              borderWidth={0}
+              borderColor={false}
+              txtcolor={colors.white}
+              label="Masuk"
+              onPress={() => navigation.navigate('LoginPage')}
+            />
+          </View>
+          <View style={{marginHorizontal: 16}}>
+            <ActionButton
+              bgColor={colors.white}
+              borderWidth={2}
+              borderColor={colors.default}
+              txtcolor={colors.default}
+              label="Daftar"
+              onPress={() => navigation.navigate('SignUpPage')}
+            />
+          </View>
         </View>
       </View>
-    </View>
+      {/* <Loading /> */}
+    </>
   );
 };
 

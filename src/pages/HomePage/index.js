@@ -14,7 +14,6 @@ const StorePage = ({navigation}) => {
     };
     return (
         <View style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
            <Modal 
                 statusBarTranslucent
                 style={{margin: 0, justifyContent: 'flex-end'}} 

@@ -9,6 +9,7 @@ import FilterProduct from './FilterProduct';
 import Header from './Header';
 import ImagePickerModal from './ImagePickerModal';
 import EmptyPage from './EmptyPage';
+import Loading from './Loading';
 
 export {
   InputField,
@@ -22,4 +23,5 @@ export {
   Header,
   ImagePickerModal,
   EmptyPage,
+  Loading,
 };

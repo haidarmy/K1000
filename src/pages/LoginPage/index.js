@@ -1,23 +1,53 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, StatusBar} from 'react-native';
-import {colors} from '../../utils';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {colors, useForm, usePrevious, showError} from '../../utils';
 import {InputField, SubmitButton} from '../../components';
 import {IcEyeActive, IcEyeInactive} from '../../assets';
+import {loginUser} from '../../redux/action/AuthAction';
+import {connect, useDispatch} from 'react-redux';
 
-const LoginPage = ({navigation}) => {
+const LoginPage = ({navigation, loginResult, loginLoading}) => {
+  const dispatch = useDispatch();
+  const [form, setForm] = useForm({
+    email: '',
+    password: '',
+  });
+  const onSubmit = () => {
+    if (form.email && form.password) {
+      // dispatch(setLoading(registerLoading));
+      dispatch(loginUser(form.email, form.password));
+      setForm('reset');
+      // navigation.replace('MainApp');
+    } else {
+      showError('Pastikan semua kolom terisi!');
+    }
+  };
+  const prevLoginResult = usePrevious(loginResult);
+  useEffect(() => {
+    console.log("User Data", loginResult)
+    if ((loginResult!==false) && loginResult !== prevLoginResult) {
+        navigation.replace('MainApp');
+    }
+  }, [loginResult]);
   const [isSecureEntry, setIsSecureEntry] = useState(true);
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <View style={styles.wrapper}>
         <View style={styles.input}>
-          <InputField placeholder="Email" label="Email" />
+          <InputField
+            placeholder="Email"
+            label="Email"
+            value={form.email}
+            onChangeText={value => setForm('email', value)}
+          />
           <View style={{position: 'relative'}}>
             <InputField
               placeholder="Password"
               label="Password"
               hide={isSecureEntry}
               maxlength={16}
+              value={form.password}
+              onChangeText={value => setForm('password', value)}
             />
             <TouchableOpacity
               style={styles.eye}
@@ -25,15 +55,12 @@ const LoginPage = ({navigation}) => {
                 setIsSecureEntry(toggle => !toggle);
               }}
               activeOpacity={1}>
-              {isSecureEntry ? <IcEyeActive /> : <IcEyeInactive />}
+              {!isSecureEntry ? <IcEyeActive /> : <IcEyeInactive />}
             </TouchableOpacity>
           </View>
         </View>
         <View style={styles.buttton}>
-          <SubmitButton
-            label="Masuk"
-            onPress={() => navigation.replace('MainApp')}
-          />
+          <SubmitButton label="Masuk" onPress={onSubmit} />
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           <Text
@@ -92,4 +119,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginPage;
+const mapStateToProps = state => ({
+  loginLoading: state.AuthReducer.loginResult,
+  loginResult: state.AuthReducer.loginResult,
+  loginError: state.AuthReducer.loginError,
+});
+
+export default connect(mapStateToProps, null)(LoginPage);

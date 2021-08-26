@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StatusBar, StyleSheet, Text, View} from 'react-native';
 import {IllSuccess} from '../../assets';
 import {Gap, SubmitButton} from '../../components';
 import {colors} from '../../utils';
@@ -7,6 +7,7 @@ import {colors} from '../../utils';
 const SuccessAddToCartPage = ({navigation}) => {
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <View style={styles.illustration}>
       <IllSuccess />
       <Text style={styles.text}>Produk Berhasil</Text>

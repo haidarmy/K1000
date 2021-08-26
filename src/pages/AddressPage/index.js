@@ -1,9 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {StatusBar, StyleSheet, Text, View} from 'react-native';
+import { connect } from 'react-redux';
 import {EmptyPage, Header, SubmitButton} from '../../components';
-import {colors} from '../../utils';
+import { updateAddress } from '../../redux/action/ProfileAction';
+import {colors, getData} from '../../utils';
 
-const AddressPage = ({navigation}) => {
+const AddressPage = ({navigation, updateAddressResult}) => {
+  const [profile, setProfile] = useState('')
+  const getUserData = () => {
+    getData('user').then(res => {
+      console.log(res);
+      setProfile({
+        ...profile,
+        uid: res.uid,
+        avatar: res.avatar,
+        address: res.address,
+        name: res.name ? res.name : '',
+        email: res.email,
+        dateOfBirth: res.dateOfBirth ? res.dateOfBirth : '',
+        gender: res.gender ? res.gender : '',
+        number: res.number ? res.number : '',
+      });
+    });
+  };
+
+  useEffect(() => {
+    getUserData()
+  }, [updateAddressResult])
   return (
     <View style={styles.container}>
       <Header
@@ -12,17 +35,16 @@ const AddressPage = ({navigation}) => {
       />
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <View style={styles.content}>
-        {/* <EmptyPage illustration="EmptyAddress" text="Alamat Tidak Ditemukan" /> */}
-        <View style={styles.addresWrapper}>
-          <Text style={styles.textName}>Haidar</Text>
-          <Text style={styles.text}>081293302744</Text>
+        {profile.address ? <View style={styles.addresWrapper}>
+          <Text style={styles.textName}>{profile.name}</Text>
+          <Text style={styles.text}>0{profile.number}</Text>
           <Text style={styles.text}>
-            Wisma Musikalitas Garden kamar no. 3, Jl. Babakan Lebak 2 no. 5, RT
-            2 RW 5, Balumbang Jaya
+            {profile.address}
           </Text>
-        </View>
+        </View> :  <EmptyPage illustration="EmptyAddress" text="Alamat Tidak Ditemukan" />}
+       
         <SubmitButton
-          label="Ubah Alamat"
+          label= {profile.address ? "Ubah Alamat" : "Tambah Alamat"}
           onPress={() => navigation.replace('AddAddressPage')}
         />
       </View>
@@ -30,7 +52,13 @@ const AddressPage = ({navigation}) => {
   );
 };
 
-export default AddressPage;
+const mapStateToProps = state => ({
+  updateAddressLoading: state.ProfileReducer.updateAddressLoading,
+  updateAddressResult: state.ProfileReducer.updateAddressResult,
+  updateAddressError: state.ProfileReducer.updateAddressError,
+});
+
+export default connect(mapStateToProps, null)(AddressPage);
 
 const styles = StyleSheet.create({
   container: {

@@ -1,3 +1,5 @@
+//GIF
+import GifLoading from './Gif/gif-loading.gif'
 //Illustration
 import IllWelcomePage from './Illustrations/ill-welcome-page.svg';
 import IllEmptyAddress from './Illustrations/ill-empty-address.svg';
@@ -5,6 +7,7 @@ import IllEmptyCart from './Illustrations/ill-empty-cart.svg';
 import IllEmptyProduct from './Illustrations/ill-empty-product.svg';
 import IllEmptyWishlist from './Illustrations/ill-empty-wishlist.svg';
 import IllSuccess from './Illustrations/ill-success.svg';
+import IllDefaultAvatar from './Illustrations/ill-default-avatar.png'
 //Dummy
 import Ikan from './Dummy/Ikan.png';
 import ProductDummy1 from './Dummy/ProductDummy1.jpg';
@@ -46,12 +49,14 @@ import IcWoman from './Icons/ic-woman.svg';
 import IcLogout from './Icons/ic-logout.svg'
 
 export {
+  GifLoading,
   IllWelcomePage,
   IllEmptyAddress,
   IllEmptyCart,
   IllEmptyProduct,
   IllEmptyWishlist,
   IllSuccess,
+  IllDefaultAvatar,
   Ikan,
   IcHomeActive,
   IcHomeInacctive,
