@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {
   View,
   Text,
@@ -22,56 +22,30 @@ import {
 import {SubmitButton, Gap} from '../../components';
 import {colors} from '../../utils';
 
-const images = [
+const pict = [
   {
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height / 2,
+    url: 'https://firebasestorage.googleapis.com/v0/b/k-1000-de337.appspot.com/o/Product%20Image%2FProductDummy5.jpg?alt=media&token=fd4e46e4-cc4b-44e0-9126-75042c5127ca',
     props: {
       // headers: ...
-      url: '',
-      source: require('../../assets/Dummy/ProductDummy1.jpg'),
-    },
-    freeHeight: false,
-  },
-  {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height / 2,
-    props: {
-      // headers: ...
-      source: require('../../assets/Dummy/ProductDummy2.jpg'),
-    },
-    freeHeight: false,
-  },
-  {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height / 2,
-    props: {
-      // headers: ...
-      source: require('../../assets/Dummy/ProductDummy3.jpg'),
-    },
-    freeHeight: false,
-  },
-  {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height / 2,
-    props: {
-      // headers: ...
-      source: require('../../assets/Dummy/ProductDummy4.jpg'),
-    },
-    freeHeight: false,
-  },
-  {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height / 2,
-    props: {
-      // headers: ...
-      source: require('../../assets/Dummy/ProductDummy5.jpg'),
+      source: ''
     },
     freeHeight: false,
   },
 ];
 
-const ProductPage = ({navigation}) => {
+const ProductPage = ({navigation, route}) => {
+  const {image, name, price, weight, description} = route.params;
+  const images = image.map(img => {
+      return {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height / 2,
+        url: `${img}`,
+        freeHeight: false,
+      }
+  });
+
   const [isFavourite, setIsFavourite] = useState(false);
   const [dialog, setDialog] = useState(null);
   const [isActive, setIsActive] = useState(0);
@@ -98,7 +72,12 @@ const ProductPage = ({navigation}) => {
 
   return (
     <View style={styles.page}>
-      <StatusBar barStyle='dark-content' translucent backgroundColor="rgba(0,0,0,0)" animated/>
+      <StatusBar
+        barStyle="dark-content"
+        translucent
+        backgroundColor="rgba(0,0,0,0)"
+        animated
+      />
       <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
         <TouchableOpacity
           activeOpacity={1}
@@ -112,7 +91,7 @@ const ProductPage = ({navigation}) => {
             {images.map((image, index) => (
               <Image
                 key={index}
-                source={image.props.source}
+                source={{uri: image.url}}
                 style={styles.image}
               />
             ))}
@@ -161,16 +140,17 @@ const ProductPage = ({navigation}) => {
           transparent={true}
           style={styles.imageContainer}>
           <View style={{flex: 1}}>
-          <StatusBar barStyle='dark-content' backgroundColor="rgb(0,0,0)"/>
+            <StatusBar barStyle="dark-content" backgroundColor="rgb(0,0,0)" />
             <ImageViewer
-              style={{ width: Dimensions.get('window').width,
-              height: Dimensions.get('window').height / 2}}
+              style={{
+                width: Dimensions.get('window').width,
+                height: Dimensions.get('window').height / 2,
+              }}
               index={isActive}
               onCancel={() => setDialog(false)}
               menus={() => null}
               enableSwipeDown={true}
-              imageUrls={images} > 
-              </ImageViewer>
+              imageUrls={images}></ImageViewer>
             <View
               style={{
                 flexDirection: 'row-reverse',
@@ -188,9 +168,9 @@ const ProductPage = ({navigation}) => {
         </Modal>
         <View style={styles.content}>
           <View style={styles.infoContainer}>
-            <Text style={styles.name}>Kakap putih</Text>
-            <Text style={styles.price}>Rp40,000</Text>
-            <Text style={styles.weight}>1000 g</Text>
+            <Text style={styles.name}>{name}</Text>
+            <Text style={styles.price}>Rp {price}</Text>
+            <Text style={styles.weight}>{weight} kg</Text>
           </View>
           <View>
             <Text style={styles.desc}>Deskripsi</Text>
@@ -198,38 +178,7 @@ const ProductPage = ({navigation}) => {
               onTextLayout={onTextLayout}
               numberOfLines={textShown ? undefined : 4}
               style={styles.detail}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tellus
-              augue amet id et dui. Dictum malesuada rhonches Lorem ipsum dolor
-              sit amet, consectetur adipiscing elit. Tellus augue amet id et
-              dui. Dictum malesuada rhonches Lorem ipsum dolor sit amet,
-              consectetur adipiscing elit. Tellus augue amet id et dui. Dictum
-              malesuada rhonches Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit. Tellus augue amet id et dui. Dictum malesuada
-              rhonches Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Tellus augue amet id et dui. Dictum malesuada rhonches Lorem ipsum
-              dolor sit amet, consectetur adipiscing elit. Tellus augue amet id
-              et dui. Dictum malesuada rhonches Lorem ipsum dolor sit amet,
-              consectetur adipiscing elit. Tellus augue amet id et dui. Dictum
-              malesuada rhonches Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit. Tellus augue amet id et dui. Dictum malesuada
-              rhonches Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Tellus augue amet id et dui. Dictum malesuada rhonches Lorem ipsum
-              dolor sit amet, consectetur adipiscing elit. Tellus augue amet id
-              et dui. Dictum malesuada rhonches Lorem ipsum dolor sit amet,
-              consectetur adipiscing elit. Tellus augue amet id et dui. Dictum
-              malesuada rhonches Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit. Tellus augue amet id et dui. Dictum malesuada
-              rhonches Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Tellus augue amet id et dui. Dictum malesuada rhonches Lorem ipsum
-              dolor sit amet, consectetur adipiscing elit. Tellus augue amet id
-              et dui. Dictum malesuada rhonches Lorem ipsum dolor sit amet,
-              consectetur adipiscing elit. Tellus augue amet id et dui. Dictum
-              malesuada rhonches Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit. Tellus augue amet id et dui. Dictum malesuada
-              rhonches Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Tellus augue amet id et dui. Dictum malesuada rhonches Lorem ipsum
-              dolor sit amet, consectetur adipiscing elit. Tellus augue amet id
-              et dui. Dictum malesuada rhonches{' '}
+              {description}
             </Text>
 
             {lengthMore ? (
@@ -258,7 +207,10 @@ const ProductPage = ({navigation}) => {
             />
           </TouchableOpacity>
           <View style={styles.button}>
-            <SubmitButton label="Tambah ke Keranjang" onPress={()=> navigation.replace('SuccessAddToCartPage')}/>
+            <SubmitButton
+              label="Tambah ke Keranjang"
+              onPress={() => navigation.replace('SuccessAddToCartPage')}
+            />
           </View>
         </View>
       </View>

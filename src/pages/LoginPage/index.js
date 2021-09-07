@@ -24,7 +24,6 @@ const LoginPage = ({navigation, loginResult, loginLoading}) => {
   };
   const prevLoginResult = usePrevious(loginResult);
   useEffect(() => {
-    console.log("User Data", loginResult)
     if ((loginResult!==false) && loginResult !== prevLoginResult) {
         navigation.replace('MainApp');
     }
@@ -59,7 +58,7 @@ const LoginPage = ({navigation, loginResult, loginLoading}) => {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.buttton}>
+        <View style={styles.button}>
           <SubmitButton label="Masuk" onPress={onSubmit} />
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
     width: 335,
     height: 223,
   },
-  buttton: {
+  button: {
     width: 334,
     height: 58,
     marginTop: 82,

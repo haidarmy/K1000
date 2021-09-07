@@ -1,30 +1,33 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { roundToNearestPixel } from 'react-native/Libraries/Utilities/PixelRatio';
+import { connect, useDispatch } from 'react-redux';
 import {
   IcHomeActive,
-  IcHomeInacctive,
+  IcHomeInactive,
   IcCartInactive,
   IcWishlistInactive,
-  IcProfileInacctive,
+  IcProfileInactive,
   IcCartActive,
   IcWishlistActive,
   IcProfileActive,
 } from '../../assets';
+import { deleteParamaterProduct } from '../../redux/action/ProductAction';
 import {colors} from '../../utils';
 import Gap from '../Gap';
 
 const Icon = ({label, focus}) => {
   switch (label) {
     case 'HomePage':
-      return focus ? <IcHomeActive fill={colors.default}/> : <IcHomeInacctive />;
+      return focus ? <IcHomeActive fill={colors.default}/> : <IcHomeInactive />;
     case 'CartPage':
       return focus ? <IcCartActive fill={colors.default}/> : <IcCartInactive />;
     case 'WishlistPage':
       return focus ? <IcWishlistActive fill={colors.default}/> : <IcWishlistInactive />;
     case 'ProfilePage':
-      return focus ? <IcProfileActive fill={colors.default}/> : <IcProfileInacctive />;
+      return focus ? <IcProfileActive fill={colors.default}/> : <IcProfileInactive />;
     default:
-      return <IcHomeInacctive />;
+      return <IcHomeInactive />;
   }
 };
 
@@ -64,6 +67,7 @@ const Title = ({label, focus}) => {
 };
 
 const BottomNavigation = ({navigation, state, descriptors}) => {
+  const dispatch = useDispatch()
   const focusedOptions = descriptors[state.routes[state.index].key].options;
 
   if (focusedOptions.tabBarVisible === false) {
@@ -91,6 +95,9 @@ const BottomNavigation = ({navigation, state, descriptors}) => {
 
           if (!isFocused && !event.defaultPrevented) {
             navigation.navigate(route.name);
+          }
+          if(route.name !== 'HomePage'){
+            dispatch(deleteParamaterProduct())
           }
         };
 
@@ -132,4 +139,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BottomNavigation;
+
+
+export default connect()(BottomNavigation);

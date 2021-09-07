@@ -69,7 +69,7 @@ export const updateAddress = (address, data) => {
         storeData('user', newData);
 
         //Clear Data from redux
-        dispatchClear(dispatch, UPDATE_ADDRESS);
+        // dispatchClear(dispatch, UPDATE_ADDRESS);
       })
       .catch(error => {
         //Error

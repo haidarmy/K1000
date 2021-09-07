@@ -22,12 +22,12 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/core';
 
-const ProductCard = ({image, name, price, weight, store}) => {
+const ProductCard = ({image, name, price, weight, store, onNavigate}) => {
   const navigation = useNavigation();
   const [isFavourite, setIsFavourite] = useState(false);
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate('ProductPage')}
+      onPress={onNavigate}
       style={styles.container}
       activeOpacity={0.7}>
       <Image source={image} style={styles.image} />
@@ -37,8 +37,8 @@ const ProductCard = ({image, name, price, weight, store}) => {
         </View>
         <View style={styles.info}>
           <View style={{flex: 1}}>
-            <Text style={styles.text.price}>{price}</Text>
-            <Text style={styles.text.weight}>{weight}</Text>
+            <Text style={styles.text.price}>Rp {price}</Text>
+            <Text style={styles.text.weight}>{weight} kg</Text>
           </View>
           {store ? (
             <TouchableOpacity

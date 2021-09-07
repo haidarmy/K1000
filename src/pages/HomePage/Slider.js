@@ -1,27 +1,63 @@
-import React from 'react'
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
-import { colors } from '../../utils'
-import { Categories } from '../../components'
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import {colors} from '../../utils';
+import {Categories} from '../../components';
+import {connect} from 'react-redux';
 
-const  Slider = () => {
-    return (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.container}>
-            <Categories label='Kerapu'/>
-            <Categories label='Lobster'/>
-            <Categories label='Kakap'/>
-            <Categories label='Kepiting'/>
-            <Categories label='Cumi'/>
-        </ScrollView>
-    )
-}
+const Slider = ({getCategoryResult, getCategoryLoading}) => {
+  const [sliderState, setSliderState] = useState(true)
+  const setBackgroundSliderToParent = childdata => {
+    setSliderState(childdata);
+    console.log("params terkirim", childdata)
+  };
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.container}>
+      {getCategoryResult ? (
+        Object.keys(getCategoryResult).map(key => {
+          console.log('KEY', key);
+          return (
+            <Categories
+              label={getCategoryResult[key].namecategory}
+              key={key}
+              id={key}
+              sliderState={sliderState}
+              setBackgroundSliderToParent={setBackgroundSliderToParent}
+            />
+          );
+        })
+      ) : getCategoryLoading ? (
+        <View>
+          <Text>Loading</Text>
+        </View>
+      ) : (
+        <Text>Data Kosong</Text>
+      )}
+    </ScrollView>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        height:35, 
-        marginBottom: 24, 
-        flexDirection: 'row', 
-        justifyContent:'space-around'
-    } 
-})
+  container: {
+    height: 35,
+    marginBottom: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+});
 
-export default Slider
+const mapStateToProps = state => ({
+  getCategoryLoading: state.CategoryReducer.getCategoryLoading,
+  getCategoryResult: state.CategoryReducer.getCategoryResult,
+  getCategoryError: state.CategoryReducer.getCategoryError,
+});
+
+export default connect(mapStateToProps, null)(Slider);

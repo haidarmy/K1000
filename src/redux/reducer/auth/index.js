@@ -17,7 +17,7 @@ export default function (state = initialState, action) {
         ...state,
         registerLoading: action.payload.loading,
         registerResult: action.payload.data,
-        registerError: action.payload.errorrMessage,
+        registerError: action.payload.errorMessage,
       };
 
     case LOGIN_USER:
@@ -26,7 +26,7 @@ export default function (state = initialState, action) {
         ...state,
         loginLoading: action.payload.loading,
         loginResult: action.payload.data,
-        loginError: action.payload.errorrMessage,
+        loginError: action.payload.errorMessage,
       };
     default:
       return state;

@@ -8,9 +8,24 @@ import {
 } from 'react-native';
 import {colors} from '../../utils';
 import {IcSearch, IcFilter, IcClose} from '../../assets';
+import {useDispatch} from 'react-redux';
+import {getProductByKeyword} from '../../redux/action/ProductAction';
 
 const SearchBar = ({onPress, Filter}) => {
+  const dispatch = useDispatch();
   const [input, setInput] = useState('');
+  const search = () => {
+    console.log('search result', input);
+
+    const arr = input.toLowerCase().split(' ');
+    for (var i = 0; i < arr.length; i++) {
+      arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
+    }
+    const keyword = arr.join(' ');
+    console.log("Final keyword", keyword)
+    dispatch(getProductByKeyword(keyword));
+    setInput('');
+  };
   return (
     <View style={styles.wrapper}>
       <View style={styles.box}>
@@ -24,6 +39,7 @@ const SearchBar = ({onPress, Filter}) => {
           placeholder="Cari"
           value={input}
           onChangeText={value => setInput(value)}
+          onSubmitEditing={() => search()}
         />
         <TouchableOpacity
           onPress={() => setInput('')}
@@ -83,7 +99,7 @@ const styles = StyleSheet.create({
     height: 56,
     backgroundColor: colors.default,
     borderRadius: 10,
-    marginLeft: 16
+    marginLeft: 16,
   },
 });
 

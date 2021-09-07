@@ -1,31 +1,70 @@
-import React from 'react'
-import { colors } from '../../utils'
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
-import { ProductCard } from '../../components'
-import { ProductDummy1, ProductDummy2, ProductDummy3, ProductDummy4, ProductDummy5 } from '../../assets'
+import React from 'react';
+import {colors} from '../../utils';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import {ProductCard} from '../../components';
+import {
+  ProductDummy1,
+  ProductDummy2,
+  ProductDummy3,
+  ProductDummy4,
+  ProductDummy5,
+} from '../../assets';
+import {connect} from 'react-redux';
+import { useNavigation } from '@react-navigation/core';
 
-const Content = () => {
-    return (
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.container}>
-            <ProductCard image={ProductDummy1} name="Kerapu Cantang" price="Rp.80.000" weight="1000 g"/>
-            <ProductCard image={ProductDummy2} name="Kepiting" price="Rp.120.000" weight="1000 g"/>
-            <ProductCard image={ProductDummy3} name="Tuna" price="Rp.150.000" weight="1000 g"/>
-            <ProductCard image={ProductDummy4} name="Lobster" price="Rp.240.000" weight="1000 g"/>
-            <ProductCard image={ProductDummy5} name="Kakap" price="Rp.40.000" weight="1000 g"/>
-        </ScrollView>
-    )
-}
+const Content = ({getListProductResult, getListProductLoading}) => {
+  const navigation = useNavigation()
+  return (
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.container}>
+      {getListProductResult ? (
+        Object.keys(getListProductResult).map(key => {
+          const productData = getListProductResult[key];
+          return (
+            <ProductCard
+              image={{uri: productData.image[0]}}
+              name={productData.name}
+              price={productData.price}
+              weight={productData.weight}
+              key={key}
+              onNavigate={() => navigation.navigate('ProductPage', productData)}
+            />
+          );
+        })
+      ) : getListProductLoading ? (
+        <View>
+          <Text>Loading</Text>
+        </View>
+      ) : (
+        <Text>Data Kosong</Text>
+      )}
+    </ScrollView>
+  );
+};
 
-const styles = ({
-    container:{
-        // height:698,
-        paddingVertical: 10,
-        paddingHorizontal: 28, 
-        backgroundColor: colors.white, 
-        flexDirection: 'row', 
-        flexWrap: 'wrap', 
-        justifyContent: 'space-between',
-    }
-})
+const styles = {
+  container: {
+    // height:698,
+    paddingVertical: 10,
+    paddingHorizontal: 28,
+    backgroundColor: colors.white,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+};
 
-export default Content
+const mapStateToProps = state => ({
+  getListProductLoading: state.ProductReducer.getListProductLoading,
+  getListProductResult: state.ProductReducer.getListProductResult,
+  getListProductError: state.ProductReducer.getListProductError,
+});
+
+export default connect(mapStateToProps, null)(Content);

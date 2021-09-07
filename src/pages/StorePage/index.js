@@ -7,7 +7,7 @@ import Slider from './Slider'
 import Modal from 'react-native-modal'
 import { IcFloatButton } from '../../assets';
 
-const HomePage = ({navigation}) => {
+const StorePage = ({navigation}) => {
     const [isModalVisible, setModalVisible] = useState(false);
     
     const toggleModal = () => {
@@ -54,4 +54,4 @@ const styles = StyleSheet.create ({
     },
 })
 
-export default HomePage;
+export default StorePage;

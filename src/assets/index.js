@@ -18,13 +18,13 @@ import ProductDummy5 from './Dummy/ProductDummy5.jpg';
 import AvatarDummy from './Dummy/AvatarDummy.png';
 //Icons
 import IcHomeActive from './Icons/ic-home-active.svg';
-import IcHomeInacctive from './Icons/ic-home-inactive.svg';
+import IcHomeInactive from './Icons/ic-home-inactive.svg';
 import IcCartActive from './Icons/ic-cart-active.svg';
 import IcCartInactive from './Icons/ic-cart-inactive.svg';
 import IcWishlistActive from './Icons/ic-wishlist-active.svg';
 import IcWishlistInactive from './Icons/ic-wishlist-inactive.svg';
 import IcProfileActive from './Icons/ic-profile-active.svg';
-import IcProfileInacctive from './Icons/ic-profile-inactive.svg';
+import IcProfileInactive from './Icons/ic-profile-inactive.svg';
 import IcBack from './Icons/ic-back.svg';
 import IcEyeActive from './Icons/ic-eye-active.svg';
 import IcEyeInactive from './Icons/ic-eye-inactive.svg';
@@ -59,13 +59,13 @@ export {
   IllDefaultAvatar,
   Ikan,
   IcHomeActive,
-  IcHomeInacctive,
+  IcHomeInactive,
   IcCartActive,
   IcCartInactive,
   IcWishlistActive,
   IcWishlistInactive,
   IcProfileActive,
-  IcProfileInacctive,
+  IcProfileInactive,
   IcBack,
   IcChevronRight,
   IcEyeActive,
