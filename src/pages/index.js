@@ -13,12 +13,14 @@ import StorePage from './StorePage';
 import WelcomePage from './WelcomePage';
 import WishlistPage from './WishlistPage';
 import SuccessAddToCartPage from './SuccessAddToCartPage';
+import CheckoutPage from './CheckoutPage';
 
 export {
   AddAddressPage,
   AddProductPage,
   AddressPage,
   CartPage,
+  CheckoutPage,
   HomePage,
   LoginPage,
   ProductPage,

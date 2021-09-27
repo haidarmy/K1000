@@ -4,7 +4,7 @@ import FIREBASE from '../../config/FIREBASE';
 
 const SplashScreen = ({navigation}) => {
   useEffect(() => {
-    const unsubcribe = FIREBASE.auth().onAuthStateChanged(user => {
+    const unsubscribe = FIREBASE.auth().onAuthStateChanged(user => {
       setTimeout(() => {
         if (user) {
           navigation.replace('MainApp');
@@ -16,7 +16,7 @@ const SplashScreen = ({navigation}) => {
       }, 3000);
     });
 
-    return () => unsubcribe();
+    return () => unsubscribe();
   }, [navigation]);
   return (
     <View style={styles.container}>

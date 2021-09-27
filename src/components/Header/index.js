@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 28,
+    padding: 15,
+    // marginBottom: 28,
   },
   textHeader: {
     fontSize: 26,

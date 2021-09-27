@@ -21,3 +21,15 @@ export const showError = (message) => {
       });
     
 }
+
+
+export const showWarning = (message) => {
+  showMessage({
+      message: message,
+      type: 'warning',
+      floating: false,
+      position:'center',
+      icon:'auto',
+    });
+  
+}

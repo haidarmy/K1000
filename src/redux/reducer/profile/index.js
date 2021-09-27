@@ -19,7 +19,7 @@ export default function (state = initialState, action) {
         ...state,
         updateProfileLoading: action.payload.loading,
         updateProfileResult: action.payload.data,
-        updateProfileError: action.payload.errorrMessage,
+        updateProfileError: action.payload.errorMessage,
       };
       case UPDATE_ADDRESS:
         console.log("Halo from profilereducer")
@@ -27,7 +27,7 @@ export default function (state = initialState, action) {
           ...state,
           updateAddressLoading: action.payload.loading,
           updateAddressResult: action.payload.data,
-          updateAddressError: action.payload.errorrMessage,
+          updateAddressError: action.payload.errorMessage,
         };
     default:
       return state;

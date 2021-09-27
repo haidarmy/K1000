@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,7 +9,7 @@ import {
   StatusBar,
 } from 'react-native';
 import CartItem from './CartItem';
-import {colors} from '../../utils';
+import {colors, getData, usePrevious} from '../../utils';
 import {ScrollView} from 'react-native-gesture-handler';
 import {
   ProductDummy1,
@@ -17,33 +17,141 @@ import {
   ProductDummy3,
   ProductDummy4,
 } from '../../assets';
-import { EmptyPage, Header } from '../../components';
+import {
+  EmptyPage,
+  Gap,
+  Header,
+  OrderItem,
+  SubmitButton,
+} from '../../components';
+import {connect, useDispatch} from 'react-redux';
+import {getCartList} from '../../redux/action/CartAction';
+import lodash from 'lodash';
 
-const CartPage = () => {
+const CartPage = ({
+  getCartResult,
+  getCartLoading,
+  getCartError,
+  deleteCartError,
+  deleteCartLoading,
+  deleteCartResult,
+  navigation,
+}) => {
+  const dispatch = useDispatch();
+  const [data, setData] = useState({});
+  useEffect(() => {
+    getData('user').then(res => {
+      if (res) {
+        dispatch(getCartList(res.uid));
+      }
+    });
+  }, []);
+  const prevDeleteCartResult = usePrevious(deleteCartResult);
+  useEffect(() => {
+    if (
+      deleteCartResult !== false &&
+      deleteCartResult !== prevDeleteCartResult
+    ) {
+      getData('user').then(res => {
+        if (res) {
+          dispatch(getCartList(res.uid));
+        }
+      });
+    }
+  }, [deleteCartResult]);
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <Header label="Keranjang Saya"/>
-      {/* <EmptyPage illustration="EmptyCart" text="Keranjang Anda Kosong"/> */}
-      <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
-        <CartItem item="Kakap Putih" price="Rp 40,000" image={ProductDummy1} />
-        <CartItem
-          item="Kerapu Cantang"
-          price="Rp 60,000"
-          image={ProductDummy2}
-        />
-        <CartItem item="Lobster" price="Rp 120,000" image={ProductDummy3} />
-        <CartItem item="Kepiting" price="Rp 80,000" image={ProductDummy4} />
-      </ScrollView>
-      <View style={styles.totalContainer}>
-        <Text style={styles.totalLabel}>Total:</Text>
-        <Text style={styles.totalPrice}>Rp85,0000</Text>
+      <View style={{backgroundColor: colors.white}}>
+        <Header label="Keranjang Saya" />
       </View>
+      {getCartResult ? (
+        // (
+        //   Object.keys(getCartResult.orders).map(key => {
+        //     return (
+        //       <CartItem
+        //         item={getCartResult.orders[key].product.name}
+        //         orders={getCartResult.orders[key]}
+        //         mainCart={getCartResult}
+        //         id={key}
+        //         key={key}
+        //         price={getCartResult.orders[key].product.price}
+        //         image={getCartResult.orders[key].product.image[0]}
+        //       />
+        //     );
+        //   })
+        // )
+        <>
+          <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
+            {Object.keys(
+              Object.keys(getCartResult.orders).reduce((r, a) => {
+                r[getCartResult.orders[a].product.store] = [
+                  ...(r[getCartResult.orders[a].product.store] || []),
+                  {...getCartResult.orders[a], orderId: a},
+                ];
+                return r;
+              }, {}),
+            ).map(key => {
+              return (
+                <View key={key}>
+                  <OrderItem
+                    key={key}
+                    toko={key}
+                    items={
+                      Object.keys(getCartResult.orders).reduce((r, a) => {
+                        r[getCartResult.orders[a].product.store] = [
+                          ...(r[getCartResult.orders[a].product.store] || []),
+                          {...getCartResult.orders[a], orderId: a},
+                        ];
+                        return r;
+                      }, {})[key]
+                    }
+                    mainCart={getCartResult}
+                    applyOnPress
+                  />
+                  <View style={{backgroundColor: colors.lightgrey}}>
+                    <Gap height={10} />
+                  </View>
+                </View>
+              );
+            })}
+          </ScrollView>
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalPrice}>
+              Rp {getCartResult !== null ? getCartResult.totalPrice : 0}
+            </Text>
+            <TouchableOpacity activeOpacity={0.7} style={{width: '50%'}}>
+              <SubmitButton
+                label="Check Out"
+                onPress={() =>
+                  navigation.navigate('CheckoutPage', {getCartResult})
+                }
+              />
+            </TouchableOpacity>
+          </View>
+        </>
+      ) : getCartLoading ? (
+        <Text>Loading</Text>
+      ) : getCartError ? (
+        <Text>{getCartError}</Text>
+      ) : (
+        <EmptyPage illustration="EmptyCart" text="Keranjang Anda Kosong" />
+      )}
     </View>
   );
 };
 
-export default CartPage;
+const mapStateToProps = state => ({
+  getCartLoading: state.CartReducer.getCartLoading,
+  getCartResult: state.CartReducer.getCartResult,
+  getCartError: state.CartReducer.getCartError,
+
+  deleteCartLoading: state.CartReducer.deleteCartLoading,
+  deleteCartResult: state.CartReducer.deleteCartResult,
+  deleteCartError: state.CartReducer.deleteCartError,
+});
+
+export default connect(mapStateToProps, null)(CartPage);
 
 const styles = StyleSheet.create({
   container: {
@@ -52,7 +160,8 @@ const styles = StyleSheet.create({
   },
   totalContainer: {
     justifyContent: 'space-between',
-    backgroundColor: colors.grey,
+    alignItems: 'center',
+    backgroundColor: colors.lightgrey,
     flexDirection: 'row',
     paddingTop: 17,
     paddingBottom: 15,

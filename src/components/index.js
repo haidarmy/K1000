@@ -10,6 +10,7 @@ import Header from './Header';
 import ImagePickerModal from './ImagePickerModal';
 import EmptyPage from './EmptyPage';
 import Loading from './Loading';
+import OrderItem from './OrderItem'
 
 export {
   InputField,
@@ -24,4 +25,5 @@ export {
   ImagePickerModal,
   EmptyPage,
   Loading,
+  OrderItem
 };

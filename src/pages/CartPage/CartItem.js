@@ -1,39 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {Text, View, Image, TouchableOpacity} from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
+import { connect, useDispatch } from 'react-redux';
 import {ICTrashSolid} from '../../assets';
-import {colors} from '../../utils';
+import { deleteCartItem } from '../../redux/action/CartAction';
+import {colors, showWarning} from '../../utils';
 
-const CartItem = ({item, price, image}) => {
+const CartItem = ({item, price, image, id, orders, mainCart}) => {
+  const dispatch = useDispatch()
+  const [counter, setCounter] = useState(0)
+  
+  const plusFunc = () => {
+    if (counter < 99) {
+      setCounter(counter + 1);
+    } else {
+      showWarning('Maksimal item yang dapat ditambahkan adalah 99');
+    }
+  };
+
+  const minusFunc = () => {
+    if (counter > 0) {
+      setCounter(counter - 1);
+    }
+  };
+  const deleteOrders = () => {
+    console.log("MAU DIHAPUS NI GAN", mainCart.user);
+    dispatch(deleteCartItem(id, mainCart, orders))
+  }
   return (
     <View style={styles.container}>
-      <Image source={image} style={styles.image} />
+      <Image source={{uri: image}} style={styles.image} />
       <View style={styles.descContainer}>
         <Text style={{...styles.text, color: colors.black}}>{item}</Text>
-        <Text style={{...styles.text, color: colors.default}}>{price}</Text>
+        <Text style={{...styles.text, color: colors.default}}>Rp {price}</Text>
         <View style={{flexDirection: 'row'}}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.counterWrapper.plus}>
-            <Text style={styles.counterText}>-</Text>
-          </TouchableOpacity>
-          <View style={styles.counterWrapper.value}>
-            <Text style={styles.counterText}>1</Text>
-          </View>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.counterWrapper.minus}>
-            <Text style={styles.counterText}>+</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => minusFunc()}
+                style={styles.counterWrapper.minus}>
+                <Text style={styles.counterText}>-</Text>
+              </TouchableOpacity>
+              <TextInput
+                style={(styles.counterText, styles.counterWrapper.value)}
+                defaultValue="1"
+                value={`${counter ? counter : 1}`}
+                textAlign="center"
+                keyboardType="numeric"
+                maxLength={2}
+                onChangeText={value =>
+                  counter < 99
+                    ? setCounter(parseInt(value))
+                    : setCounter(1)
+                }
+              />
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => plusFunc()}
+                style={styles.counterWrapper.plus}>
+                <Text style={styles.counterText}>+</Text>
+                </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity activeOpacity={0.7}>
+      <TouchableOpacity activeOpacity={0.7} onPress={() => deleteOrders()}>
         <ICTrashSolid />
       </TouchableOpacity>
     </View>
   );
 };
 
-export default CartItem;
+export default connect() (CartItem);
 
 const styles = {
   container: {
@@ -63,38 +98,43 @@ const styles = {
     fontSize: 20,
     marginBottom: 8,
   },
+  counterText: {
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 16,
+    color: colors.black,
+  },
   counterWrapper: {
     plus: {
       width: 32,
       height: 32,
       backgroundColor: colors.white,
-      borderTopLeftRadius: 8,
-      borderBottomLeftRadius: 8,
+      borderWidth: 2,
+      borderColor: colors.lightgrey,
+      borderTopRightRadius: 8,
+      borderBottomRightRadius: 8,
       justifyContent: 'center',
       alignItems: 'center',
     },
     value: {
       width: 32,
       height: 32,
+      padding: 0,
       backgroundColor: colors.lightgrey,
       justifyContent: 'center',
       alignItems: 'center',
       borderWidth: 2,
-      borderColor: colors.white,
+      borderColor: colors.lightgrey,
     },
     minus: {
       width: 32,
       height: 32,
       backgroundColor: colors.white,
-      borderTopRightRadius: 8,
-      borderBottomRightRadius: 8,
+      borderColor: colors.lightgrey,
+      borderWidth: 2,
+      borderTopLeftRadius: 8,
+      borderBottomLeftRadius: 8,
       justifyContent: 'center',
       alignItems: 'center',
     },
-  },
-  counterText: {
-    fontFamily: 'Poppins-SemiBold',
-    fontSize: 16,
-    color: colors.black,
   },
 };

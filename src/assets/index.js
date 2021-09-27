@@ -47,6 +47,8 @@ import IcPin from './Icons/ic-pin';
 import IcMan from './Icons/ic-man.svg';
 import IcWoman from './Icons/ic-woman.svg';
 import IcLogout from './Icons/ic-logout.svg'
+import IcShipping from './Icons/ic_shipping.svg'
+import IcStore from'./Icons/ic_store.svg'
 
 export {
   GifLoading,
@@ -86,6 +88,8 @@ export {
   IcPin,
   IcMan,
   IcWoman,
+  IcShipping,
+  IcStore,
   IcLogout,
   IcFloatButton,
   ProductDummy1,

@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {colors} from '../../utils';
+import React, {useEffect, useState} from 'react';
+import {colors, getData, useForm} from '../../utils';
 import {
   Home,
   Bag,
@@ -21,10 +21,43 @@ import {
   Image,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/core';
+import { useDispatch } from 'react-redux';
+import { addToWishlist, deleteWishlistItem, getWishlist } from '../../redux/action/WishlistAction';
 
-const ProductCard = ({image, name, price, weight, store, onNavigate}) => {
+const ProductCard = ({image, name, price, weight, store, onNavigate, rest, love, id}) => {
+  const dispatch = useDispatch()
   const navigation = useNavigation();
   const [isFavourite, setIsFavourite] = useState(false);
+  const [form, setForm] = useForm({
+    product: rest,
+    images: image,
+    amount: 1,
+    uid: '',
+  });
+  
+  useEffect(() => {
+    if(love){
+      setIsFavourite(love)
+    }
+    getData('user').then(res => {
+      if (res) {
+        setForm('uid', res.uid);
+      }
+    });
+  }, []);
+
+
+  const sendToWishlist = () => {
+    if(isFavourite){
+      setIsFavourite(toggle => !toggle)
+      dispatch(deleteWishlistItem(form, id));
+      dispatch(getWishlist(form.uid))
+    }else {
+      setIsFavourite(toggle => !toggle)
+      dispatch(addToWishlist(form, id));
+      dispatch(getWishlist(form.uid))
+    }
+  };
   return (
     <TouchableOpacity
       onPress={onNavigate}
@@ -49,10 +82,8 @@ const ProductCard = ({image, name, price, weight, store, onNavigate}) => {
           ) : (
             <TouchableOpacity
               style={styles.loveWrapper}
-              onPress={() => {
-                setIsFavourite(toggle => !toggle);
-              }}>
-              {isFavourite ? <IcHeartSolid /> : <IcWishlistInactive />}
+              onPress={() => sendToWishlist()}>
+              {(isFavourite) ? <IcHeartSolid /> : <IcWishlistInactive />}
             </TouchableOpacity>
           )}
         </View>

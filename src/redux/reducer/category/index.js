@@ -13,7 +13,7 @@ export default function (state = initialState, action) {
         ...state,
         getCategoryLoading: action.payload.loading,
         getCategoryResult: action.payload.data,
-        getCategoryError: action.payload.errorrMessage,
+        getCategoryError: action.payload.errorMessage,
       };
     default:
       return state;

@@ -10,7 +10,9 @@ import {
   Dimensions,
   StatusBar,
 } from 'react-native';
+import {TextInput} from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import {connect, useDispatch} from 'react-redux';
 import {
   IcCartInactive,
   IcWishlistInactive,
@@ -18,37 +20,99 @@ import {
   IcHeartRed,
   IcClose,
   ProductDummy1,
+  IcStore,
 } from '../../assets';
 import {SubmitButton, Gap} from '../../components';
-import {colors} from '../../utils';
+import {addToCart, getCartList} from '../../redux/action/CartAction';
+import { addToWishlist, deleteWishlistItem } from '../../redux/action/WishlistAction';
+import {colors, getData, showWarning, useForm, usePrevious} from '../../utils';
 
-const pict = [
-  {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height / 2,
-    url: 'https://firebasestorage.googleapis.com/v0/b/k-1000-de337.appspot.com/o/Product%20Image%2FProductDummy5.jpg?alt=media&token=fd4e46e4-cc4b-44e0-9126-75042c5127ca',
-    props: {
-      // headers: ...
-      source: ''
-    },
-    freeHeight: false,
-  },
-];
-
-const ProductPage = ({navigation, route}) => {
-  const {image, name, price, weight, description} = route.params;
-  const images = image.map(img => {
-      return {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height / 2,
-        url: `${img}`,
-        freeHeight: false,
-      }
-  });
-
+const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
+  const dispatch = useDispatch();
+  // useEffect(() => {
+    //   getData('user').then(res => {
+      //     if (res) {
+        //       dispatch(getCartList(res.uid));
+        //     }
+        //   });
+        // }, []);
+        
+        
   const [isFavourite, setIsFavourite] = useState(false);
   const [dialog, setDialog] = useState(null);
   const [isActive, setIsActive] = useState(0);
+  const {productData, id, love} =  route.params
+  const {image, name, price, weight, description, store} = productData;
+  
+  const images = image.map(img => {
+    return {
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').height / 2,
+      url: `${img}`,
+      freeHeight: false,
+    };
+  });
+
+  const [form, setForm] = useForm({
+    product: productData,
+    images: image,
+    amount: 1,
+    uid: '',
+  });
+
+  const prevCartResult = usePrevious(setCartResult);
+  useEffect(() => {
+    if (setCartResult !== false && setCartResult !== prevCartResult) {
+      navigation.replace('SuccessAddToCartPage');
+    }
+  }, [setCartResult]);
+
+  useEffect(() => {
+    if(love){
+      setIsFavourite(love)
+    }
+    console.log('mumeeet love', love)
+    console.log('mumeeet isfavorite', isFavourite)
+    setForm('form.amount', route.params.orderAmount)
+    getData('user').then(res => {
+      if (res) {
+        setForm('uid', res.uid);
+      }
+    });
+  }, [form.uid]);
+
+  const sendToCart = () => {
+    dispatch(addToCart(form));
+  };
+
+  const sendToWishlist = () => {
+    if(isFavourite){
+      setIsFavourite(toggle => !toggle)
+      console.log("ID if", id)
+      console.log("ID if", form.uid)
+      dispatch(deleteWishlistItem(form, id));
+    }else {
+      setIsFavourite(toggle => !toggle)
+      console.log("ID else", id)
+      dispatch(addToWishlist(form, id));
+    }
+  };
+
+  const plusFunc = () => {
+    if (form.amount < 99) {
+      setForm('amount', form.amount + 1);
+    } else {
+      showWarning('Maksimal item yang dapat ditambahkan adalah 99');
+    }
+  };
+
+  const minusFunc = () => {
+    if (form.amount > 0) {
+      setForm('amount', form.amount - 1);
+    }
+  };
+
+
   let change = ({nativeEvent}) => {
     const slide = Math.round(
       nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width,
@@ -126,11 +190,9 @@ const ProductPage = ({navigation, route}) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.loveButton}
-              onPress={() => {
-                setIsFavourite(toggle => !toggle);
-              }}
+              onPress={() => sendToWishlist()}
               activeOpacity={0.7}>
-              {isFavourite ? <IcHeartRed /> : <IcWishlistInactive />}
+              {(isFavourite) ? <IcHeartRed /> : <IcWishlistInactive />}
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
@@ -167,10 +229,52 @@ const ProductPage = ({navigation, route}) => {
           </View>
         </Modal>
         <View style={styles.content}>
-          <View style={styles.infoContainer}>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.price}>Rp {price}</Text>
-            <Text style={styles.weight}>{weight} kg</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View style={styles.infoContainer}>
+              <Text style={styles.name}>{name}</Text>
+              <Text style={styles.price}>Rp {price}</Text>
+              <Text style={styles.weight}>{weight} kg</Text>
+            </View>
+            <View style={{flexDirection: 'row', paddingTop: 5}}>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => minusFunc()}
+                style={styles.counterWrapper.minus}>
+                <Text style={styles.counterText}>-</Text>
+              </TouchableOpacity>
+              <TextInput
+                style={(styles.counterText, styles.counterWrapper.value)}
+                defaultValue="1"
+                value={`${route.params.orderAmount ? route.params.orderAmount : form.amount ? form.amount : 1}`}
+                textAlign="center"
+                keyboardType="numeric"
+                maxLength={2}
+                onChangeText={value =>
+                  form.amount < 99
+                    ? setForm('amount', parseInt(value))
+                    : setForm('amount', 1)
+                }
+              />
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => plusFunc()}
+                style={styles.counterWrapper.plus}>
+                <Text style={styles.counterText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: -15,
+              paddingVertical: 10,
+            }}>
+            <IcStore fill={colors.default} />
+            <Gap width={5} />
+            <Text style={{fontFamily: 'Poppins-SemiBold', fontSize: 16}}>
+              {store}
+            </Text>
           </View>
           <View>
             <Text style={styles.desc}>Deskripsi</Text>
@@ -180,7 +284,6 @@ const ProductPage = ({navigation, route}) => {
               style={styles.detail}>
               {description}
             </Text>
-
             {lengthMore ? (
               <Text
                 onPress={toggleNumberOfLines}
@@ -205,11 +308,34 @@ const ProductPage = ({navigation, route}) => {
               height={24}
               onPress={() => navigation.navigate('CartPage')}
             />
+            {getCartResult ? (
+              <View
+                style={{
+                  backgroundColor: colors.red,
+                  width: 20,
+                  height: 20,
+                  borderRadius: 10,
+                  position: 'absolute',
+                  top: 10,
+                  right: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'Poppins-SemiBold',
+                    fontSize: 10,
+                    color: colors.white,
+                  }}>
+                  {Object.keys(getCartResult.orders).length}
+                </Text>
+              </View>
+            ) : null}
           </TouchableOpacity>
           <View style={styles.button}>
             <SubmitButton
               label="Tambah ke Keranjang"
-              onPress={() => navigation.replace('SuccessAddToCartPage')}
+              onPress={() => sendToCart()}
             />
           </View>
         </View>
@@ -218,7 +344,7 @@ const ProductPage = ({navigation, route}) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = {
   page: {
     backgroundColor: colors.white,
     flex: 1,
@@ -317,6 +443,53 @@ const styles = StyleSheet.create({
   pagingActiveText: {
     color: colors.lightgrey,
   },
+  counterText: {
+    fontFamily: 'Poppins-SemiBold',
+    fontSize: 16,
+    color: colors.black,
+  },
+  counterWrapper: {
+    plus: {
+      width: 32,
+      height: 32,
+      backgroundColor: colors.white,
+      borderWidth: 2,
+      borderColor: colors.lightgrey,
+      borderTopRightRadius: 8,
+      borderBottomRightRadius: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    value: {
+      width: 32,
+      height: 32,
+      padding: 0,
+      backgroundColor: colors.lightgrey,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 2,
+      borderColor: colors.lightgrey,
+    },
+    minus: {
+      width: 32,
+      height: 32,
+      backgroundColor: colors.white,
+      borderColor: colors.lightgrey,
+      borderWidth: 2,
+      borderTopLeftRadius: 8,
+      borderBottomLeftRadius: 8,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  },
+};
+
+const mapStateToProps = state => ({
+  setCartLoading: state.CartReducer.setCartLoading,
+  setCartResult: state.CartReducer.setCartResult,
+  setCartError: state.CartReducer.setCartError,
+
+  getCartResult: state.CartReducer.getCartResult,
 });
 
-export default ProductPage;
+export default connect(mapStateToProps, null)(ProductPage);
