@@ -76,7 +76,7 @@ const ProductCard = ({image, name, price, weight, store, onNavigate, rest, love,
           {store ? (
             <TouchableOpacity
               style={styles.loveWrapper}
-              onPress={() => navigation.navigate('AddProductPage')}>
+              onPress={onNavigate}>
               <IcEdit fill={colors.black} width={24} height={24} />
             </TouchableOpacity>
           ) : (

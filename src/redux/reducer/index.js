@@ -7,6 +7,7 @@ import ProductReducer from './product'
 import CartReducer from './cart'
 import ShippingReducer from './rajaongkir'
 import WishlistReducer from './wishlist'
+import StoreReducer from './store'
 
 const rootReducer = combineReducers({
     AuthReducer,
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
     ProductReducer,
     CartReducer,
     ShippingReducer,
-    WishlistReducer
+    WishlistReducer,
+    StoreReducer
 })
 
 export default rootReducer

@@ -49,6 +49,7 @@ import IcWoman from './Icons/ic-woman.svg';
 import IcLogout from './Icons/ic-logout.svg'
 import IcShipping from './Icons/ic_shipping.svg'
 import IcStore from'./Icons/ic_store.svg'
+import IcDropdown from './Icons/ic-dropdown.svg'
 
 export {
   GifLoading,
@@ -91,6 +92,7 @@ export {
   IcShipping,
   IcStore,
   IcLogout,
+  IcDropdown,
   IcFloatButton,
   ProductDummy1,
   ProductDummy2,

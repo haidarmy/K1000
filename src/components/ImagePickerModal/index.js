@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {IcCamera, IcGallery} from '../../assets';
 import Gap from '../Gap';
-import {colors} from '../../utils';
+import {colors, showError, showWarning} from '../../utils';
 import ImagePicker from 'react-native-image-crop-picker';
 
 const ImagePickerModal = ({
@@ -11,7 +11,69 @@ const ImagePickerModal = ({
   circleOverlay = false,
   hideBottomControls = false,
   setImageToParent,
+  imageAmount,
+  closeModal
 }) => {
+  const  cameraPicker = () => {
+    closeModal()
+    ImagePicker.openCamera({
+      width: 375,
+      height: 375,
+      cropping: true,
+      cropperToolbarColor: colors.white,
+      cropperToolbarWidgetColor: colors.default,
+      cropperStatusBarColor: colors.white,
+      cropperActiveWidgetColor: colors.default,
+      cropperCircleOverlay: circleOverlay,
+      useFrontCamera: frontCamera,
+      showCropGuidelines: false,
+      showCropFrame: false,
+      hideBottomControls: hideBottomControls,
+      includeBase64: true,
+      compressImageQuality: 0.5,
+    })
+      .then(image => {
+        console.log('ngopi napa', [image])
+        setImageToParent([image], image.data);
+      })
+      .catch(error => {
+        setImageToParent(error.message);
+      })
+  }
+  const galleryPicker = () => {
+    closeModal()
+    setTimeout(() => {
+      ImagePicker.openPicker({
+        width: 375,
+        height: 375,
+        multiple: multiple,
+        cropping: true,
+        mediaType: 'photo',
+        cropperToolbarColor: colors.white,
+        cropperToolbarWidgetColor: colors.default,
+        cropperStatusBarColor: colors.white,
+        cropperActiveWidgetColor: colors.default,
+        cropperCircleOverlay: circleOverlay,
+        showCropGuidelines: false,
+        showCropFrame: false,
+        hideBottomControls: hideBottomControls,
+        includeBase64: true,
+        compressImageQuality: 0.5,
+      })
+        .then(image => {
+          if(multiple){
+            Object.values(image).length + imageAmount.length <= 5
+            ? setImageToParent(Object.values(image), image.data)
+            : showError('Maksimal gambar yang bisa dipilih adalah 5');
+          }else{
+            setImageToParent(image, image.data);
+          }
+        })
+        .catch(error => {
+          setImageToParent(error.message);
+        })
+    }, 300)
+  }
   return (
     <View style={styles.page}>
       <View style={styles.container}>
@@ -19,30 +81,7 @@ const ImagePickerModal = ({
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.menuWrapper}
-            onPress={() =>
-              ImagePicker.openCamera({
-                width: 375,
-                height: 375,
-                cropping: true,
-                cropperToolbarColor: colors.white,
-                cropperToolbarWidgetColor: colors.default,
-                cropperStatusBarColor: colors.white,
-                cropperActiveWidgetColor: colors.default,
-                cropperCircleOverlay: circleOverlay,
-                useFrontCamera: frontCamera,
-                showCropGuidelines: false,
-                showCropFrame: false,
-                hideBottomControls: hideBottomControls,
-                includeBase64: true,
-                compressImageQuality: 0.5,
-              })
-                .then(image => {
-                  setImageToParent(image.path, image.data);
-                })
-                .catch(error => {
-                  setImageToParent(error.message);
-                })
-            }>
+            onPress={() => cameraPicker()}>
             <IcCamera fill={colors.default} width={24} height={24} />
             <Text style={styles.text}>Ambil dari Camera</Text>
           </TouchableOpacity>
@@ -50,30 +89,7 @@ const ImagePickerModal = ({
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.menuWrapper}
-            onPress={() =>
-              ImagePicker.openPicker({
-                width: 375,
-                height: 375,
-                multiple: multiple,
-                cropping: true,
-                mediaType: 'photo',
-                cropperToolbarColor: colors.white,
-                cropperToolbarWidgetColor: colors.default,
-                cropperStatusBarColor: colors.white,
-                cropperActiveWidgetColor: colors.default,
-                showCropGuidelines: false,
-                showCropFrame: false,
-                hideBottomControls: hideBottomControls,
-                includeBase64: true,
-                compressImageQuality: 0.5,
-              })
-                .then(image => {
-                  setImageToParent(image.path, image.data);
-                })
-                .catch(error => {
-                  setImageToParent(error.message);
-                })
-            }>
+            onPress={() => galleryPicker()}>
             <IcGallery fill={colors.default} width={24} height={24} />
             <Text style={styles.text}>Pilih dari Galeri</Text>
           </TouchableOpacity>

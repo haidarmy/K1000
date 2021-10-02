@@ -61,10 +61,9 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
   };
 
   const setImageToParent = (image, imageForDB) => {
-    if(image === "User cancelled image selection"){
+    if (image === 'User cancelled image selection') {
       toggleModalPhoto();
-    }
-    else {
+    } else {
       setProfile({...profile, avatar: image, avatarForDB: imageForDB});
       toggleModalPhoto();
     }
@@ -106,14 +105,17 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
   };
 
   const onSubmit = () => {
-    if(!(profile.name &&
-      profile.number &&
-      profile.dateOfBirth &&
-      profile.gender &&
-      profile.number)){
-        showError('Pastikan semua kolom terisi!');
-      }
-    else if (
+    if (
+      !(
+        profile.name &&
+        profile.number &&
+        profile.dateOfBirth &&
+        profile.gender &&
+        profile.number
+      )
+    ) {
+      showError('Pastikan semua kolom terisi!');
+    } else if (
       profile.name ||
       profile.number ||
       profile.dateOfBirth ||
@@ -137,17 +139,17 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
       showSucces('Berhasil update profile');
     }
   }, [updateProfileResult]);
-  
-  useEffect(() => {
-    console.log("Jalan bos")
-    getUserData();
-  },[])
 
   useEffect(() => {
-    if(profile.dateOfBirth){
-      stringToDate(profile.dateOfBirth, setDateToParent)
+    console.log('Jalan bos');
+    getUserData();
+  }, []);
+
+  useEffect(() => {
+    if (profile.dateOfBirth) {
+      stringToDate(profile.dateOfBirth, setDateToParent);
     }
-  }, [profile.dateOfBirth])
+  }, [profile.dateOfBirth]);
   return (
     <View style={styles.container}>
       <Header
@@ -231,8 +233,10 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
             edit={editPhone}
             keyboardType={'numeric'}
             value={profile.number}
-            onChangeText={({}, extracted) => setProfile({...profile, number: extracted})}
-            placeholder={editPhone ? "+62 8XX XXX XXXX" : null}
+            onChangeText={({}, extracted) =>
+              setProfile({...profile, number: extracted})
+            }
+            placeholder={editPhone ? '+62 8XX XXX XXXX' : null}
             maxLength={12}
             textInputMask
           />

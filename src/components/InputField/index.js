@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, TextInput} from 'react-native';
-import {colors} from '../../utils/';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { colors } from '../../utils/';
 const InputField = ({
   placeholder,
   label,
@@ -13,7 +13,8 @@ const InputField = ({
   onChangeText,
   returnKeyType,
   paddingRight,
-  autoCapitalize
+  autoCapitalize,
+  disabled
 }) => {
   const [border, setBorder] = useState(colors.white);
   const onFocusForm = () => {
@@ -41,6 +42,7 @@ const InputField = ({
         onBlur={onBlurForm}
         returnKeyType={returnKeyType}
         autoCapitalize={autoCapitalize}
+        editable={!disabled}
       />
     </View>
   );
