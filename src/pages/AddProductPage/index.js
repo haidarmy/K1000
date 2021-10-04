@@ -1,22 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  Dimensions, ImageBackground, ScrollView, StatusBar, Text,
+  Dimensions,
+  ImageBackground,
+  ScrollView,
+  StatusBar,
+  Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { connect, useDispatch } from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
+import {IcCloseSolid, IcDropdown, IcFloatButton} from '../../assets';
 import {
-  IcCloseSolid,
-  IcDropdown,
-  IcFloatButton
-} from '../../assets';
-import {
-  Gap, Header, ImagePickerModal, InputField,
-  SubmitButton
+  Gap,
+  Header,
+  ImagePickerModal,
+  InputField,
+  SubmitButton,
 } from '../../components';
-import { uploadProduct } from '../../redux/action/StoreAction';
-import { colors, fullAddressToCityId, getData } from '../../utils';
+import FIREBASE from '../../config/FIREBASE';
+import {uploadProduct} from '../../redux/action/StoreAction';
+import {colors, fullAddressToCityId, getData} from '../../utils';
 
 const CategorySelector = ({
   toggleCategoryModal,
@@ -63,10 +67,11 @@ const CategorySelector = ({
 
 const AddProductPage = ({navigation, route, getCategoryResult}) => {
   const dispatch = useDispatch();
-  const [singleImage, setSingleImage] = useState(false)
+  const [singleImage, setSingleImage] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [categoryModal, setCategoryModal] = useState(false);
   const [form, setForm] = useState({
+    uid: '',
     name: '',
     price: '',
     weight: '',
@@ -86,6 +91,7 @@ const AddProductPage = ({navigation, route, getCategoryResult}) => {
         ...form,
         store: res.name,
         storeLocation: fullAddressToCityId(res.address),
+        uid: res.uid
       });
     });
 
@@ -110,8 +116,8 @@ const AddProductPage = ({navigation, route, getCategoryResult}) => {
   };
 
   const setImageToParent = (imageResult, imageForDB) => {
-    console.log('gambreng', imageResult)
-    setSingleImage(imageResult[0])
+    console.log('gambreng', imageResult);
+    setSingleImage(imageResult[0]);
     if (imageResult) {
       let image = [...form.image];
       imageResult.map(img => image.push(img.path));
@@ -127,9 +133,9 @@ const AddProductPage = ({navigation, route, getCategoryResult}) => {
     setForm({...form, image: images});
   };
   const addProductToDB = () => {
-      console.log('siap kirim', singleImage)
-      dispatch(uploadProduct(form))
-  }
+    console.log('siap kirim', form.image[0]);
+    dispatch(uploadProduct(form));
+  };
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -196,8 +202,8 @@ const AddProductPage = ({navigation, route, getCategoryResult}) => {
             label="Category"
             disabled
           />
-          <View style={{position: 'absolute', right:20, top: 60,}}>
-            <IcDropdown height={32} width={32}/>
+          <View style={{position: 'absolute', right: 20, top: 60}}>
+            <IcDropdown height={32} width={32} />
           </View>
         </TouchableOpacity>
         <InputField
@@ -270,7 +276,7 @@ const AddProductPage = ({navigation, route, getCategoryResult}) => {
           </View>
         </View>
         <Gap height={96} />
-        <SubmitButton label="Tambah" onPress={() => addProductToDB()}/>
+        <SubmitButton label="Tambah" onPress={() => addProductToDB()} />
         <Gap height={64} />
       </ScrollView>
     </View>
