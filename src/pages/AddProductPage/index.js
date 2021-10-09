@@ -18,9 +18,15 @@ import {
   InputField,
   SubmitButton,
 } from '../../components';
-import FIREBASE from '../../config/FIREBASE';
-import {uploadProduct} from '../../redux/action/StoreAction';
-import {colors, fullAddressToCityId, getData} from '../../utils';
+import {editProduct, uploadProduct} from '../../redux/action/StoreAction';
+import {
+  colors,
+  fullAddressToCityId,
+  getData,
+  showError,
+  showSucces,
+  usePrevious,
+} from '../../utils';
 
 const CategorySelector = ({
   toggleCategoryModal,
@@ -65,46 +71,60 @@ const CategorySelector = ({
   );
 };
 
-const AddProductPage = ({navigation, route, getCategoryResult}) => {
+const AddProductPage = ({
+  navigation,
+  route,
+  getCategoryResult,
+  uploadStoreProductLoading,
+  uploadStoreProductResult,
+  editStoreProductLoading,
+  editStoreProductResult
+}) => {
   const dispatch = useDispatch();
-  const [singleImage, setSingleImage] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [categoryModal, setCategoryModal] = useState(false);
   const [form, setForm] = useState({
     uid: '',
     name: '',
-    price: '',
-    weight: '',
-    desc: '',
+    price: ' ',
+    weight: ' ',
+    description: '',
     image: [],
     store: '',
-    stock: '',
+    stock: ' ',
     category: '',
     categoryName: '',
     storeLocation: '',
   });
 
   useEffect(() => {
+    console.log('hadeeh', route.params);
     getData('user').then(res => {
       console.log(res);
-      setForm({
-        ...form,
-        store: res.name,
-        storeLocation: fullAddressToCityId(res.address),
-        uid: res.uid
-      });
+      if (route.params) {
+        setForm({
+          ...form,
+          store: res.name,
+          storeLocation: fullAddressToCityId(res.address),
+          uid: res.uid,
+          name: route.params.productData.name,
+          price: route.params.productData.price,
+          stock: route.params.productData.stock,
+          weight: route.params.productData.weight,
+          description: route.params.productData.description,
+          image: route.params.productData.image,
+          category: route.params.productData.category,
+          categoryName: route.params.productData.categoryName,
+        });
+      } else {
+        setForm({
+          ...form,
+          store: res.name,
+          storeLocation: fullAddressToCityId(res.address),
+          uid: res.uid,
+        });
+      }
     });
-
-    if (route.params) {
-      setForm({
-        ...form,
-        name: route.params.productData.name,
-        price: route.params.productData.price,
-        weight: route.params.productData.weight,
-        desc: route.params.productData.description,
-        image: route.params.productData.image,
-      });
-    }
   }, []);
 
   const selectCategory = () => {
@@ -115,13 +135,13 @@ const AddProductPage = ({navigation, route, getCategoryResult}) => {
     setForm({...form, category: categoryId, categoryName: categoryName});
   };
 
-  const setImageToParent = (imageResult, imageForDB) => {
-    console.log('gambreng', imageResult);
-    setSingleImage(imageResult[0]);
+  const setImageToParent = (imageResult, imageForDB, error) => {
     if (imageResult) {
       let image = [...form.image];
       imageResult.map(img => image.push(img.path));
       setForm({...form, image});
+    } else if (error) {
+      showError(error);
     }
   };
   const closeModal = () => {
@@ -133,12 +153,68 @@ const AddProductPage = ({navigation, route, getCategoryResult}) => {
     setForm({...form, image: images});
   };
   const addProductToDB = () => {
-    console.log('siap kirim', form.image[0]);
-    dispatch(uploadProduct(form));
+    console.log('form', form);
+    if (
+      form.name &&
+      form.price &&
+      form.weight &&
+      form.stock &&
+      form.category &&
+      form.description &&
+      form.image
+    ) {
+      if (route.params) {
+        const newImage = form.image.filter(
+          item => !route.params.productData.image.includes(item),
+        );
+        const deleteImage = route.params.productData.image.filter(
+          item => !form.image.includes(item),
+        );
+        const oldImage = form.image.filter(item => !newImage.includes(item));
+        console.log('new Image', newImage);
+        console.log('delete Image', deleteImage);
+        dispatch(editProduct({...form, weight: parseFloat(form.weight)}, newImage, deleteImage, oldImage, route.params.id));
+      } else {
+        dispatch(uploadProduct({...form, weight: parseFloat(form.weight)}));
+      }
+    } else {
+      showError('Pastikan semua kolom terisi!');
+    }
   };
+
+  const prevUploadStoreProductResult = usePrevious(uploadStoreProductResult);
+  const prevEditStoreProductResult = usePrevious(editStoreProductResult);
+  useEffect(() => {
+    if(route.params){
+      if (
+        editStoreProductResult !== false &&
+        editStoreProductResult !== prevEditStoreProductResult
+      ) {
+        navigation.replace('StorePage');
+        setTimeout(() => {
+          showSucces('Product berhasil diubah!');
+        }, 1000);
+      }
+    }else {
+      if (
+        uploadStoreProductResult !== false &&
+        uploadStoreProductResult !== prevUploadStoreProductResult
+      ) {
+        navigation.replace('StorePage');
+        setTimeout(() => {
+          showSucces('Product berhasil ditambahkan!');
+        }, 1000);
+      }
+    }
+  }, [uploadStoreProductResult, editStoreProductResult]);
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={
+          uploadStoreProductLoading || editStoreProductLoading ? colors.loading : colors.white
+        }
+      />
       <Header
         label="Tambah Produk"
         onPress={() => navigation.navigate('StorePage')}
@@ -158,28 +234,82 @@ const AddProductPage = ({navigation, route, getCategoryResult}) => {
       </Modal>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.inputForm}>
         <InputField
-          onChangeText={value => setForm({...form, name: value})}
-          value={form.name}
+          onChangeText={value =>
+            value.length === 0
+              ? setForm({...form, name: ''})
+              : setForm({...form, name: value})
+          }
+          value={
+            form.name !== false
+              ? form.name
+              : route.params
+              ? route.params.productData.name
+              : form.name
+          }
           placeholder="Nama Produk"
           label="Nama Produk"
         />
         <InputField
-          onChangeText={value => setForm({...form, price: value})}
-          value={form.price}
+          onChangeText={value =>
+            value.length === 0
+              ? setForm({...form, price: ''})
+              : setForm({...form, price: isNaN(value) ? '' : parseInt(value)})
+          }
+          value={
+            isNaN(form.price)
+              ? ''
+              : form.price.toString() != ' '
+              ? form.price.toString()
+              : route.params
+              ? route.params.productData.price.toString()
+              : ''
+          }
           placeholder="Harga Produk dalam (Rp)"
           label="Harga"
           keyboard="numeric"
         />
         <InputField
-          onChangeText={value => setForm({...form, weight: value})}
-          value={form.weight}
+          onChangeText={value =>
+            value.length === 0
+              ? setForm({...form, weight: ''})
+              : setForm({
+                  ...form,
+                  weight:
+                    isNaN(value) && value !== '.'
+                      ? ''
+                      : value[0] == '.' ? '0.' : value.includes('.')
+                      ? value
+                      : parseFloat(value),
+                })
+          }
+          value={
+            isNaN(form.weight) && form.weight !== '.'
+              ? ''
+              : form.weight.toString() != ' '
+              ? form.weight.toString()
+              : route.params
+              ? route.params.productData.weight.toString()
+              : ''
+          }
           placeholder="Berat Produk dalam (Kg)"
           label="Berat"
           keyboard="numeric"
         />
         <InputField
-          onChangeText={value => setForm({...form, stock: value})}
-          value={form.stock}
+          onChangeText={value =>
+            value.length === 0
+              ? setForm({...form, stock: ''})
+              : setForm({...form, stock: isNaN(value) ? '' : parseInt(value)})
+          }
+          value={
+            isNaN(form.stock)
+              ? ''
+              : form.stock.toString() != ' '
+              ? form.stock.toString()
+              : route.params
+              ? route.params.productData.stock.toString()
+              : ''
+          }
           placeholder="Stok Barang"
           label="Stok"
           keyboard="numeric"
@@ -197,7 +327,13 @@ const AddProductPage = ({navigation, route, getCategoryResult}) => {
           activeOpacity={1}
           style={{position: 'relative'}}>
           <InputField
-            value={form.categoryName}
+            value={
+              form.categoryName
+                ? form.categoryName
+                : route.params
+                ? route.params.productData.categoryName
+                : form.categoryName
+            }
             placeholder="Pilih Category"
             label="Category"
             disabled
@@ -207,8 +343,18 @@ const AddProductPage = ({navigation, route, getCategoryResult}) => {
           </View>
         </TouchableOpacity>
         <InputField
-          onChangeText={value => setForm({...form, desc: value})}
-          value={form.desc}
+          onChangeText={value =>
+            value.length === 0
+              ? setForm({...form, description: ''})
+              : setForm({...form, description: value})
+          }
+          value={
+            form.description !== false
+              ? form.description
+              : route.params
+              ? route.params.productData.description
+              : form.description
+          }
           placeholder="Deskripsi Produk..."
           label="Deskripsi"
           multiline={true}
@@ -255,8 +401,39 @@ const AddProductPage = ({navigation, route, getCategoryResult}) => {
                     </ImageBackground>
                   );
                 })
+              : route.params
+              ? Object.values(route.params.productData.image).map(
+                  (image, index) => {
+                    return (
+                      <ImageBackground
+                        key={index}
+                        source={{uri: image}}
+                        resizeMode="cover"
+                        style={{
+                          width: 100,
+                          height: 120,
+                          marginBottom: 20,
+                          marginRight: 10,
+                        }}
+                        imageStyle={{borderRadius: 5}}>
+                        <TouchableOpacity
+                          activeOpacity={0.8}
+                          style={{position: 'absolute', top: -7, right: -7}}>
+                          <IcCloseSolid
+                            fill={'#FF605C'}
+                            height={24}
+                            width={24}
+                            onPress={() => deleteImage(image)}
+                          />
+                        </TouchableOpacity>
+                      </ImageBackground>
+                    );
+                  },
+                )
               : null}
-            {form.image.length < 5 ? (
+            {form.image.length < 5 ||
+            form.image === [] ||
+            route.params?.productData.image.length < 5 ? (
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
                 style={{
@@ -276,7 +453,10 @@ const AddProductPage = ({navigation, route, getCategoryResult}) => {
           </View>
         </View>
         <Gap height={96} />
-        <SubmitButton label="Tambah" onPress={() => addProductToDB()} />
+        <SubmitButton
+          label={route.params ? 'Simpan Perubahan' : 'Tambah'}
+          onPress={() => addProductToDB()}
+        />
         <Gap height={64} />
       </ScrollView>
     </View>
@@ -287,6 +467,14 @@ const mapStateToProps = state => ({
   getCategoryLoading: state.CategoryReducer.getCategoryLoading,
   getCategoryResult: state.CategoryReducer.getCategoryResult,
   getCategoryError: state.CategoryReducer.getCategoryError,
+
+  uploadStoreProductLoading: state.StoreReducer.uploadStoreProductLoading,
+  uploadStoreProductResult: state.StoreReducer.uploadStoreProductResult,
+  uploadStoreProductError: state.StoreReducer.uploadStoreProductError,
+
+  editStoreProductLoading: state.StoreReducer.editStoreProductLoading,
+  editStoreProductResult: state.StoreReducer.editStoreProductResult,
+  editStoreProductError: state.StoreReducer.editStoreProductError,
 });
 
 export default connect(mapStateToProps, null)(AddProductPage);

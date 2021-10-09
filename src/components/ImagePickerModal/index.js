@@ -37,7 +37,7 @@ const ImagePickerModal = ({
         setImageToParent([image], image.data);
       })
       .catch(error => {
-        setImageToParent(error.message);
+        setImageToParent(false, false, error.message);
       })
   }
   const galleryPicker = () => {
@@ -62,7 +62,8 @@ const ImagePickerModal = ({
       })
         .then(image => {
           if(multiple){
-            Object.values(image).length + imageAmount.length <= 5
+            console.log('jumlah gambar', imageAmount)
+             imageAmount.length + Object.values(image).length <= 5
             ? setImageToParent(Object.values(image), image.data)
             : showError('Maksimal gambar yang bisa dipilih adalah 5');
           }else{
@@ -70,7 +71,7 @@ const ImagePickerModal = ({
           }
         })
         .catch(error => {
-          setImageToParent(error.message);
+          setImageToParent(false, false,error.message);
         })
     }, 300)
   }

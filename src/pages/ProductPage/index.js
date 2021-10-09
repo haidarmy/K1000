@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   StatusBar,
+  Alert,
 } from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -21,29 +22,33 @@ import {
   IcClose,
   ProductDummy1,
   IcStore,
+  IcTrash,
 } from '../../assets';
 import {SubmitButton, Gap} from '../../components';
 import {addToCart, getCartList} from '../../redux/action/CartAction';
-import { addToWishlist, deleteWishlistItem } from '../../redux/action/WishlistAction';
+import {deleteProduct} from '../../redux/action/StoreAction';
+import {
+  addToWishlist,
+  deleteWishlistItem,
+} from '../../redux/action/WishlistAction';
 import {colors, getData, showWarning, useForm, usePrevious} from '../../utils';
 
 const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
   const dispatch = useDispatch();
   // useEffect(() => {
-    //   getData('user').then(res => {
-      //     if (res) {
-        //       dispatch(getCartList(res.uid));
-        //     }
-        //   });
-        // }, []);
-        
-        
+  //   getData('user').then(res => {
+  //     if (res) {
+  //       dispatch(getCartList(res.uid));
+  //     }
+  //   });
+  // }, []);
+
   const [isFavourite, setIsFavourite] = useState(false);
   const [dialog, setDialog] = useState(null);
   const [isActive, setIsActive] = useState(0);
-  const {productData, id, love} =  route.params
+  const {productData, id, love} = route.params;
   const {image, name, price, weight, description, store} = productData;
-  
+
   const images = image.map(img => {
     return {
       width: Dimensions.get('window').width,
@@ -68,12 +73,12 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
   }, [setCartResult]);
 
   useEffect(() => {
-    if(love){
-      setIsFavourite(love)
+    if (love) {
+      setIsFavourite(love);
     }
-    console.log('mumeeet love', love)
-    console.log('mumeeet isfavorite', isFavourite)
-    setForm('form.amount', route.params.orderAmount)
+    console.log('mumeeet love', love);
+    console.log('mumeeet isfavorite', isFavourite);
+    setForm('form.amount', route.params.orderAmount);
     getData('user').then(res => {
       if (res) {
         setForm('uid', res.uid);
@@ -85,15 +90,44 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
     dispatch(addToCart(form));
   };
 
+  const onDelete = () => {
+    Alert.alert(
+      'Alert',
+      'Apakah yakin anda ingin menghapus product?',
+      [
+        {
+          text: 'Batal',
+          onPress: () => {},
+        },
+        {
+          text: 'Ya',
+          onPress: () => {
+            dispatch(
+              deleteProduct(
+                route.params.productData.image,
+                route.params.id,
+                route.params.store,
+              ),
+            );
+            navigation.replace('StorePage');
+          },
+        },
+      ],
+      {
+        cancelable: true,
+      },
+    );
+  };
+
   const sendToWishlist = () => {
-    if(isFavourite){
-      setIsFavourite(toggle => !toggle)
-      console.log("ID if", id)
-      console.log("ID if", form.uid)
+    if (isFavourite) {
+      setIsFavourite(toggle => !toggle);
+      console.log('ID if', id);
+      console.log('ID if', form.uid);
       dispatch(deleteWishlistItem(form, id));
-    }else {
-      setIsFavourite(toggle => !toggle)
-      console.log("ID else", id)
+    } else {
+      setIsFavourite(toggle => !toggle);
+      console.log('ID else', id);
       dispatch(addToWishlist(form, id));
     }
   };
@@ -111,7 +145,6 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
       setForm('amount', form.amount - 1);
     }
   };
-
 
   let change = ({nativeEvent}) => {
     const slide = Math.round(
@@ -192,7 +225,13 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
               style={styles.loveButton}
               onPress={() => sendToWishlist()}
               activeOpacity={0.7}>
-              {(isFavourite) ? <IcHeartRed /> : <IcWishlistInactive />}
+              {!route.params.store ? (
+                isFavourite ? (
+                  <IcHeartRed />
+                ) : (
+                  <IcWishlistInactive />
+                )
+              ) : null}
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
@@ -235,33 +274,41 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
               <Text style={styles.price}>Rp {price}</Text>
               <Text style={styles.weight}>{weight} kg</Text>
             </View>
-            <View style={{flexDirection: 'row', paddingTop: 5}}>
-              <TouchableOpacity
-                activeOpacity={0.5}
-                onPress={() => minusFunc()}
-                style={styles.counterWrapper.minus}>
-                <Text style={styles.counterText}>-</Text>
-              </TouchableOpacity>
-              <TextInput
-                style={(styles.counterText, styles.counterWrapper.value)}
-                defaultValue="1"
-                value={`${route.params.orderAmount ? route.params.orderAmount : form.amount ? form.amount : 1}`}
-                textAlign="center"
-                keyboardType="numeric"
-                maxLength={2}
-                onChangeText={value =>
-                  form.amount < 99
-                    ? setForm('amount', parseInt(value))
-                    : setForm('amount', 1)
-                }
-              />
-              <TouchableOpacity
-                activeOpacity={0.5}
-                onPress={() => plusFunc()}
-                style={styles.counterWrapper.plus}>
-                <Text style={styles.counterText}>+</Text>
-              </TouchableOpacity>
-            </View>
+            {!route.params.store ? (
+              <View style={{flexDirection: 'row', paddingTop: 5}}>
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  onPress={() => minusFunc()}
+                  style={styles.counterWrapper.minus}>
+                  <Text style={styles.counterText}>-</Text>
+                </TouchableOpacity>
+                <TextInput
+                  style={(styles.counterText, styles.counterWrapper.value)}
+                  defaultValue="1"
+                  value={`${
+                    route.params.orderAmount
+                      ? route.params.orderAmount
+                      : form.amount
+                      ? form.amount
+                      : 1
+                  }`}
+                  textAlign="center"
+                  keyboardType="numeric"
+                  maxLength={2}
+                  onChangeText={value =>
+                    form.amount < 99
+                      ? setForm('amount', parseInt(value))
+                      : setForm('amount', 1)
+                  }
+                />
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  onPress={() => plusFunc()}
+                  style={styles.counterWrapper.plus}>
+                  <Text style={styles.counterText}>+</Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
           </View>
           <View
             style={{
@@ -303,39 +350,53 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
       <View style={styles.footer}>
         <View style={styles.footerWrapper}>
           <TouchableOpacity activeOpacity={0.7} style={styles.cart}>
-            <IcCartInactive
-              width={24}
-              height={24}
-              onPress={() => navigation.navigate('CartPage')}
-            />
+            {route.params.store ? (
+              <IcTrash width={24} height={24} onPress={onDelete} />
+            ) : (
+              <IcCartInactive
+                width={24}
+                height={24}
+                onPress={() => navigation.navigate('CartPage')}
+              />
+            )}
             {getCartResult ? (
-              <View
-                style={{
-                  backgroundColor: colors.red,
-                  width: 20,
-                  height: 20,
-                  borderRadius: 10,
-                  position: 'absolute',
-                  top: 10,
-                  right: 10,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text
+              !route.params.store ? (
+                <View
                   style={{
-                    fontFamily: 'Poppins-SemiBold',
-                    fontSize: 10,
-                    color: colors.white,
+                    backgroundColor: colors.red,
+                    width: 20,
+                    height: 20,
+                    borderRadius: 10,
+                    position: 'absolute',
+                    top: 10,
+                    right: 10,
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}>
-                  {Object.keys(getCartResult.orders).length}
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      fontFamily: 'Poppins-SemiBold',
+                      fontSize: 10,
+                      color: colors.white,
+                    }}>
+                    {Object.keys(getCartResult.orders).length}
+                  </Text>
+                </View>
+              ) : null
             ) : null}
           </TouchableOpacity>
           <View style={styles.button}>
             <SubmitButton
-              label="Tambah ke Keranjang"
-              onPress={() => sendToCart()}
+              label={route.params.store ? 'Edit Produk' : 'Tambah ke Keranjang'}
+              onPress={
+                route.params.store
+                  ? () =>
+                      navigation.navigate('AddProductPage', {
+                        productData: route.params.productData,
+                        id: route.params.id,
+                      })
+                  : sendToCart
+              }
             />
           </View>
         </View>

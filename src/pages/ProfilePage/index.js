@@ -154,7 +154,7 @@ const ProfilePage = ({navigation}) => {
       <Gap height={64} />
       <View style={styles.profileContainer}>
         <Image
-          source={profile.avatar ? {uri: profile.avatar} : IllDefaultAvatar}
+          source={profile.avatar ? {uri: 'data:image/png;base64,' + profile.avatar} : IllDefaultAvatar}
           style={styles.image}
         />
         <Text style={styles.name}>{profile.name}</Text>

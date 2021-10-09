@@ -60,11 +60,12 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
     console.log(childdata);
   };
 
-  const setImageToParent = (image, imageForDB) => {
-    if (image === 'User cancelled image selection') {
+  const setImageToParent = (image, imageForDB, error) => {
+    if (error) {
+      showError(error)
       toggleModalPhoto();
     } else {
-      setProfile({...profile, avatar: image, avatarForDB: imageForDB});
+      setProfile({...profile, avatar: imageForDB});
       toggleModalPhoto();
     }
   };
@@ -77,7 +78,6 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
   const [profile, setProfile] = useState({
     uid: '',
     avatar: '',
-    avatarForDB: '',
     name: '',
     email: '',
     dateOfBirth: '',
@@ -160,7 +160,7 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
       <View style={styles.content}>
         <View style={styles.profileContainer}>
           <Image
-            source={profile.avatar ? {uri: profile.avatar} : IllDefaultAvatar}
+            source={profile.avatar ? {uri: 'data:image/png;base64,' + profile.avatar} : IllDefaultAvatar}
             style={{height: 120, width: 120, borderRadius: 60}}
           />
           <Gap height={12} />
@@ -224,6 +224,7 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
               frontCamera
               circleOverlay
               hideBottomControls
+              closeModal={() => setModalVisiblePhoto(false)}
             />
           </Modal>
           <ProfileField label="Email" value={profile.email} disable />

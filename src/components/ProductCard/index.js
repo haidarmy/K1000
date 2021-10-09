@@ -19,13 +19,30 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/core';
-import { useDispatch } from 'react-redux';
-import { addToWishlist, deleteWishlistItem, getWishlist } from '../../redux/action/WishlistAction';
+import {useDispatch} from 'react-redux';
+import {
+  addToWishlist,
+  deleteWishlistItem,
+  getWishlist,
+} from '../../redux/action/WishlistAction';
+import {deleteProduct} from '../../redux/action/StoreAction';
 
-const ProductCard = ({image, name, price, weight, store, onNavigate, rest, love, id}) => {
-  const dispatch = useDispatch()
+const ProductCard = ({
+  images,
+  image,
+  name,
+  price,
+  weight,
+  store,
+  onNavigate,
+  rest,
+  love,
+  id,
+}) => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [isFavourite, setIsFavourite] = useState(false);
   const [form, setForm] = useForm({
@@ -34,10 +51,10 @@ const ProductCard = ({image, name, price, weight, store, onNavigate, rest, love,
     amount: 1,
     uid: '',
   });
-  
+
   useEffect(() => {
-    if(love){
-      setIsFavourite(love)
+    if (love) {
+      setIsFavourite(love);
     }
     getData('user').then(res => {
       if (res) {
@@ -46,21 +63,46 @@ const ProductCard = ({image, name, price, weight, store, onNavigate, rest, love,
     });
   }, []);
 
-
   const sendToWishlist = () => {
-    if(isFavourite){
-      setIsFavourite(toggle => !toggle)
+    if (isFavourite) {
+      setIsFavourite(toggle => !toggle);
       dispatch(deleteWishlistItem(form, id));
-      dispatch(getWishlist(form.uid))
-    }else {
-      setIsFavourite(toggle => !toggle)
+      dispatch(getWishlist(form.uid));
+    } else {
+      setIsFavourite(toggle => !toggle);
       dispatch(addToWishlist(form, id));
-      dispatch(getWishlist(form.uid))
+      dispatch(getWishlist(form.uid));
     }
+  };
+
+  const delProduct = () => {
+    Alert.alert(
+      'Alert',
+      'Apakah yakin anda ingin menghapus product?',
+      [
+        {
+          text: 'Batal',
+          onPress: () => {},
+        },
+        {
+          text: 'Ya',
+          onPress: () => {
+            dispatch(deleteProduct(images, id, rest.store));
+          },
+        },
+      ],
+      {
+        cancelable: true,
+      },
+    );
+  };
+
+  const productDetail = () => {
+    navigation.navigate('ProductPage', {productData: rest, id, store});
   };
   return (
     <TouchableOpacity
-      onPress={onNavigate}
+      onPress={productDetail}
       style={styles.container}
       activeOpacity={0.7}>
       <Image source={image} style={styles.image} />
@@ -74,16 +116,14 @@ const ProductCard = ({image, name, price, weight, store, onNavigate, rest, love,
             <Text style={styles.text.weight}>{weight} kg</Text>
           </View>
           {store ? (
-            <TouchableOpacity
-              style={styles.loveWrapper}
-              onPress={onNavigate}>
+            <TouchableOpacity style={styles.loveWrapper} onPress={onNavigate}>
               <IcEdit fill={colors.black} width={24} height={24} />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
               style={styles.loveWrapper}
               onPress={() => sendToWishlist()}>
-              {(isFavourite) ? <IcHeartSolid /> : <IcWishlistInactive />}
+              {isFavourite ? <IcHeartSolid /> : <IcWishlistInactive />}
             </TouchableOpacity>
           )}
         </View>
@@ -92,7 +132,12 @@ const ProductCard = ({image, name, price, weight, store, onNavigate, rest, love,
         <TouchableOpacity
           activeOpacity={0.8}
           style={{position: 'absolute', top: -8, right: -8}}>
-          <IcCloseSolid fill={'#FF605C'} height={32} width={32} />
+          <IcCloseSolid
+            fill={'#FF605C'}
+            height={32}
+            width={32}
+            onPress={delProduct}
+          />
         </TouchableOpacity>
       )}
     </TouchableOpacity>

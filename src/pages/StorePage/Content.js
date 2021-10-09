@@ -30,6 +30,7 @@ const Content = ({
           const productData = getStoreProductResult[key]
           return (
             <ProductCard
+              images={productData.image}
               image={{uri: productData.image[0]}}
               name={productData.name}
               price={productData.price}
