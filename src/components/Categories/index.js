@@ -3,9 +3,11 @@ import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {connect, useDispatch} from 'react-redux';
 import {useState} from 'react/cjs/react.development';
 import {
+  getListProduct,
   getProductByCategory,
   getProductBySort,
 } from '../../redux/action/ProductAction';
+import {getStoreProduct, getStoreProductByCategory} from '../../redux/action/StoreAction';
 import {colors} from '../../utils/';
 
 const Categories = ({
@@ -14,45 +16,54 @@ const Categories = ({
   setBackgroundSliderToParent,
   sliderState,
   onPress,
+  type,
 }) => {
   const dispatch = useDispatch();
   const onSelect = () => {
-    dispatch(getProductByCategory(id));
-
-    // setIsBackground(toggle => !toggle)
-    // setBackgroundSliderToParent(toggle => !toggle)
+    if (type === 'Home') {
+      if (sliderState === id) {
+        dispatch(getListProduct());
+        setBackgroundSliderToParent('');
+      } else {
+        dispatch(getProductByCategory(id));
+        setBackgroundSliderToParent(id);
+      }
+    } else if (type === 'Store') {
+      if (sliderState === id) {
+        dispatch(getStoreProduct());
+        setBackgroundSliderToParent('');
+      } else {
+        dispatch(getStoreProductByCategory(id));
+        setBackgroundSliderToParent(id);
+      }
+    }
   };
 
-  const [isBackground, setIsBackground] = useState(false);
   return (
     <View>
       <TouchableOpacity
-        style={styles.wrapper(isBackground, sliderState)}
+        style={styles.wrapper(sliderState, id)}
         activeOpacity={0.7}
         onPress={onPress ? onPress : onSelect}>
-        <Text style={styles.text(isBackground, sliderState)}>{label}</Text>
+        <Text style={styles.text(sliderState, id)}>{label}</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  wrapper: (isBackground, sliderState) => ({
-    borderRadius: 12,
+  wrapper: (sliderState, id) => ({
+    borderRadius: 10,
     padding: 5,
-    paddingHorizontal: 6,
-    marginRight: 24,
+    paddingHorizontal: 12,
+    // marginRight: 24,
     maxWidth: 'auto',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: isBackground
-      ? isBackground && sliderState
-        ? 'rgba(53, 104, 255,0.15)'
-        : null
-      : null,
+    backgroundColor: sliderState === id ? 'rgba(53, 104, 255,0.15)' : null,
   }),
-  text: (isBackground, sliderState) => ({
-    color: isBackground && sliderState ? colors.default : colors.grey,
+  text: (sliderState, id) => ({
+    color: sliderState === id ? colors.default : colors.grey,
     fontSize: 18,
     fontFamily: 'Poppins-SemiBold',
   }),

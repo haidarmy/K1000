@@ -13,24 +13,18 @@ const WishlistPage = ({
   deleteWishlistResult,
 }) => {
   const dispatch = useDispatch();
+  const [uid, setUid] = useState('')
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getData('user').then(res => {
         if (res) {
+          setUid(res.uid)
           dispatch(getWishlist(res.uid));
         }
       });
     });
     return unsubscribe;
   }, []);
-
-  // useEffect(() => {
-  //     getData('user').then(res => {
-  //       if (res) {
-  //         dispatch(getWishlist(res.uid));
-  //       }
-  //     });
-  // }, []);
 
   const prevDeleteWishlistResult = usePrevious(deleteWishlistResult);
   useEffect(() => {
@@ -40,7 +34,6 @@ const WishlistPage = ({
       deleteWishlistResult !== false &&
       deleteWishlistResult !== prevDeleteWishlistResult
     ) {
-      console.log('hadeeh', deleteWishlistResult);
       getData('user').then(res => {
         if (res) {
           dispatch(getWishlist(res.uid));
@@ -55,11 +48,11 @@ const WishlistPage = ({
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
       <Header label="Favorit" />
-      <SearchBar />
+      <SearchBar type="wishlist" id={uid}/>
         {getWishlistResult ? (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}>
+          <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.content}>
           {Object.keys(getWishlistResult.productList).map(key => {
             const product = getWishlistResult.productList[key];
             return (

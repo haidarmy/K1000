@@ -1,7 +1,12 @@
 import {
+  DELETE_PARAMETER_STORE_PRODUCT,
   DELETE_PRODUCT,
   EDIT_PRODUCT,
   GET_STORE_PRODUCT,
+  GET_STORE_PRODUCT_BY_CATEGORY,
+  GET_STORE_PRODUCT_BY_KEYWORD,
+  GET_STORE_PRODUCT_BY_RANGE,
+  GET_STORE_PRODUCT_BY_SORT,
   UPLOAD_PRODUCT,
 } from '../../action/StoreAction';
 
@@ -9,6 +14,13 @@ const initialState = {
   getStoreProductLoading: false,
   getStoreProductResult: false,
   getStoreProductError: false,
+
+  idCategory: false,
+  nameCategory: false,
+  keyword: false,
+  idSort: false,
+  rangeMaximum: false,
+  rangeMinimum: false,
 
   uploadStoreProductLoading: false,
   uploadStoreProductResult: false,
@@ -32,6 +44,42 @@ export default function (state = initialState, action) {
         getStoreProductResult: action.payload.data,
         getStoreProductError: action.payload.errorMessage,
       };
+      case GET_STORE_PRODUCT_BY_CATEGORY:
+        return {
+          ...state,
+          idCategory: action.payload.idCategory,
+          nameCategory: action.payload.nameCategory,
+        };
+  
+      case GET_STORE_PRODUCT_BY_KEYWORD:
+        return {
+          ...state,
+          keyword: action.payload.data,
+        };
+  
+      case GET_STORE_PRODUCT_BY_SORT:
+        return {
+          ...state,
+          idSort: action.payload.idSort,
+        };
+  
+      case GET_STORE_PRODUCT_BY_RANGE:
+        return {
+          ...state,
+          rangeMaximum: action.payload.rangeMaximum,
+          rangeMinimum: action.payload.rangeMinimum,
+        };
+  
+      case DELETE_PARAMETER_STORE_PRODUCT:
+        return {
+          ...state,
+          idCategory: false,
+          idSort: false,
+          rangeMaximum: false,
+          rangeMinimum: false,
+          nameCategory: false,
+          keyword: false,
+        };
     case UPLOAD_PRODUCT:
       return {
         ...state,

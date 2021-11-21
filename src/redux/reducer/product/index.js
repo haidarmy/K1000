@@ -30,7 +30,6 @@ export default function (state = initialState, action) {
       };
 
     case GET_PRODUCT_BY_CATEGORY:
-      console.log('Reducer Kategori', action.payload.idCategory);
       return {
         ...state,
         idCategory: action.payload.idCategory,
@@ -61,6 +60,9 @@ export default function (state = initialState, action) {
       return {
         ...state,
         idCategory: false,
+        idSort: false,
+        rangeMaximum: false,
+        rangeMinimum: false,
         nameCategory: false,
         keyword: false,
       };

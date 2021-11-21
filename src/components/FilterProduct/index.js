@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -12,26 +12,42 @@ import {colors, useForm} from '../../utils';
 import {IcSwiper} from '../../assets';
 import SubmitButton from '../SubmitButton';
 import Categories from '../Categories';
-import { useDispatch } from 'react-redux';
-import { getProductByRange, getProductBySort } from '../../redux/action/ProductAction';
+import {useDispatch} from 'react-redux';
+import {
+  getProductByRange,
+  getProductBySort,
+} from '../../redux/action/ProductAction';
+import { getStoreProductByRange, getStoreProductBySort } from '../../redux/action/StoreAction';
 
-const FilterProduct = ({setModalOff}) => {
-  const dispatch = useDispatch()
-  const [sort, setSort] = useState('')
+const FilterProduct = ({setModalOff, type}) => {
+  const dispatch = useDispatch();
+  const [sliderState, setSliderState] = useState('');
+  const setBackgroundSliderToParent = childdata => {
+    setSliderState(childdata);
+  };
+  const [sort, setSort] = useState('');
   const [range, setRange] = useForm({
     minimum: '',
     maximum: '',
-  })
-  
+  });
+
   const onSubmit = () => {
-    setModalOff(toggle => !toggle)
-    if(range.minimum || range.maximum){
-      dispatch(getProductByRange(range.maximum, range.minimum))
+    setModalOff(toggle => !toggle);
+    if (range.minimum || range.maximum) {
+     if(type === 'Home'){
+      dispatch(getProductByRange(range.maximum, range.minimum));
+     }else if(type === 'Store'){
+      dispatch(getStoreProductByRange(range.maximum, range.minimum));
+     }
     }
-    if(sort){
-      dispatch(getProductBySort(sort))
+    if (sort) {
+      if(type === 'Home'){
+        dispatch(getProductBySort(sort));
+      }else if(type === 'Store'){
+        dispatch(getStoreProductBySort(sort))
+      }
     }
-  }
+  };
   return (
     <KeyboardAvoidingView behavior="position" enabled>
       <View style={styles.container}>
@@ -51,10 +67,46 @@ const FilterProduct = ({setModalOff}) => {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.sort}>
-            <Categories label="Terbaru" onPress={() => setSort('Terbaru')}/>
-            <Categories label="Terpopuler" onPress={() => setSort('Terpopuler')}/>
-            <Categories label="Termurah" onPress={() => setSort('Termurah')}/>
-            <Categories label="Termahal" onPress={() => setSort('Termahal')}/>
+            <Categories
+              label="Terlaris"
+              onPress={() => {
+                setSort('Terlaris');
+                setBackgroundSliderToParent(2);
+              }}
+              id={2}
+              sliderState={sliderState}
+              setBackgroundSliderToParent={setBackgroundSliderToParent}
+            />
+            <Categories
+              label="Terbaru"
+              onPress={() => {
+                setSort('Terbaru');
+                setBackgroundSliderToParent(1);
+              }}
+              id={1}
+              sliderState={sliderState}
+              setBackgroundSliderToParent={setBackgroundSliderToParent}
+            />
+            <Categories
+              label="Termurah"
+              onPress={() => {
+                setSort('Termurah');
+                setBackgroundSliderToParent(3);
+              }}
+              id={3}
+              sliderState={sliderState}
+              setBackgroundSliderToParent={setBackgroundSliderToParent}
+            />
+            <Categories
+              label="Termahal"
+              onPress={() => {
+                setSort('Termahal');
+                setBackgroundSliderToParent(4);
+              }}
+              id={4}
+              sliderState={sliderState}
+              setBackgroundSliderToParent={setBackgroundSliderToParent}
+            />
           </ScrollView>
         </View>
 
@@ -75,7 +127,7 @@ const FilterProduct = ({setModalOff}) => {
               textAlign="center"
               keyboardType={'numeric'}
               value={range.minimum}
-              onChangeText={(value) => setRange('minimum', value)}
+              onChangeText={value => setRange('minimum', value)}
             />
             <Text style={{fontSize: 32, marginBottom: 15}}>—</Text>
             <TextInput
@@ -85,11 +137,11 @@ const FilterProduct = ({setModalOff}) => {
               textAlign="center"
               keyboardType={'numeric'}
               value={range.maximum}
-              onChangeText={(value) => setRange('maximum', value)}
+              onChangeText={value => setRange('maximum', value)}
             />
           </View>
         </View>
-        <SubmitButton label="Terapkan" onPress={onSubmit}/>
+        <SubmitButton label="Terapkan" onPress={onSubmit} />
       </View>
     </KeyboardAvoidingView>
   );

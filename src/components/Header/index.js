@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
     // marginBottom: 28,
   },
   textHeader: {
-    fontSize: 26,
-    fontFamily: 'Montserrat-Bold',
+    fontSize: 24,
+    fontFamily: 'Poppins-Bold',
     color: colors.black,
     textAlign: 'center',
     flex: 1,

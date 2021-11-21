@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {colors, getData} from '../../utils';
 import {
   StyleSheet,
@@ -6,35 +6,47 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import {ProductCard} from '../../components';
 import {connect, useDispatch} from 'react-redux';
-import { useNavigation } from '@react-navigation/core';
+import {useNavigation} from '@react-navigation/core';
+import { getListProduct } from '../../redux/action/ProductAction';
 
-const Content = ({getListProductResult, getListProductLoading, getListProductError, getWishlistResult, getWishlistLoading, getWishlistError}) => {
-  const navigation = useNavigation()
+const Content = ({
+  getListProductResult,
+  getListProductLoading,
+  getListProductError,
+  getWishlistResult,
+  getWishlistLoading,
+  getWishlistError,
+}) => {
+  const navigation = useNavigation();
   const dispatch = useDispatch()
-  useEffect(() => {
-    getData('user').then(res => {
-      if (res) {
-        dispatch(getWishlist(res.uid));
-      }
-    });
+  const [refreshing, setRefreshing] = useState(false);
+  
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    dispatch(getListProduct())
+    if(!getListProductLoading){
+     setRefreshing(false)
+    }
   }, []);
-  useEffect(() => {
-   console.log('AHAHAH', getWishlistResult);
-  }, [getWishlistResult])
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.default]}/>}
       contentContainerStyle={styles.container}>
-        { getListProductResult || getWishlistResult ? (
+      {getListProductResult || getWishlistResult ? (
         Object.keys(getListProductResult).map(key => {
           const productData = getListProductResult[key];
-          // const love = [...(Object.keys(getWishlistResult?.productList))].includes(key)
-          const love = false
+          // let love = [...(Object.keys(getWishlistResult?.productList))].includes(key)
+          // console.log(`🚀 → file: Content.js → line 39 → Object.keys → getWishlistResult`, [...(Object.keys(getWishlistResult?.productList))].includes(key))
+          // const love = false;
           return (
             <ProductCard
+              sold={productData.sold}
+              stock={productData.stock}
               image={{uri: productData.image[0]}}
               name={productData.name}
               price={productData.price}
@@ -42,8 +54,10 @@ const Content = ({getListProductResult, getListProductLoading, getListProductErr
               rest={productData}
               key={key}
               id={key}
-              onNavigate={() => navigation.navigate('ProductPage', {productData, id: key, love})}
-              love={love}
+              onNavigate={() =>
+                navigation.navigate('ProductPage', {productData, id: key, love})
+              }
+              love={(Object.keys(getWishlistResult?.productList ?? {})).includes(key)}
             />
           );
         })
@@ -53,7 +67,9 @@ const Content = ({getListProductResult, getListProductLoading, getListProductErr
         </View>
       ) : getListProductError ? (
         <Text>{getWishlistError}</Text>
-      ) : <Text>Data kosong</Text> }
+      ) : (
+        <Text>Data kosong</Text>
+      )}
     </ScrollView>
   );
 };

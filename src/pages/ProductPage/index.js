@@ -14,6 +14,7 @@ import {
 import {TextInput} from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {connect, useDispatch} from 'react-redux';
+import {height, width} from 'styled-system';
 import {
   IcCartInactive,
   IcWishlistInactive,
@@ -35,19 +36,12 @@ import {colors, getData, showWarning, useForm, usePrevious} from '../../utils';
 
 const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
   const dispatch = useDispatch();
-  // useEffect(() => {
-  //   getData('user').then(res => {
-  //     if (res) {
-  //       dispatch(getCartList(res.uid));
-  //     }
-  //   });
-  // }, []);
 
   const [isFavourite, setIsFavourite] = useState(false);
   const [dialog, setDialog] = useState(null);
   const [isActive, setIsActive] = useState(0);
   const {productData, id, love} = route.params;
-  const {image, name, price, weight, description, store} = productData;
+  const {image, name, price, weight, description, store, stock} = productData;
 
   const images = image.map(img => {
     return {
@@ -59,7 +53,7 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
   });
 
   const [form, setForm] = useForm({
-    product: productData,
+    product: {...productData, productId: id},
     images: image,
     amount: 1,
     uid: '',
@@ -67,6 +61,7 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
 
   const prevCartResult = usePrevious(setCartResult);
   useEffect(() => {
+    console.log('product Data', stock);
     if (setCartResult !== false && setCartResult !== prevCartResult) {
       navigation.replace('SuccessAddToCartPage');
     }
@@ -76,12 +71,11 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
     if (love) {
       setIsFavourite(love);
     }
-    console.log('mumeeet love', love);
-    console.log('mumeeet isfavorite', isFavourite);
     setForm('form.amount', route.params.orderAmount);
     getData('user').then(res => {
       if (res) {
         setForm('uid', res.uid);
+        dispatch(getCartList(res.uid))
       }
     });
   }, [form.uid]);
@@ -133,10 +127,14 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
   };
 
   const plusFunc = () => {
-    if (form.amount < 99) {
+    if (form.amount < stock && form.amount < 99) {
       setForm('amount', form.amount + 1);
     } else {
-      showWarning('Maksimal item yang dapat ditambahkan adalah 99');
+      if (stock < 99) {
+        showWarning(`Maksimal item yang dapat ditambahkan adalah ${stock}`);
+      } else {
+        showWarning('Maksimal item yang dapat ditambahkan adalah 99');
+      }
     }
   };
 
@@ -171,7 +169,7 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
     <View style={styles.page}>
       <StatusBar
         barStyle="dark-content"
-        translucent
+        // translucent
         backgroundColor="rgba(0,0,0,0)"
         animated
       />
@@ -179,7 +177,17 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => setDialog(true)}
-          style={styles.imageContainer}>
+          style={[styles.imageContainer, {position: 'relative'}]}>
+          {stock === 0 && (
+            <View style={styles.outOfStock}>
+              <Text
+                style={styles.text(
+                  'Poppins-Regular',
+                  24,
+                  colors.white,
+                )}>{`Produk\nHabis`}</Text>
+            </View>
+          )}
           <ScrollView
             pagingEnabled
             horizontal
@@ -221,18 +229,14 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
               style={styles.backButton}>
               <IcBack width={30} height={30} />
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.loveButton}
-              onPress={() => sendToWishlist()}
-              activeOpacity={0.7}>
-              {!route.params.store ? (
-                isFavourite ? (
-                  <IcHeartRed />
-                ) : (
-                  <IcWishlistInactive />
-                )
-              ) : null}
-            </TouchableOpacity>
+            {!route.params.store && (
+              <TouchableOpacity
+                style={styles.loveButton}
+                onPress={() => sendToWishlist()}
+                activeOpacity={0.7}>
+                {isFavourite ? <IcHeartRed /> : <IcWishlistInactive />}
+              </TouchableOpacity>
+            )}
           </View>
         </TouchableOpacity>
         <Modal
@@ -347,60 +351,51 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
           </View>
         </View>
       </ScrollView>
-      <View style={styles.footer}>
-        <View style={styles.footerWrapper}>
-          <TouchableOpacity activeOpacity={0.7} style={styles.cart}>
-            {route.params.store ? (
-              <IcTrash width={24} height={24} onPress={onDelete} />
-            ) : (
-              <IcCartInactive
-                width={24}
-                height={24}
-                onPress={() => navigation.navigate('CartPage')}
+      {stock !== 0 && (
+        <View style={styles.footer}>
+          <View style={styles.footerWrapper}>
+            <TouchableOpacity activeOpacity={0.7} style={styles.cart}>
+              {route.params.store ? (
+                <IcTrash width={24} height={24} onPress={onDelete} />
+              ) : (
+                <IcCartInactive
+                  width={24}
+                  height={24}
+                  onPress={() => navigation.navigate('CartPage')}
+                />
+              )}
+              {getCartResult ? (
+                !route.params.store ? (
+                  <View style={styles.badge}>
+                    <Text
+                      style={styles.text('Poppins-SemiBold', 10, colors.white)}>
+                      {Object.keys(getCartResult.orders).length < 99
+                        ? Object.keys(getCartResult.orders).length
+                        : '99+'}
+                    </Text>
+                  </View>
+                ) : null
+              ) : null}
+            </TouchableOpacity>
+            <View style={styles.button}>
+              <SubmitButton
+                label={
+                  route.params.store ? 'Edit Produk' : 'Tambah ke Keranjang'
+                }
+                onPress={
+                  route.params.store
+                    ? () =>
+                        navigation.navigate('AddProductPage', {
+                          productData: route.params.productData,
+                          id: route.params.id,
+                        })
+                    : sendToCart
+                }
               />
-            )}
-            {getCartResult ? (
-              !route.params.store ? (
-                <View
-                  style={{
-                    backgroundColor: colors.red,
-                    width: 20,
-                    height: 20,
-                    borderRadius: 10,
-                    position: 'absolute',
-                    top: 10,
-                    right: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontFamily: 'Poppins-SemiBold',
-                      fontSize: 10,
-                      color: colors.white,
-                    }}>
-                    {Object.keys(getCartResult.orders).length}
-                  </Text>
-                </View>
-              ) : null
-            ) : null}
-          </TouchableOpacity>
-          <View style={styles.button}>
-            <SubmitButton
-              label={route.params.store ? 'Edit Produk' : 'Tambah ke Keranjang'}
-              onPress={
-                route.params.store
-                  ? () =>
-                      navigation.navigate('AddProductPage', {
-                        productData: route.params.productData,
-                        id: route.params.id,
-                      })
-                  : sendToCart
-              }
-            />
+            </View>
           </View>
         </View>
-      </View>
+      )}
     </View>
   );
 };
@@ -418,14 +413,18 @@ const styles = {
     height: 375,
   },
   backButton: {
-    width: 30,
-    height: 30,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255, 0.8)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   loveButton: {
-    width: 30,
-    height: 30,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255, 0.8)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -542,6 +541,39 @@ const styles = {
       justifyContent: 'center',
       alignItems: 'center',
     },
+  },
+  text: (
+    fontFamily = 'Poppins-Regular',
+    fontSize = 16,
+    color = colors.black,
+  ) => ({
+    textAlign: 'center',
+    fontFamily: fontFamily,
+    fontSize: fontSize,
+    color: color,
+  }),
+  outOfStock: {
+    backgroundColor: 'rgba(0,0,0,0.75)',
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    position: 'absolute',
+    top: 107.5,
+    zIndex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+  },
+  badge: {
+    backgroundColor: colors.red,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 };
 

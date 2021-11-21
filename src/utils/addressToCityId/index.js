@@ -4013,10 +4013,10 @@ export const fullAddressToCityId = address => {
  const func = (address) => {
   let n = address.split(",");
   let m = n[n.length - 3].split(" ")
-  return m[m.length - 1]
+  return [...m.slice(2)].join(" ")
 }
  return dataRajaOngkir
-    .filter(item => item.city_name === func(address))
+    .filter(item => item.city_name.includes(func(address)))
     .map(item => item.city_id)[0]
     .toString()
 };
@@ -4024,7 +4024,7 @@ export const fullAddressToCityId = address => {
 export const cityToCityId = address => {
   console.log('cek address', address)
   return dataRajaOngkir
-     .filter(item => item.city_name === address)
+     .filter(item => item.city_name.includes(address))
      .map(item => item.city_id)[0]
      .toString()
  };

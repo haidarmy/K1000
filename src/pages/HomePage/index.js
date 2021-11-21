@@ -9,7 +9,7 @@ import {
   StatusBar,
   Dimensions,
 } from 'react-native';
-import {colors} from '../../utils';
+import {colors, getData} from '../../utils';
 import {SearchBar, FilterProduct} from '../../components';
 import Content from './Content';
 import Slider from './Slider';
@@ -18,7 +18,14 @@ import {connect, useDispatch} from 'react-redux';
 import {getCategory} from '../../redux/action/CategoryAction';
 import {getListProduct} from '../../redux/action/ProductAction';
 
-const HomePage = ({navigation, idCategory, keyword, idSort, rangeMaximum, rangeMinimum}) => {
+const HomePage = ({
+  navigation,
+  idCategory,
+  keyword,
+  idSort,
+  rangeMaximum,
+  rangeMinimum,
+}) => {
   const dispatch = useDispatch();
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -26,17 +33,18 @@ const HomePage = ({navigation, idCategory, keyword, idSort, rangeMaximum, rangeM
     setModalVisible(!isModalVisible);
   };
 
-  const setModalOff = (childdata) => {
-    setModalVisible(childdata)
-  }
+  const setModalOff = childdata => {
+    setModalVisible(childdata);
+  };
 
   useEffect(() => {
     dispatch(getCategory());
   }, []);
 
   useEffect(() => {
-    console.log("range", rangeMaximum + ' ' + rangeMinimum);
-    dispatch(getListProduct(idCategory, keyword, idSort, rangeMaximum, rangeMinimum));
+    dispatch(
+      getListProduct(idCategory, keyword, idSort, rangeMaximum, rangeMinimum),
+    );
   }, [idCategory, keyword, idSort, rangeMinimum, rangeMaximum]);
 
   return (
@@ -50,12 +58,12 @@ const HomePage = ({navigation, idCategory, keyword, idSort, rangeMaximum, rangeM
         onBackButtonPress={() => setModalVisible(false)}
         swipeDirection="down"
         deviceHeight={Dimensions.get('screen').height}>
-        <FilterProduct setModalOff={setModalOff}/>
+        <FilterProduct setModalOff={setModalOff} type={'Home'} />
       </Modal>
       <View style={{flex: 1, backgroundColor: colors.white, paddingTop: 9}}>
         <View style={{paddingHorizontal: 20}}>
           {/* Search */}
-          <SearchBar onPress={toggleModal} Filter />
+          <SearchBar onPress={toggleModal} Filter type="home" />
           {/* Slider */}
           <Slider />
         </View>
@@ -79,7 +87,7 @@ const mapStateToProps = state => ({
   keyword: state.ProductReducer.keyword,
   idSort: state.ProductReducer.idSort,
   rangeMaximum: state.ProductReducer.rangeMaximum,
-  rangeMinimum: state.ProductReducer.rangeMinimum
+  rangeMinimum: state.ProductReducer.rangeMinimum,
 });
 
 export default connect(mapStateToProps, null)(HomePage);

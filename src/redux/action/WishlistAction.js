@@ -11,6 +11,7 @@ import {
 
 export const ADD_TO_WISHLIST = 'ADD_TO_WISHLIST';
 export const GET_WISHLIST_LIST = 'GET_WISHLIST_LIST';
+export const GET_WISHLIST_BY_KEYWORD = 'GET_WISHLIST_BY_KEYWORD'
 export const DELETE_WISHLIST_ITEM = 'DELETE_WISHLIST_ITEM';
 
 export const addToWishlist = (data, id) => {
@@ -90,18 +91,46 @@ export const addToWishlist = (data, id) => {
   };
 };
 
-export const getWishlist = id => {
+export const getWishlist = (id) => {
+console.log(`🚀 → file: WishlistAction.js → line 95 → id`, id)
+  return dispatch => {
+    //Loading
+    dispatchLoading(dispatch, GET_WISHLIST_LIST);
+    FIREBASE.database()
+      .ref('wishlist')
+      .child(id)
+      .once('value', querySnapshot => {
+        console.log(`🚀 → file: WishlistAction.js → line 104 → data`, querySnapshot.val())
+       if(querySnapshot.val()){
+          //Result
+        let data = querySnapshot.val();
+        // Success
+        dispatchSuccess(dispatch, GET_WISHLIST_LIST, data);
+       }
+      })
+      .catch(error => {
+        //Error
+        dispatchError(dispatch, GET_WISHLIST_LIST, error.message);
+        showError(error.message);
+      });
+  };
+};
+
+export const getWishlistByKeyword = (id, keyword) => {
+  console.log('keyword', keyword)
   return dispatch => {
     //Loading
     dispatchLoading(dispatch, GET_WISHLIST_LIST);
     FIREBASE.database()
       .ref('wishlist/' + id)
+      .child('productList')
+      .orderByChild('name')
+      .equalTo(keyword)
       .once('value', querySnapshot => {
-        //Result
-        let data = querySnapshot.val();
-        console.log('Data cart', data);
+          // console.log(`🚀 → file: WishlistAction.js → line 131 → getWishlistByKeyword → querySnapshot.val()`, querySnapshot.val())
+        // Result
         // Success
-        dispatchSuccess(dispatch, GET_WISHLIST_LIST, data);
+        dispatchSuccess(dispatch, GET_WISHLIST_LIST, querySnapshot.val() ? {productList: querySnapshot.val()} : {productList: []});
       })
       .catch(error => {
         //Error

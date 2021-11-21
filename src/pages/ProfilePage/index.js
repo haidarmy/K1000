@@ -16,6 +16,7 @@ import {
   IcLogout,
   IcMap,
   IcProfileActive,
+  IcStoreActive,
   IcWishlistActive,
   IllDefaultAvatar,
 } from '../../assets';
@@ -31,7 +32,7 @@ const Menu = ({label, icon, onPress}) => {
           onPress={onPress}
           activeOpacity={0.7}
           style={styles.menuWrapper}>
-          <IcProfileActive fill={colors.black} style={{marginRight: 32}} />
+          <IcProfileActive fill={colors.grey} style={{marginRight: 32}} />
           <Text style={styles.menuLabel}>{label}</Text>
           <IcChevronRight />
         </TouchableOpacity>
@@ -41,8 +42,24 @@ const Menu = ({label, icon, onPress}) => {
         <TouchableOpacity
           onPress={onPress}
           activeOpacity={0.7}
+          style={[styles.menuWrapper, {marginLeft: 18}]}>
+          <IcStoreActive
+            width={28}
+            height={28}
+            fill={colors.grey}
+            style={{marginRight: 32}}
+          />
+          <Text style={styles.menuLabel}>{label}</Text>
+          <IcChevronRight />
+        </TouchableOpacity>
+      );
+    case 'Orders':
+      return (
+        <TouchableOpacity
+          onPress={onPress}
+          activeOpacity={0.7}
           style={styles.menuWrapper}>
-          <IcCartActive fill={colors.black} style={{marginRight: 32}} />
+          <IcCartActive fill={colors.grey} style={{marginRight: 32}} />
           <Text style={styles.menuLabel}>{label}</Text>
           <IcChevronRight />
         </TouchableOpacity>
@@ -53,7 +70,7 @@ const Menu = ({label, icon, onPress}) => {
           onPress={onPress}
           activeOpacity={0.7}
           style={styles.menuWrapper}>
-          <IcMap fill={colors.black} style={{marginRight: 32}} />
+          <IcMap fill={colors.grey} style={{marginRight: 32}} />
           <Text style={styles.menuLabel}>{label}</Text>
           <IcChevronRight />
         </TouchableOpacity>
@@ -65,7 +82,7 @@ const Menu = ({label, icon, onPress}) => {
           activeOpacity={0.7}
           style={styles.menuWrapper}>
           <IcLogout
-            fill={colors.black}
+            fill={colors.grey}
             width={24}
             height={24}
             style={{marginRight: 32}}
@@ -112,10 +129,10 @@ const ProfilePage = ({navigation}) => {
       // setForm('number', res.number)
     });
   };
-  
+
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-     getUserData()
+      getUserData();
     });
     return unsubscribe;
   }, [navigation]);
@@ -154,7 +171,11 @@ const ProfilePage = ({navigation}) => {
       <Gap height={64} />
       <View style={styles.profileContainer}>
         <Image
-          source={profile.avatar ? {uri: 'data:image/png;base64,' + profile.avatar} : IllDefaultAvatar}
+          source={
+            profile.avatar
+              ? {uri: 'data:image/png;base64,' + profile.avatar}
+              : IllDefaultAvatar
+          }
           style={styles.image}
         />
         <Text style={styles.name}>{profile.name}</Text>
@@ -166,9 +187,14 @@ const ProfilePage = ({navigation}) => {
           onPress={() => navigation.navigate('ProfileDetailPage')}
         />
         <Menu
+          label="Pesanan Saya"
+          icon={'Orders'}
+          onPress={() => navigation.navigate('OrderPage')}
+        />
+        <Menu
           label="Toko Saya"
           icon={'Store'}
-          onPress={() => navigation.navigate('StorePage')}
+          onPress={() => navigation.navigate('StoreDrawer')}
         />
         <Menu
           label="Alamat"
@@ -187,6 +213,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
+    paddingHorizontal: 20
   },
   profileContainer: {
     alignItems: 'center',
@@ -197,7 +224,7 @@ const styles = StyleSheet.create({
     height: 150,
     width: 150,
     marginBottom: 20,
-    borderRadius: 75
+    borderRadius: 75,
   },
   name: {
     fontFamily: 'Poppins-Medium',

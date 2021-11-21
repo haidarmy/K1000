@@ -95,6 +95,8 @@ const AddProductPage = ({
     category: '',
     categoryName: '',
     storeLocation: '',
+    date: '',
+    sold: 0,
   });
 
   useEffect(() => {
@@ -119,6 +121,7 @@ const AddProductPage = ({
       } else {
         setForm({
           ...form,
+          date: Date.now(),
           store: res.name,
           storeLocation: fullAddressToCityId(res.address),
           uid: res.uid,
@@ -161,7 +164,10 @@ const AddProductPage = ({
       form.stock &&
       form.category &&
       form.description &&
-      form.image
+      form.image &&
+      form.uid &&
+      form.store &&
+      form.storeLocation
     ) {
       if (route.params) {
         const newImage = form.image.filter(
@@ -190,7 +196,7 @@ const AddProductPage = ({
         editStoreProductResult !== false &&
         editStoreProductResult !== prevEditStoreProductResult
       ) {
-        navigation.replace('StorePage');
+        navigation.replace('StoreDrawer');
         setTimeout(() => {
           showSucces('Product berhasil diubah!');
         }, 1000);
@@ -200,7 +206,7 @@ const AddProductPage = ({
         uploadStoreProductResult !== false &&
         uploadStoreProductResult !== prevUploadStoreProductResult
       ) {
-        navigation.replace('StorePage');
+        navigation.replace('StoreDrawer');
         setTimeout(() => {
           showSucces('Product berhasil ditambahkan!');
         }, 1000);

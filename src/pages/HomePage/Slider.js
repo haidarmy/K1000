@@ -11,7 +11,7 @@ import {Categories} from '../../components';
 import {connect} from 'react-redux';
 
 const Slider = ({getCategoryResult, getCategoryLoading}) => {
-  const [sliderState, setSliderState] = useState(true)
+  const [sliderState, setSliderState] = useState('')
   const setBackgroundSliderToParent = childdata => {
     setSliderState(childdata);
     console.log("params terkirim", childdata)
@@ -26,6 +26,7 @@ const Slider = ({getCategoryResult, getCategoryLoading}) => {
           console.log('KEY', key);
           return (
             <Categories
+              type={"Home"}
               label={getCategoryResult[key].namecategory}
               key={key}
               id={key}

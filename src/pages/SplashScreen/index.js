@@ -1,17 +1,19 @@
 import React, {useEffect} from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
+import { useDispatch } from 'react-redux';
 import FIREBASE from '../../config/FIREBASE';
+import { getWishlist } from '../../redux/action/WishlistAction';
 
 const SplashScreen = ({navigation}) => {
+  const dispatch = useDispatch()
   useEffect(() => {
     const unsubscribe = FIREBASE.auth().onAuthStateChanged(user => {
       setTimeout(() => {
         if (user) {
+          dispatch(getWishlist(user.uid));
           navigation.replace('MainApp');
-          console.log('LOGIIIIN BANG');
         } else {
           navigation.replace('WelcomePage');
-          console.log('LOGOUTTT');
         }
       }, 3000);
     });

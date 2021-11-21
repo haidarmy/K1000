@@ -97,6 +97,16 @@ const CartPage = ({
                   <OrderItem
                     key={key}
                     toko={key}
+                    trash
+                    tokoId={
+                      Object.keys(getCartResult.orders).reduce((r, a) => {
+                        r[getCartResult.orders[a].product.store] = [
+                          ...(r[getCartResult.orders[a].product.store] || []),
+                          {...getCartResult.orders[a], orderId: a},
+                        ];
+                        return r;
+                      }, {})[key][0].product.uid
+                    }
                     items={
                       Object.keys(getCartResult.orders).reduce((r, a) => {
                         r[getCartResult.orders[a].product.store] = [
@@ -109,9 +119,19 @@ const CartPage = ({
                     mainCart={getCartResult}
                     applyOnPress
                   />
-                  <View style={{backgroundColor: colors.lightgrey}}>
-                    <Gap height={10} />
-                  </View>
+                  {Object.keys(
+                    Object.keys(getCartResult.orders).reduce((r, a) => {
+                      r[getCartResult.orders[a].product.store] = [
+                        ...(r[getCartResult.orders[a].product.store] || []),
+                        {...getCartResult.orders[a], orderId: a},
+                      ];
+                      return r;
+                    }, {}),
+                  ).length !== 1 && (
+                    <View style={{backgroundColor: colors.lightgrey}}>
+                      <Gap height={7} />
+                    </View>
+                  )}
                 </View>
               );
             })}

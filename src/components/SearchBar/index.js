@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,40 +6,127 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {colors} from '../../utils';
-import {IcSearch, IcFilter, IcClose} from '../../assets';
+import {colors, useCustomState, usePrevious} from '../../utils';
+import {IcSearch, IcFilter, IcClose, IcHamburger} from '../../assets';
 import {useDispatch} from 'react-redux';
-import {getProductByKeyword} from '../../redux/action/ProductAction';
+import {
+  getListProduct,
+  getProductByKeyword,
+} from '../../redux/action/ProductAction';
+import {useNavigation} from '@react-navigation/core';
+import {
+  getWishlist,
+  getWishlistByKeyword,
+} from '../../redux/action/WishlistAction';
+import {
+  getStoreProduct,
+  getStoreProductByKeyword,
+} from '../../redux/action/StoreAction';
 
-const SearchBar = ({onPress, Filter}) => {
+const SearchBar = ({
+  onPress,
+  placeholder = 'Cari',
+  Filter,
+  Store,
+  type,
+  id,
+  searchOrder,
+  searchSelling,
+  searchWithdraw,
+  searchBank,
+}) => {
   const dispatch = useDispatch();
-  const [input, setInput] = useState('');
+  const navigation = useNavigation();
+  const [input, setInput] = useCustomState(false);
   const search = () => {
-    console.log('search result', input);
-
     const arr = input.toLowerCase().split(' ');
     for (var i = 0; i < arr.length; i++) {
       arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
     }
     const keyword = arr.join(' ');
-    console.log("Final keyword", keyword)
-    dispatch(getProductByKeyword(keyword));
-    setInput('');
+    if (keyword.length === 0) {
+      if (type === 'home') {
+        dispatch(getListProduct());
+      } else if (type === 'store') {
+        dispatch(getStoreProduct());
+      } else if (type === 'wishlist') {
+        dispatch(getWishlist(id));
+      } else if (type === 'orderPage') {
+        let newKeyword = keyword.toLowerCase();
+        searchOrder(newKeyword);
+      } else if (type === 'sellingPage') {
+        let newKeyword = keyword.toLowerCase();
+        searchSelling(newKeyword);
+      } else if (type === 'withdraw') {
+        let newKeyword = keyword.toLowerCase();
+        searchWithdraw(newKeyword);
+      } else if (type === 'bankList') {
+        let newKeyword = keyword.toLowerCase();
+        searchBank(newKeyword);
+      }
+    } else {
+      if (type === 'home') {
+        dispatch(getProductByKeyword(keyword));
+      } else if (type === 'store') {
+        dispatch(getStoreProductByKeyword(keyword));
+      } else if (type === 'wishlist') {
+        dispatch(getWishlistByKeyword(id, keyword));
+      } else if (type === 'orderPage') {
+        let newKeyword = keyword.toLowerCase();
+        searchOrder(newKeyword);
+      } else if (type === 'sellingPage') {
+        let newKeyword = keyword.toLowerCase();
+        searchSelling(newKeyword);
+      } else if (type === 'withdraw') {
+        let newKeyword = keyword.toLowerCase();
+        searchWithdraw(newKeyword);
+      } else if (type === 'bankList') {
+        let newKeyword = keyword.toLowerCase();
+        searchBank(newKeyword);
+      }
+    }
+    // setInput('');
   };
+  const prevInput = usePrevious(input);
+  useEffect(() => {
+    if (input === '' && input !== prevInput) {
+      search();
+    }
+  }, [input]);
   return (
     <View style={styles.wrapper}>
       <View style={styles.box}>
-        <IcSearch
-          width={24}
-          height={24}
-          style={{position: 'absolute', top: 16, left: 24}}
-        />
+        {Store ? (
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer()}
+            style={{
+              zIndex: 1,
+              width: 32,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <IcHamburger
+              width={24}
+              height={24}
+              style={{position: 'absolute', top: 16, left: 2}}
+            />
+          </TouchableOpacity>
+        ) : (
+          <View style={{zIndex: 1, marginRight: 30}}>
+            <IcSearch
+              width={24}
+              height={24}
+              style={{position: 'absolute', top: 16, left: 0}}
+            />
+          </View>
+        )}
         <TextInput
           style={styles.input}
-          placeholder="Cari"
-          value={input}
+          placeholder={placeholder}
+          value={input ? input : ''}
           onChangeText={value => setInput(value)}
           onSubmitEditing={() => search()}
+          returnKeyType={'search'}
         />
         <TouchableOpacity
           onPress={() => setInput('')}
@@ -79,18 +166,24 @@ const styles = StyleSheet.create({
   },
   box: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     position: 'relative',
     backgroundColor: colors.lightgrey,
     borderRadius: 10,
+    paddingLeft: 20,
+    paddingRight: 40,
   },
   input: {
-    paddingLeft: 54,
-    paddingRight: 55,
+    // paddingLeft: 54,
+    // paddingRight: 55,
+    flex: 10,
     fontSize: 18,
     color: colors.grey,
     alignItems: 'center',
     height: 60,
     fontFamily: 'Poppins-Regular',
+    marginRight: 10,
   },
   filter: {
     alignItems: 'center',

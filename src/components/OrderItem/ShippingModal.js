@@ -57,7 +57,8 @@ const ShippingModal = ({
     setSubtotalToParent(exp, service, cost, etd);
   };
   return (
-    <KeyboardAvoidingView behavior="position" enabled>
+    <View>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         <View style={styles.swiper}>
           <IcSwiper width={50} height={6} />
@@ -112,13 +113,14 @@ const ShippingModal = ({
           <Text>{shippingError}</Text>
         ) : null}
       </View>
-    </KeyboardAvoidingView>
+    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // height: 'auto',
+    height: 'auto',
     // marginBottom: -50,
     backgroundColor: colors.white,
     paddingTop: 30,

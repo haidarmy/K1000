@@ -1,5 +1,6 @@
 import FIREBASE from '../../config/FIREBASE';
 import {dispatchClear, dispatchError, dispatchLoading, dispatchSuccess, showError, storeData} from '../../utils';
+import { getWishlist } from './WishlistAction';
 
 export const REGISTER_USER = 'REGISTER_USER';
 export const LOGIN_USER = 'LOGIN_USER';
@@ -54,6 +55,7 @@ export const loginUser = (email, password) => {
               dispatchSuccess(dispatch, LOGIN_USER, resDB.val())
               //Save to localStorage(Asyncstorage)
               storeData('user', resDB.val());
+              dispatch(getWishlist(success.user.uid));
               //Clear Data from redux
               dispatchClear(dispatch, LOGIN_USER)
             } else {

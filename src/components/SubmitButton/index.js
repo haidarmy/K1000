@@ -3,6 +3,8 @@ import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {colors} from '../../utils';
 
 const SubmitButton = ({
+  height,
+  disabled = false,
   label,
   onPress,
   buttonColor = colors.default,
@@ -10,7 +12,8 @@ const SubmitButton = ({
 }) => {
   return (
     <TouchableOpacity
-      style={styles.button(buttonColor)}
+      disabled={disabled}
+      style={styles.button(buttonColor, height)}
       onPress={onPress}
       activeOpacity={0.7}>
       <Text style={styles.text(labelColor)}>{label}</Text>
@@ -19,13 +22,14 @@ const SubmitButton = ({
 };
 
 const styles = StyleSheet.create({
-  button: buttonColor => ({
+  button: (buttonColor, height = 58) => ({
     backgroundColor: buttonColor,
     borderRadius: 10,
-    height: 58,
+    height: height,
     justifyContent: 'center',
-    borderWidth: buttonColor ? 2 : 0,
-    borderColor: buttonColor ? colors.default : null,
+    borderWidth: buttonColor === colors.grey ? 0 : buttonColor ? 2 : 0,
+    borderColor:
+      buttonColor === colors.grey ? null : buttonColor ? colors.default : null,
   }),
 
   text: labelColor => ({

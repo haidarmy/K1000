@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  loginLoading: state.AuthReducer.loginResult,
+  loginLoading: state.AuthReducer.loginLoading,
   loginResult: state.AuthReducer.loginResult,
   loginError: state.AuthReducer.loginError,
 });

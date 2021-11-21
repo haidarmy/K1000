@@ -51,10 +51,9 @@ export const getListProduct = (
         .equalTo(keyword)
         .once('value', querySnapshot => {
           //Result
-          let data = querySnapshot.val();
           // console.log("DATA FIREBASE", data);
           // Success
-          dispatchSuccess(dispatch, GET_LIST_PRODUCT, data);
+          dispatchSuccess(dispatch, GET_LIST_PRODUCT, querySnapshot.val() ? querySnapshot.val() : []);
 
           //Clear Redux Data
           // dispatchClear(dispatch, GET_LIST_PRODUCT)
@@ -191,15 +190,67 @@ export const getListProduct = (
             dispatchError(dispatch, GET_LIST_PRODUCT, error.message);
             showError(error.message);
           });
+      } else if (idSort === 'Terbaru') {
+        FIREBASE.database()
+          .ref('product')
+          .orderByChild('date')
+          // .limitToFirst(3)
+          .once('value', querySnapshot => {
+            //Result
+            let dataSorted = [];
+            querySnapshot.forEach(e => {
+              if (idSort === 'Terbaru') {
+                dataSorted.push({...e.val()});
+              }
+            });
+            //Success
+            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
+
+            //Clear Redux Data
+            // dispatchClear(dispatch, GET_LIST_PRODUCT)
+          })
+          .catch(error => {
+            //Error
+            dispatchError(dispatch, GET_LIST_PRODUCT, error.message);
+            showError(error.message);
+          });
+      } else if (idSort === 'Terlaris') {
+        FIREBASE.database()
+          .ref('product')
+          .orderByChild('sold')
+          // .limitToFirst(3)
+          .once('value', querySnapshot => {
+            //Result
+            let dataSorted = [];
+            querySnapshot.forEach(e => {
+              if (idSort === 'Terlaris') {
+                dataSorted.unshift({...e.val()});
+              }
+            });
+            //Success
+            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
+
+            //Clear Redux Data
+            // dispatchClear(dispatch, GET_LIST_PRODUCT)
+          })
+          .catch(error => {
+            //Error
+            dispatchError(dispatch, GET_LIST_PRODUCT, error.message);
+            showError(error.message);
+          });
       }
     } else {
       FIREBASE.database()
         .ref('product')
+        .orderByChild('stock')
         .once('value', querySnapshot => {
           //Result
-          let data = querySnapshot.val();
+          let dataSorted = [];
+          querySnapshot.forEach(e => {
+            dataSorted.unshift({...e.val()});
+          });
           // Success
-          dispatchSuccess(dispatch, GET_LIST_PRODUCT, data);
+          dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
 
           //Clear Redux Data
           // dispatchClear(dispatch, GET_LIST_PRODUCT)

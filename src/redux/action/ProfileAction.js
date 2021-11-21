@@ -19,6 +19,7 @@ export const updateProfile = data => {
     const newData = {
       uid: data.uid,
       avatar: data.avatar ? data.avatar : '',
+      balance: 0,
       name: data.name,
       email: data.email,
       dateOfBirth: data.dateOfBirth,
@@ -68,7 +69,7 @@ export const updateAddress = (address, data) => {
         storeData('user', newData);
 
         //Clear Data from redux
-        // dispatchClear(dispatch, UPDATE_ADDRESS);
+        dispatchClear(dispatch, UPDATE_ADDRESS);
       })
       .catch(error => {
         //Error

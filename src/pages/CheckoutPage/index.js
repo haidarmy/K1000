@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StatusBar, StyleSheet, Text, View} from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
-import {connect} from 'react-redux';
+import {connect, useDispatch} from 'react-redux';
 import {IcChevronRight, IcShipping, IcStore} from '../../assets';
 import {
   EmptyPage,
@@ -11,12 +11,16 @@ import {
   SubmitButton,
 } from '../../components';
 import {updateAddress} from '../../redux/action/ProfileAction';
-import {colors, getData} from '../../utils';
+import {colors, getData, months, showError, usePrevious} from '../../utils';
 import lodash from 'lodash';
+import {snapTransactions} from '../../redux/action/PaymentAction';
 
-const CheckoutPage = ({navigation, route}) => {
+const CheckoutPage = ({navigation, route, snapTransactionsResult}) => {
+  const dispatch = useDispatch();
   const [checkoutItems, setCheckoutItems] = useState('');
   const [priceDetails, setPriceDetails] = useState({
+    dataByStore: [],
+    totalExpedition: [],
     totalShippingCost: 0,
     totalPayment: 0,
   });
@@ -26,19 +30,58 @@ const CheckoutPage = ({navigation, route}) => {
       setCheckoutItems({
         ...checkoutItems,
         uid: res.uid,
-        address: res.address,
+        email: res.email ? res.email : '',
+        avatar: res.avatar ? res.avatar : '',
+        address: res.address ? res.address : '',
         name: res.name ? res.name : '',
         number: res.number ? res.number : '',
+        date: new Date().getTime(),
       });
     });
   };
 
-  const setPriceDetailsToParent = totalShippingCost => {
+  const setPriceDetailsToParent = (
+    totalShippingCost,
+    exp,
+    service,
+    etd,
+    store,
+    subTotalByStore,
+    items,
+    tokoId,
+  ) => {
     setPriceDetails({
       ...priceDetails,
-      totalShippingCost: parseInt(priceDetails.totalShippingCost) + parseInt(totalShippingCost),
-      totalPayment: parseInt(route.params.getCartResult.totalPrice) + parseInt(priceDetails.totalShippingCost) + parseInt(totalShippingCost),
+      dataByStore: {
+        ...priceDetails.dataByStore,
+        [`${tokoId}`]: {
+          store: {storeName: store, storeId: tokoId},
+          order: items,
+          shipping: {expedition: exp, service: service, estimate: etd, cost: parseInt(priceDetails.totalShippingCost) + parseInt(totalShippingCost)},
+          subTotal: subTotalByStore,
+          orderId: `K1000-${checkoutItems.date}-${checkoutItems.uid}`,
+          status: 'pending',
+          date: `${new Date().getDate()} ${
+            months[new Date().getMonth()]
+          } ${new Date().getFullYear()}`,
+          user: {
+            avatar: checkoutItems.avatar,
+            name: checkoutItems.name,
+            address: checkoutItems.address,
+            uid: checkoutItems.uid,
+            number: checkoutItems.number,
+          },
+        },
+      },
+      totalExpedition: [...priceDetails.totalExpedition, store],
+      totalShippingCost:
+        parseInt(priceDetails.totalShippingCost) + parseInt(totalShippingCost),
+      totalPayment:
+        parseInt(route.params.getCartResult.totalPrice) +
+        parseInt(priceDetails.totalShippingCost) +
+        parseInt(totalShippingCost),
     });
+    console.log(priceDetails.totalExpedition);
   };
 
   const data = Object.keys(route.params.getCartResult.orders).reduce((r, a) => {
@@ -50,8 +93,55 @@ const CheckoutPage = ({navigation, route}) => {
   }, {});
   useEffect(() => {
     getUserData();
-    console.log('Toko', data);
+    console.log('Toko', Object.values(data).length);
   }, []);
+
+  const checkout = () => {
+    console.log('cekot', priceDetails.dataByStore);
+    if (
+      Object.values(data).length ==
+      [...new Set(priceDetails.totalExpedition)].length
+    ) {
+      const dataCheckout = {
+        transaction_details: {
+          order_id: `K1000-${checkoutItems.date}-${checkoutItems.uid}`,
+          gross_amount: priceDetails.totalPayment,
+        },
+        credit_card: {
+          secure: true,
+        },
+        customer_details: {
+          first_name: checkoutItems.name,
+          email: checkoutItems.email,
+          phone: checkoutItems.number,
+        },
+      };
+      dispatch(snapTransactions(dataCheckout));
+    } else {
+      showError('Harap pilih jasa ekspedisi tiap order item !');
+    }
+  };
+  const prevSnapTransactionsResult = usePrevious(snapTransactionsResult);
+  useEffect(() => {
+    if (
+      snapTransactionsResult !== false &&
+      snapTransactionsResult !== prevSnapTransactionsResult
+    ) {
+      console.log('berisik ajg')
+      const params = {
+        user: checkoutItems.uid,
+        url: snapTransactionsResult.redirect_url,
+        orderDetails: priceDetails.dataByStore,
+        // orderDetails: [
+        //   ...new Map(
+        //     priceDetails.dataByStore.map(item => [item.store, item]),
+        //   ).values(),
+        // ],
+        order_id: `K1000-${checkoutItems.date}-${checkoutItems.uid}`,
+      };
+      navigation.navigate('PaymentPage', params);
+    }
+  }, [snapTransactionsResult]);
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
@@ -83,6 +173,7 @@ const CheckoutPage = ({navigation, route}) => {
                     label="CheckoutPage"
                     key={key}
                     toko={key}
+                    tokoId={data[key][0].product.uid}
                     items={data[key]}
                     shipping={true}
                     address={checkoutItems.address}
@@ -90,7 +181,7 @@ const CheckoutPage = ({navigation, route}) => {
                     setPriceDetailsToParent={setPriceDetailsToParent}
                   />
                   <View style={{backgroundColor: colors.lightgrey}}>
-                    <Gap height={10} />
+                    <Gap height={7} />
                   </View>
                 </View>
               );
@@ -128,10 +219,7 @@ const CheckoutPage = ({navigation, route}) => {
             </View>
           </View>
           <View style={{backgroundColor: colors.white, padding: 20}}>
-            <SubmitButton
-              label={'Bayar sekarang'}
-              onPress={() => navigation.replace('AddAddressPage')}
-            />
+            <SubmitButton label={'Bayar sekarang'} onPress={checkout} />
           </View>
         </View>
       </ScrollView>
@@ -144,6 +232,9 @@ const mapStateToProps = state => ({
   updateAddressLoading: state.ProfileReducer.updateAddressLoading,
   updateAddressResult: state.ProfileReducer.updateAddressResult,
   updateAddressError: state.ProfileReducer.updateAddressError,
+
+  snapTransactionsResult: state.PaymentReducer.snapTransactionsResult,
+  snapTransactionsLoading: state.PaymentReducer.snapTransactionsLoading,
 });
 
 export default connect(mapStateToProps, null)(CheckoutPage);
@@ -151,7 +242,7 @@ export default connect(mapStateToProps, null)(CheckoutPage);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E5D9FF',
+    backgroundColor: colors.lightgrey,
   },
   content: {
     flex: 1,
@@ -160,7 +251,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     backgroundColor: colors.white,
     padding: 20,
-    marginBottom: 10,
+    marginBottom: 7,
   },
   text: (
     fontFamily = 'Poppins-Regular',

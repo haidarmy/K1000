@@ -8,6 +8,10 @@ import CartReducer from './cart'
 import ShippingReducer from './rajaongkir'
 import WishlistReducer from './wishlist'
 import StoreReducer from './store'
+import PaymentReducer from './payment'
+import OrdersReducer from './orders'
+import SellingReducer from './selling'
+import WithdrawReducer from './withdraw'
 
 const rootReducer = combineReducers({
     AuthReducer,
@@ -18,7 +22,11 @@ const rootReducer = combineReducers({
     CartReducer,
     ShippingReducer,
     WishlistReducer,
-    StoreReducer
+    StoreReducer,
+    PaymentReducer,
+    OrdersReducer,
+    SellingReducer,
+    WithdrawReducer
 })
 
 export default rootReducer

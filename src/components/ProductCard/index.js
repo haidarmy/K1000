@@ -29,8 +29,10 @@ import {
   getWishlist,
 } from '../../redux/action/WishlistAction';
 import {deleteProduct} from '../../redux/action/StoreAction';
+import {Gap} from '..';
 
 const ProductCard = ({
+  stock,
   images,
   image,
   name,
@@ -41,6 +43,7 @@ const ProductCard = ({
   rest,
   love,
   id,
+  sold
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -98,7 +101,7 @@ const ProductCard = ({
   };
 
   const productDetail = () => {
-    navigation.navigate('ProductPage', {productData: rest, id, store});
+    navigation.navigate('ProductPage', {productData: rest, id, love: love || isFavourite});
   };
   return (
     <TouchableOpacity
@@ -106,8 +109,15 @@ const ProductCard = ({
       style={styles.container}
       activeOpacity={0.7}>
       <Image source={image} style={styles.image} />
+      {stock === 0 && (
+        <View style={styles.stockLabel}>
+          <Text style={styles.textStock('Poppins-SemiBold', 14, colors.white)}>
+            Stok Habis
+          </Text>
+        </View>
+      )}
       <View style={{marginHorizontal: 16}}>
-        <View style={{height: 64, marginBottom: 8}}>
+        <View style={{marginBottom: 8}}>
           <Text style={styles.text.title}>{name}</Text>
         </View>
         <View style={styles.info}>
@@ -117,7 +127,7 @@ const ProductCard = ({
           </View>
           {store ? (
             <TouchableOpacity style={styles.loveWrapper} onPress={onNavigate}>
-              <IcEdit fill={colors.black} width={24} height={24} />
+              <IcEdit fill={colors.grey} width={24} height={24} />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -127,6 +137,33 @@ const ProductCard = ({
             </TouchableOpacity>
           )}
         </View>
+        {store && (
+          <>
+            <Gap height={10} />
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text
+                style={styles.textStock('Poppins-SemiBold', 16, colors.black)}>
+                Stok
+              </Text>
+              <Text
+                style={styles.textStock('Poppins-SemiBold', 16, colors.black)}>
+                {stock}
+              </Text>
+            </View>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text
+                style={styles.textStock('Poppins-SemiBold', 16, colors.black)}>
+                Terjual
+              </Text>
+              <Text
+                style={styles.textStock('Poppins-SemiBold', 16, colors.black)}>
+                {sold}
+              </Text>
+            </View>
+          </>
+        )}
       </View>
       {store && (
         <TouchableOpacity
@@ -147,7 +184,9 @@ const ProductCard = ({
 const styles = {
   container: {
     backgroundColor: colors.lightgrey,
-    height: 296,
+    minHeight: 296,
+    maxHeight:360,
+    paddingBottom: 20,
     width: 168,
     marginBottom: 16,
     borderRadius: 10,
@@ -186,6 +225,28 @@ const styles = {
   loveWrapper: {
     width: 40,
     height: 40,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textStock: (
+    fontFamily = 'Poppins-Regular',
+    fontSize = 16,
+    color = colors.black,
+  ) => ({
+    fontFamily: fontFamily,
+    fontSize: fontSize,
+    color: color,
+  }),
+  stockLabel: {
+    backgroundColor: 'rgba(33,33,33,0.6)',
+    width: 90,
+    height: 28,
+    borderRadius: 5,
+    position: 'absolute',
+    top: 125,
+    left: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },

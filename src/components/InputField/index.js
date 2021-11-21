@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { colors } from '../../utils/';
 const InputField = ({
+  textAlign,
   placeholder,
   label,
   hide,
@@ -27,6 +28,7 @@ const InputField = ({
     <View>
       <Text style={styles.text}>{label}</Text>
       <TextInput
+        textAlign={textAlign ? 'center' : 'left'}
         style={styles.textinput(border,paddingRight)}
         placeholder={placeholder}
         placeholderTextColor={colors.grey}

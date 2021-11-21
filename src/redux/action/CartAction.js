@@ -97,15 +97,17 @@ export const addToCartDetail = data => {
 };
 
 export const getCartList = id => {
+console.log(`🚀 → file: CartAction.js → line 100 → id`, id)
   return dispatch => {
     //Loading
     dispatchLoading(dispatch, GET_CART_LIST);
+    console.log(`🚀 → file: CartAction.js → line 107 → querySnapshot`)
     FIREBASE.database()
       .ref('cart/' + id)
       .once('value', querySnapshot => {
         //Result
         let data = querySnapshot.val();
-        console.log("Data cart", data);
+        // console.log("Data cart", data);
 
         // Success
         dispatchSuccess(dispatch, GET_CART_LIST, data);
