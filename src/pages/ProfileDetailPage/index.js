@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import Modal from 'react-native-modal';
 import {AvatarDummy, IllDefaultAvatar, ProductDummy1} from '../../assets';
@@ -47,6 +48,8 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
   const [editPhone, setEditPhone] = useState(false);
   const [isModalVisibleGender, setModalVisibleGender] = useState(false);
   const [isModalVisiblePhoto, setModalVisiblePhoto] = useState(false);
+  const [loading, setLoading] = useState(true)
+  
   const toggleModalGender = () => {
     setModalVisibleGender(!isModalVisibleGender);
   };
@@ -62,7 +65,7 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
 
   const setImageToParent = (image, imageForDB, error) => {
     if (error) {
-      showError(error)
+      showError(error);
       toggleModalPhoto();
     } else {
       setProfile({...profile, avatar: imageForDB});
@@ -141,7 +144,9 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
   }, [updateProfileResult]);
 
   useEffect(() => {
-    console.log('Jalan bos');
+    setTimeout(() => {
+     setLoading(false)
+    }, 500)
     getUserData();
   }, []);
 
@@ -157,10 +162,28 @@ const ProfileDetailPage = ({navigation, updateProfileResult}) => {
         onPress={() => navigation.goBack('ProfilePage')}
       />
       <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      {loading &&
+        (<View
+          style={{
+            zIndex: 1,
+            position: 'absolute',
+            top: 20,
+            alignSelf: 'center',
+            backgroundColor: colors.white,
+            padding: 8,
+            borderRadius: 36,
+          }}>
+          <ActivityIndicator size={36} color={colors.default} />
+        </View>)
+      }
       <View style={styles.content}>
         <View style={styles.profileContainer}>
           <Image
-            source={profile.avatar ? {uri: 'data:image/png;base64,' + profile.avatar} : IllDefaultAvatar}
+            source={
+              profile.avatar
+                ? {uri: 'data:image/png;base64,' + profile.avatar}
+                : IllDefaultAvatar
+            }
             style={{height: 120, width: 120, borderRadius: 60}}
           />
           <Gap height={12} />

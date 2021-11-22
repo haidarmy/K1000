@@ -9,7 +9,7 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import {connect, useDispatch} from 'react-redux';
 import {IcShowLess, IcShowMore} from '../../assets';
-import {Gap, OrderItem, SubmitButton} from '../../components';
+import {Gap, ItemSkeleton, OrderItem, SubmitButton} from '../../components';
 import {getListOrder} from '../../redux/action/OrderAction';
 import {getListSale} from '../../redux/action/SellingAction';
 import {colors, getData} from '../../utils';
@@ -20,12 +20,13 @@ const Content = ({
   getListSellingError,
   status,
   jumpTo,
-  keyword
+  keyword,
 }) => {
   const [uid, setUid] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    jumpTo('packed');
     getData('user').then(res => {
       if (res) {
         setUid(res.uid);
@@ -46,8 +47,10 @@ const Content = ({
     if (keyword.includes('k1000')) {
       return (
         e === `${uid}` &&
-        getListSellingResult[key].orderDetails[e].status === status && e === `${uid}` &&
-        getListSellingResult[key].orderDetails[e].orderId.toLowerCase() === keyword
+        getListSellingResult[key].orderDetails[e].status === status &&
+        e === `${uid}` &&
+        getListSellingResult[key].orderDetails[e].orderId.toLowerCase() ===
+          keyword
 
         // getListOrderResult[key].orderDetails[e].status === status &&
         // getListOrderResult[key].orderDetails[e].orderId.toLowerCase() ===
@@ -66,10 +69,7 @@ const Content = ({
       {getListSellingResult ? (
         Object.keys(getListSellingResult).map(key => {
           return Object.keys(getListSellingResult[key].orderDetails)
-            .filter(
-              e =>
-                filteredSelling(key, e)
-            )
+            .filter(e => filteredSelling(key, e))
             .map(index => {
               const orderDetail = getListSellingResult[key].orderDetails[index];
               console.log('index', index);
@@ -95,10 +95,8 @@ const Content = ({
             });
         })
       ) : getListSellingLoading ? (
-        <Text>Loading</Text>
-      ) : (
-        <Text>Data kosong</Text>
-      )}
+        <ItemSkeleton />
+      ) : null}
     </ScrollView>
   );
 };

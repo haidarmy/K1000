@@ -8,10 +8,11 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from 'react-native';
-import {ProductCard} from '../../components';
+import {ProductCard, ProductSkeleton} from '../../components';
 import {connect, useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/core';
 import { getListProduct } from '../../redux/action/ProductAction';
+import { flexDirection } from 'styled-system';
 
 const Content = ({
   getListProductResult,
@@ -62,9 +63,7 @@ const Content = ({
           );
         })
       ) : getListProductLoading ? (
-        <View>
-          <Text>Loading</Text>
-        </View>
+          <ProductSkeleton/>
       ) : getListProductError ? (
         <Text>{getWishlistError}</Text>
       ) : (

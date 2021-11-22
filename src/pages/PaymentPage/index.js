@@ -17,7 +17,7 @@ const PaymentPage = ({route, navigation}) => {
 
   const onMessage = (data) => {
       if(data.nativeEvent.data === 'done'){
-        navigation.replace('OrderPage')
+        navigation.replace('OrderPage', 'payment')
       }
   }
   return (

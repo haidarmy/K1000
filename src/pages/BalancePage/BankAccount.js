@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {connect, useDispatch} from 'react-redux';
 import {IcCC, IcChevronRight, IcPlus, IcSwiper} from '../../assets';
-import {Gap, SearchBar} from '../../components';
+import {BankAccSkeleton, Gap, SearchBar} from '../../components';
 import {getUserBankAccount} from '../../redux/action/WithdrawAction';
 import {colors, getData} from '../../utils';
 
@@ -133,7 +133,7 @@ const BankAccount = ({
               );
             })
         ) : getBankAccountLoading ? (
-          <Text>Loading</Text>
+          <BankAccSkeleton/>
         ) : (
           <Text>Data Kosong</Text>
         )}
@@ -175,12 +175,6 @@ const styles = StyleSheet.create({
     fontSize: fontSize,
     color: color,
   }),
-  shippingCourier: {
-    borderBottomWidth: 0.5,
-    borderBottomColor: colors.grey,
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-  },
   iconWrapper: {
     backgroundColor: 'rgba(111, 95, 144, 0.2)',
     width: 42,

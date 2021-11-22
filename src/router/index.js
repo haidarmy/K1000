@@ -70,11 +70,11 @@ const MainApp = () => {
 const Router = () => {
   return (
     <Stack.Navigator>
-       <Stack.Screen
+       {/* <Stack.Screen
         name="Skeleton"
         component={Skeleton}
         options={{headerShown: false}}
-      />
+      /> */}
       <Stack.Screen
         name="SplashScreen"
         component={SplashScreen}

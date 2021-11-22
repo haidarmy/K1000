@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, ScrollView, StatusBar} from 'react-native';
-import {SearchBar, ProductCard, Header, EmptyPage} from '../../components';
+import {SearchBar, ProductCard, Header, EmptyPage, ProductSkeleton} from '../../components';
 import {colors, getData, usePrevious} from '../../utils';
 import {connect, useDispatch} from 'react-redux';
 import {getWishlist} from '../../redux/action/WishlistAction';
@@ -77,7 +77,7 @@ const WishlistPage = ({
           })}
           </ScrollView>
         ) : getWishlistLoading ? (
-          <Text>LOADING....</Text>
+          <ProductSkeleton/>
         ) : getWishlistError ? (
           <Text>{getWishlistError}</Text>
         ) : (

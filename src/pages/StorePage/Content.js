@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/core';
 import React, { useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import { connect, useDispatch } from 'react-redux';
-import { ProductCard } from '../../components';
+import { ProductCard, ProductSkeleton } from '../../components';
 import { getStoreProduct } from '../../redux/action/StoreAction';
 import { colors, getData } from '../../utils';
 
@@ -60,14 +60,10 @@ const Content = ({
           );
         })
       ) : getStoreProductLoading ? (
-        <View>
-          <Text>Loading</Text>
-        </View>
+        <ProductSkeleton/>
       ) : getStoreProductError ? (
         <Text>{getStoreProductError}</Text>
-      ) : (
-        <Text>Data kosong</Text>
-      )}
+      ) : null}
     </ScrollView>
   );
 };

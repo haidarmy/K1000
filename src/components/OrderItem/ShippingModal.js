@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
+  RefreshControl,
 } from 'react-native';
 import {colors, useForm} from '../../utils';
 import {IcSwiper} from '../../assets';
@@ -58,62 +59,71 @@ const ShippingModal = ({
   };
   return (
     <View>
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.container}>
-        <View style={styles.swiper}>
-          <IcSwiper width={50} height={6} />
-        </View>
-        {shippingResult ? (
-          Object.values(shippingResult).map(item => {
-            return Object.keys(Object.values(item.costs)).map(key => (
-              <TouchableOpacity
-                key={key}
-                activeOpacity={0.7}
-                style={styles.shippingCourier}
-                onPress={() =>
-                  onSubmit(
-                    Object.values(item)[1],
-                    `${Object.values(item.costs)[key].service} (Rp ${
-                      Object.values(item.costs)[key].cost[0].value
-                    })`,
-                    Object.values(item.costs)[key].cost[0].value,
-                    `Estimasi tiba dalam ${
-                      Object.values(item.costs)[key].cost[0].etd.includes(
-                        'HARI',
-                      )
-                        ? Object.values(item.costs)[key].cost[0].etd
-                        : Object.values(item.costs)[key].cost[0].etd +
-                          ' ' +
-                          'HARI'
-                    }`,
-                  )
-                }>
-                <Text
-                  style={styles.text('Poppins-SemiBold', 18, colors.default)}>
-                  {Object.values(item)[1]}
-                </Text>
-                <Text style={styles.text('Poppins-SemiBold', 16)}>
-                  {`${Object.values(item.costs)[key].service} (Rp ${
-                    Object.values(item.costs)[key].cost[0].value
-                  })`}
-                </Text>
-                <Text style={styles.text()}>{`Estimasi tiba dalam ${
-                  Object.values(item.costs)[key].cost[0].etd.includes('HARI')
-                    ? Object.values(item.costs)[key].cost[0].etd
-                    : Object.values(item.costs)[key].cost[0].etd + ' ' + 'HARI'
-                }`}</Text>
-              </TouchableOpacity>
-            ));
-          })
-        ) : shippingLoading ? (
-          <View style={{flex: 1, backgroundColor: colors.white}}>
-            <Text>LOADING....</Text>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={shippingLoading}
+            colors={[colors.default]}
+            progressBackgroundColor={colors.white}
+            progressViewOffset={-10}
+          />
+        }
+        showsVerticalScrollIndicator={false}>
+        <View style={styles.container}>
+          <View style={styles.swiper}>
+            <IcSwiper width={50} height={6} />
           </View>
-        ) : shippingError ? (
-          <Text>{shippingError}</Text>
-        ) : null}
-      </View>
-    </ScrollView>
+          {shippingResult ? (
+            Object.values(shippingResult).map(item => {
+              return Object.keys(Object.values(item.costs)).map(key => (
+                <TouchableOpacity
+                  key={key}
+                  activeOpacity={0.7}
+                  style={styles.shippingCourier}
+                  onPress={() =>
+                    onSubmit(
+                      Object.values(item)[1],
+                      `${Object.values(item.costs)[key].service} (Rp ${
+                        Object.values(item.costs)[key].cost[0].value
+                      })`,
+                      Object.values(item.costs)[key].cost[0].value,
+                      `Estimasi tiba dalam ${
+                        Object.values(item.costs)[key].cost[0].etd.includes(
+                          'HARI',
+                        )
+                          ? Object.values(item.costs)[key].cost[0].etd
+                          : Object.values(item.costs)[key].cost[0].etd +
+                            ' ' +
+                            'HARI'
+                      }`,
+                    )
+                  }>
+                  <Text
+                    style={styles.text('Poppins-SemiBold', 18, colors.default)}>
+                    {Object.values(item)[1]}
+                  </Text>
+                  <Text style={styles.text('Poppins-SemiBold', 16)}>
+                    {`${Object.values(item.costs)[key].service} (Rp ${
+                      Object.values(item.costs)[key].cost[0].value
+                    })`}
+                  </Text>
+                  <Text style={styles.text()}>{`Estimasi tiba dalam ${
+                    Object.values(item.costs)[key].cost[0].etd.includes('HARI')
+                      ? Object.values(item.costs)[key].cost[0].etd
+                      : Object.values(item.costs)[key].cost[0].etd +
+                        ' ' +
+                        'HARI'
+                  }`}</Text>
+                </TouchableOpacity>
+              ));
+            })
+          ) : shippingLoading ? (
+            <></>
+          ) : shippingError ? (
+            <Text>{shippingError}</Text>
+          ) : null}
+        </View>
+      </ScrollView>
     </View>
   );
 };

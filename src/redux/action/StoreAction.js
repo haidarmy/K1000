@@ -394,6 +394,7 @@ export const uploadProduct = data => {
         .ref('product')
         .push(newData)
         .then(response => {
+          dispatch(getStoreProduct())
           dispatchSuccess(dispatch, UPLOAD_PRODUCT, response ? response : []);
           dispatchClear(dispatch, UPLOAD_PRODUCT);
         })
@@ -497,6 +498,7 @@ export const editProduct = (data, newImage, deleteImage, oldImage, id) => {
         .ref('product/' + id)
         .update(newData)
         .then(response => {
+          dispatch(getStoreProduct())
           dispatchSuccess(dispatch, EDIT_PRODUCT, response ? response : []);
           dispatchClear(dispatch, EDIT_PRODUCT);
         })
@@ -523,6 +525,7 @@ export const editProduct = (data, newImage, deleteImage, oldImage, id) => {
 };
 
 export const deleteProduct = (images, id, store) => {
+console.log(`🚀 → file: StoreAction.js → line 528 → deleteProduct → store`, id)
   return dispatch => {
     dispatchLoading(dispatch, DELETE_PRODUCT);
 
@@ -551,6 +554,7 @@ export const deleteProduct = (images, id, store) => {
         .ref('product/' + id)
         .remove()
         .then(response => {
+          dispatch(getStoreProduct())
           dispatchSuccess(
             dispatch,
             DELETE_PRODUCT,

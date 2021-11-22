@@ -12,6 +12,10 @@ import ProductCard from './ProductCard';
 import SearchBar from './SearchBar';
 import Drawer from './SideBarDrawer';
 import SubmitButton from './SubmitButton';
+import ProductSkeleton from './Skeleton/ProductSkeleton';
+import CategoriesSkeleton from './Skeleton/CategoriesSkeleton';
+import ItemSkeleton from './Skeleton/ItemSkeleton';
+import BankAccSkeleton from './Skeleton/BankAccSkeleton';
 
 
 export {
@@ -29,4 +33,8 @@ export {
   Loading,
   OrderItem,
   Drawer,
+  ProductSkeleton,
+  CategoriesSkeleton,
+  ItemSkeleton,
+  BankAccSkeleton
 };

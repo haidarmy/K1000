@@ -21,6 +21,7 @@ import {
   EmptyPage,
   Gap,
   Header,
+  ItemSkeleton,
   OrderItem,
   SubmitButton,
 } from '../../components';
@@ -151,7 +152,7 @@ const CartPage = ({
           </View>
         </>
       ) : getCartLoading ? (
-        <Text>Loading</Text>
+       <ItemSkeleton/>
       ) : getCartError ? (
         <Text>{getCartError}</Text>
       ) : (

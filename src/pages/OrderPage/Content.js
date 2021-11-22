@@ -9,7 +9,7 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import {connect, useDispatch} from 'react-redux';
 import {IcShowLess, IcShowMore} from '../../assets';
-import {Gap, OrderItem, SubmitButton} from '../../components';
+import {Gap, ItemSkeleton, OrderItem, SubmitButton} from '../../components';
 import {getListOrder} from '../../redux/action/OrderAction';
 import {colors, getData} from '../../utils';
 
@@ -20,10 +20,14 @@ const Content = ({
   status,
   jumpTo,
   keyword,
+  route
 }) => {
   const [uid, setUid] = useState(false);
   const dispatch = useDispatch();
   useEffect(() => {
+   if(route.params !== 'payment'){
+    jumpTo('finished')
+   }
     getData('user').then(res => {
       if (res) {
         setUid(res.uid);
@@ -84,7 +88,7 @@ const Content = ({
           );
         })
       ) : getListOrderLoading ? (
-        <Text>Loading</Text>
+        <ItemSkeleton/>
       ) : (
         <Text>Data kosong</Text>
       )}

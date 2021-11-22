@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {colors} from '../../utils';
-import {Categories} from '../../components';
+import {Categories, CategoriesSkeleton} from '../../components';
 import {connect} from 'react-redux';
 
 const Slider = ({getCategoryResult, getCategoryLoading}) => {
@@ -36,9 +36,7 @@ const Slider = ({getCategoryResult, getCategoryLoading}) => {
           );
         })
       ) : getCategoryLoading ? (
-        <View>
-          <Text>Loading</Text>
-        </View>
+        <CategoriesSkeleton/>
       ) : (
         <Text>Data Kosong</Text>
       )}

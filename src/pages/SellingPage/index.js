@@ -74,11 +74,11 @@ const SellingPage = ({navigation}) => {
     {key: 'finished', title: 'Selesai'},
     {key: 'canceled', title: 'Dibatalkan'},
   ]);
-
+  
   const searchSelling = (key) => {
     setKeyword(key)
   }
-
+  
   const renderScene = ({route, jumpTo}) => {
     switch (route.key) {
       case 'pending':

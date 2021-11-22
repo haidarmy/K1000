@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {colors} from '../../utils';
-import {Categories} from '../../components';
+import {Categories, CategoriesSkeleton} from '../../components';
 import {connect} from 'react-redux';
 
 const Slider = ({getCategoryResult, getCategoryLoading}) => {
@@ -20,6 +20,7 @@ const Slider = ({getCategoryResult, getCategoryLoading}) => {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      style={{marginRight: 8}}
       contentContainerStyle={styles.container}>
       {getCategoryResult ? (
         Object.keys(getCategoryResult).map(key => {
@@ -36,9 +37,7 @@ const Slider = ({getCategoryResult, getCategoryLoading}) => {
           );
         })
       ) : getCategoryLoading ? (
-        <View>
-          <Text>Loading</Text>
-        </View>
+        <CategoriesSkeleton/>
       ) : (
         <Text>Data Kosong</Text>
       )}
@@ -49,7 +48,8 @@ const Slider = ({getCategoryResult, getCategoryLoading}) => {
 const styles = StyleSheet.create({
   container: {
     height: 35,
-    marginBottom: 24,
+    paddingHorizontal: 2,
+    marginBottom: 16,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
