@@ -2,6 +2,7 @@ import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {GifLoading} from '../../assets';
 import {colors} from '../../utils';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 const Loading = () => {
   return (
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   gifWrapper: {
-    width: 50,
-    height: 50,
+    width: s(50),
+    height: vs(50),
   },
 });

@@ -93,7 +93,7 @@ export const getListOrder = uid => {
         querySnapshot.forEach(e => {
           dataSorted.unshift({...e.val()});
         });
-        dispatchSuccess(dispatch, GET_LIST_ORDER, dataSorted);
+        dispatchSuccess(dispatch, GET_LIST_ORDER, dataSorted.length > 0 ? dataSorted : null);
       })
       .catch(error => {
         dispatchError(dispatch, GET_LIST_ORDER, error);

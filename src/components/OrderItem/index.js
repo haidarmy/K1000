@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Dimensions,
+  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,14 +12,15 @@ import {
 import Collapsible from 'react-native-collapsible';
 import {ScrollView} from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
-import {useDispatch} from 'react-redux';
-import {SubmitButton} from '..';
+import {useDispatch, useSelector} from 'react-redux';
+import {Number, SubmitButton} from '..';
 import {
   IcChevronRight,
   IcShipping,
   IcShowLess,
   IcShowMore,
   IcStore,
+  IllDefaultAvatar,
 } from '../../assets';
 import {
   completeStatusOrder,
@@ -26,13 +28,21 @@ import {
   updateStatusOrder,
 } from '../../redux/action/OrderAction';
 import {calculateShippingCost} from '../../redux/action/RajaOngkir';
-import {colors, fullAddressToCityId, usePrevious} from '../../utils';
+import {
+  colors,
+  colorsDark,
+  fullAddressToCityId,
+  usePrevious,
+} from '../../utils';
 import Gap from '../Gap';
 import Item from './Item';
 import ShippingModal from './ShippingModal';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import EmptySearchResult from '../EmptySearchResult';
 
 const OrderItem = ({
   isFound,
+  isFoundOnChild,
   keyword,
   jumpTo,
   url,
@@ -55,6 +65,8 @@ const OrderItem = ({
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isModalVisible, setModalVisible] = useState(false);
   const [shippingCost, setShippingCost] = useState({
@@ -118,13 +130,18 @@ const OrderItem = ({
     }
   }, [address]);
 
+  useEffect(() => {
+    if (!((filteredItem && keyword) || !keyword || isFound)) {
+      isFoundOnChild(false);
+    }
+  }, [filteredItem, keyword, isFound]);
   const labelButton = (type, status) => {
     if (type === 'selling' && status === 'packed') {
       return (
         <View style={{width: '40%'}}>
           <SubmitButton
             label="Kirim"
-            height={45}
+            height={mvs(45)}
             onPress={() =>
               navigation.navigate('InputResiPage', {data, type, jumpTo})
             }
@@ -136,7 +153,7 @@ const OrderItem = ({
         <View style={{width: '40%'}}>
           <SubmitButton
             label="Bayar"
-            height={45}
+            height={mvs(45)}
             onPress={() => navigation.navigate('PaymentPage', {url})}
           />
         </View>
@@ -152,7 +169,7 @@ const OrderItem = ({
         <View style={{width: '40%'}}>
           <SubmitButton
             label="Diterima"
-            height={45}
+            height={mvs(45)}
             onPress={() => {
               Alert.alert(
                 `Melepaskan Rp ${subTotal} ke Penjual `,
@@ -181,6 +198,12 @@ const OrderItem = ({
     }
   };
 
+  const onPressed = () => {
+    if (!mainCart) {
+      navigation.navigate('OrderDetailPage', {data, type, url});
+    }
+  };
+
   const priceContainer = (type, status) => {
     if (type === 'selling' && status === 'packed') {
       return false;
@@ -205,13 +228,23 @@ const OrderItem = ({
     return (
       <TouchableOpacity
         activeOpacity={0.8}
-        onPress={() =>
-          navigation.navigate('OrderDetailPage', {data, type, url})
-        }
+        onPress={onPressed}
         style={styles.itemContainer}>
-        <View style={{flexDirection: 'row'}}>
-          <IcStore fill={colors.default} />
-          <Gap width={5} />
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          {type === 'selling' ? (
+              <Image
+              source={
+                user.avatar
+                  ? {uri: 'data:image/png;base64,' + user.avatar}
+                  : IllDefaultAvatar
+              }
+              style={styles.image}
+            />
+          ) : (
+            <IcStore fill={colors.default} />
+          )}
+
+          <Gap width={ms(5)} />
           <View style={{flex: 1}}>
             <Text style={styles.text('Poppins-SemiBold')}>
               {type === 'selling' ? user.name : toko}
@@ -221,8 +254,8 @@ const OrderItem = ({
             <Text style={styles.text('Poppins-SemiBold')}>{date}</Text>
           )}
         </View>
-        <Gap height={10} />
-        <View style={{marginHorizontal: -20}}>
+        <Gap height={mvs(10)} />
+        <View style={{marginHorizontal: ms(-20)}}>
           {subTotal && type !== 'order detail' && type !== 'selling detail' ? (
             <>
               <Item
@@ -283,20 +316,29 @@ const OrderItem = ({
                     <Text
                       style={styles.text(
                         'Poppins-SemiBold',
-                        18,
+                        ms(18),
                         colors.default,
                       )}>
                       {selectedExpedition.exp}
                     </Text>
-                    <Text style={styles.text('Poppins-SemiBold', 16)}>
+                    {/* <Text style={styles.text('Poppins-SemiBold', ms(16))}>
                       {selectedExpedition.service}
+                    </Text>
+                    <Text style={styles.text('Poppins-SemiBold', ms(16))}>
+                      {selectedExpedition.cost}
+                    </Text> */}
+                    <Text style={styles.text('Poppins-SemiBold', ms(16))}>
+                      {selectedExpedition.service}
+                      <Text> (</Text>
+                      <Number number={selectedExpedition.cost} />
+                      <Text>)</Text>
                     </Text>
                     <Text style={styles.text()}>{selectedExpedition.etd}</Text>
                   </View>
                 ) : (
                   <>
                     <IcShipping fill={colors.default} />
-                    <Gap width={20} />
+                    <Gap width={ms(20)} />
                     <Text style={{...styles.text('Poppins-SemiBold'), flex: 1}}>
                       Pilih Pengiriman
                     </Text>
@@ -307,7 +349,7 @@ const OrderItem = ({
               <Modal
                 statusBarTranslucent
                 style={{
-                  margin: 0,
+                  margin: ms(0),
                   justifyContent: 'flex-end',
                   // backgroundColor: colors.white
                 }}
@@ -317,42 +359,32 @@ const OrderItem = ({
                 onBackButtonPress={() => setModalVisible(false)}
                 swipeDirection="down"
                 deviceHeight={Dimensions.get('window').height}>
-                  <ShippingModal
-                    setModalOff={setModalOff}
-                    setSubtotalToParent={setSubtotalToParent}
-                  />
+                <ShippingModal
+                  setModalOff={setModalOff}
+                  setSubtotalToParent={setSubtotalToParent}
+                />
               </Modal>
               <View
                 style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <Text style={styles.text()}>Subtotal</Text>
-                <Text style={styles.text('Poppins-SemiBold')}>
-                  {shippingCost.priceByStore + selectedExpedition.cost}
-                </Text>
+                <Number
+                  number={shippingCost.priceByStore + selectedExpedition.cost}
+                  textStyle={styles.text('Poppins-SemiBold')}
+                />
               </View>
             </>
           )}
           {subTotal && type !== 'order detail' && type !== 'selling detail' && (
             <>
-              <Gap height={20} />
+              <Gap height={mvs(20)} />
               <TouchableOpacity
                 onPress={() => setIsCollapsed(!isCollapsed)}
                 activeOpacity={0.7}
-                style={{
-                  marginBottom: 25,
-                  marginTop: -25,
-                  alignItems: 'center',
-                }}>
+                style={styles.expandToggle}>
                 {items.length !== 1 &&
                   (isCollapsed ? <IcShowMore /> : <IcShowLess />)}
               </TouchableOpacity>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingBottom: 20,
-                  marginTop: -20,
-                  alignItems: 'center',
-                }}>
+              <View style={styles.totalPrice}>
                 <View
                   style={
                     priceContainer(type, status) && {
@@ -361,12 +393,13 @@ const OrderItem = ({
                       justifyContent: 'space-between',
                     }
                   }>
-                  <Text style={styles.text('Poppins-Regular', 18)}>
+                  <Text style={styles.text('Poppins-Regular', ms(18))}>
                     Total Pesanan
                   </Text>
-                  <Text style={styles.text('Poppins-SemiBold')}>
-                    Rp {subTotal}
-                  </Text>
+                  <Number
+                    number={subTotal}
+                    textStyle={styles.text('Poppins-SemiBold')}
+                  />
                 </View>
                 {labelButton(type, status)}
               </View>
@@ -374,7 +407,7 @@ const OrderItem = ({
                 style={{
                   backgroundColor: colors.lightgrey,
                 }}>
-                <Gap height={5} />
+                <Gap height={mvs(5)} />
               </View>
             </>
           )}
@@ -382,44 +415,65 @@ const OrderItem = ({
       </TouchableOpacity>
     );
   } else {
-    return <></>;
+    return null;
   }
 };
 
 export default OrderItem;
 
-const styles = StyleSheet.create({
-  itemContainer: {
-    backgroundColor: colors.white,
-    padding: 20,
-  },
-  shippingWrapper: {
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: colors.grey,
-    height: 60,
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginBottom: 20,
-  },
-  selectedShippingWrapper: {
-    padding: 15,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: colors.grey,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    marginBottom: 20,
-  },
-  text: (
-    fontFamily = 'Poppins-Regular',
-    fontSize = 16,
-    color = colors.black,
-  ) => ({
-    fontFamily: fontFamily,
-    fontSize: fontSize,
-    color: color,
-  }),
-});
+const getStyles = theme =>
+  StyleSheet.create({
+    itemContainer: {
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      paddingVertical: mvs(20),
+      paddingHorizontal: ms(4),
+    },
+    shippingWrapper: {
+      padding: mvs(10),
+      borderWidth: ms(1),
+      borderRadius: ms(10),
+      borderColor: theme ? colorsDark.grey : colors.grey,
+      height: mvs(60),
+      alignItems: 'center',
+      flexDirection: 'row',
+      marginBottom: mvs(20),
+    },
+    selectedShippingWrapper: {
+      padding: ms(15),
+      borderWidth: ms(1),
+      borderRadius: ms(10),
+      borderColor: theme ? colorsDark.grey : colors.grey,
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      marginBottom: mvs(20),
+    },
+    text: (
+      fontFamily = 'Poppins-Regular',
+      fontSize = ms(16),
+      color = theme ? colorsDark.black : colors.black,
+    ) => ({
+      fontFamily: fontFamily,
+      fontSize: fontSize,
+      color: color,
+    }),
+    expandToggle: {
+      marginBottom: mvs(25),
+      marginTop: mvs(-25),
+      alignItems: 'center',
+    },
+    totalPrice: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      paddingBottom: mvs(20),
+      marginTop: mvs(-20),
+      alignItems: 'center',
+    },
+    image: {
+      height: mvs(36),
+      width: ms(36),
+      borderRadius: ms(16),
+      borderWidth: ms(1),
+      borderColor: colors.default,
+    },
+  });

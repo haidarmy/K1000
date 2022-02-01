@@ -12,19 +12,30 @@ import {Gap} from '../../components';
 import {
   AvatarDummy,
   IcCartActive,
+  IcCartActiveDark,
   IcChevronRight,
   IcLogout,
   IcMap,
+  IcMapDark,
   IcProfileActive,
   IcStoreActive,
   IcWishlistActive,
   IllDefaultAvatar,
 } from '../../assets';
-import {clearStorage, colors, getData, showError} from '../../utils';
+import {
+  clearStorage,
+  colors,
+  colorsDark,
+  getData,
+  showError,
+} from '../../utils';
 import FIREBASE from '../../config/FIREBASE';
 import profile from '../../redux/reducer/profile';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import {useSelector} from 'react-redux';
 
-const Menu = ({label, icon, onPress}) => {
+const Menu = ({label, icon, onPress, theme}) => {
+  const styles = getStyles(theme);
   switch (icon) {
     case 'Profile':
       return (
@@ -32,7 +43,7 @@ const Menu = ({label, icon, onPress}) => {
           onPress={onPress}
           activeOpacity={0.7}
           style={styles.menuWrapper}>
-          <IcProfileActive fill={colors.grey} style={{marginRight: 32}} />
+          <IcProfileActive fill={colors.grey} style={{marginRight: ms(32)}} />
           <Text style={styles.menuLabel}>{label}</Text>
           <IcChevronRight />
         </TouchableOpacity>
@@ -42,7 +53,7 @@ const Menu = ({label, icon, onPress}) => {
         <TouchableOpacity
           onPress={onPress}
           activeOpacity={0.7}
-          style={[styles.menuWrapper, {marginLeft: 18}]}>
+          style={[styles.menuWrapper, {marginLeft: ms(18)}]}>
           <IcStoreActive
             width={28}
             height={28}
@@ -59,7 +70,7 @@ const Menu = ({label, icon, onPress}) => {
           onPress={onPress}
           activeOpacity={0.7}
           style={styles.menuWrapper}>
-          <IcCartActive fill={colors.grey} style={{marginRight: 32}} />
+          {theme ? <IcCartActiveDark fill={colors.grey} style={{marginRight: ms(32)}} /> : <IcCartActive fill={colors.grey} style={{marginRight: ms(32)}} />}
           <Text style={styles.menuLabel}>{label}</Text>
           <IcChevronRight />
         </TouchableOpacity>
@@ -70,7 +81,7 @@ const Menu = ({label, icon, onPress}) => {
           onPress={onPress}
           activeOpacity={0.7}
           style={styles.menuWrapper}>
-          <IcMap fill={colors.grey} style={{marginRight: 32}} />
+          {theme ? <IcMapDark fill={colors.grey} style={{marginRight: ms(32)}} /> : <IcMap fill={colors.grey} style={{marginRight: ms(32)}} />}
           <Text style={styles.menuLabel}>{label}</Text>
           <IcChevronRight />
         </TouchableOpacity>
@@ -85,7 +96,7 @@ const Menu = ({label, icon, onPress}) => {
             fill={colors.grey}
             width={24}
             height={24}
-            style={{marginRight: 32}}
+            style={{marginRight: ms(32)}}
           />
           <Text style={styles.menuLabel}>{label}</Text>
           <IcChevronRight />
@@ -97,6 +108,8 @@ const Menu = ({label, icon, onPress}) => {
 };
 
 const ProfilePage = ({navigation}) => {
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   const [profile, setProfile] = useState({
     uid: '',
     avatar: '',
@@ -167,8 +180,11 @@ const ProfilePage = ({navigation}) => {
   };
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <Gap height={64} />
+      <StatusBar
+        barStyle={theme ? 'light-content' : 'dark-content'}
+        backgroundColor={theme ? colorsDark.white : colors.white}
+      />
+      <Gap height={mvs(64)} />
       <View style={styles.profileContainer}>
         <Image
           source={
@@ -182,26 +198,40 @@ const ProfilePage = ({navigation}) => {
       </View>
       <View>
         <Menu
+          theme={theme}
           label="Profil Saya"
           icon={'Profile'}
           onPress={() => navigation.navigate('ProfileDetailPage')}
         />
         <Menu
+          theme={theme}
           label="Pesanan Saya"
           icon={'Orders'}
           onPress={() => navigation.navigate('OrderPage')}
         />
         <Menu
+          theme={theme}
           label="Toko Saya"
           icon={'Store'}
-          onPress={() => navigation.navigate('StoreDrawer')}
+          onPress={() => {
+            getData('user').then(res => {
+              if (!res?.number || !res?.address) {
+                navigation.replace('FillIdentityCautionPage', {
+                  originPage: 'StoreDrawer',
+                });
+              } else {
+                navigation.navigate('StoreDrawer');
+              }
+            });
+          }}
         />
         <Menu
+          theme={theme}
           label="Alamat"
           icon={'Address'}
           onPress={() => navigation.navigate('AddressPage')}
         />
-        <Menu label="Logout" icon={'Logout'} onPress={onLogout} />
+        <Menu theme={theme} label="Logout" icon={'Logout'} onPress={onLogout} />
       </View>
     </View>
   );
@@ -209,38 +239,42 @@ const ProfilePage = ({navigation}) => {
 
 export default ProfilePage;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-    paddingHorizontal: 20
-  },
-  profileContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-  image: {
-    height: 150,
-    width: 150,
-    marginBottom: 20,
-    borderRadius: 75,
-  },
-  name: {
-    fontFamily: 'Poppins-Medium',
-    fontSize: 24,
-    color: colors.black,
-  },
-  menuWrapper: {
-    flexDirection: 'row',
-    marginHorizontal: 20,
-    alignItems: 'center',
-    marginBottom: 33,
-  },
-  menuLabel: {
-    flex: 1,
-    fontFamily: 'Poppins-Medium',
-    fontSize: 18,
-    color: colors.black,
-  },
-});
+const getStyles = theme =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      paddingHorizontal: ms(20),
+      // paddingTop: StatusBar.currentHeight
+    },
+    profileContainer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      flex: 1,
+    },
+    image: {
+      height: mvs(150),
+      width: ms(150),
+      marginBottom: mvs(20),
+      borderRadius: ms(75),
+      borderWidth: ms(3),
+      borderColor: colors.default,
+    },
+    name: {
+      fontFamily: 'Poppins-Medium',
+      fontSize: ms(24),
+      color: theme ? colorsDark.black : colors.black,
+    },
+    menuWrapper: {
+      flexDirection: 'row',
+      marginHorizontal: ms(20),
+      alignItems: 'center',
+      marginBottom: vs(24),
+    },
+    menuLabel: {
+      flex: 1,
+      fontFamily: 'Poppins-Medium',
+      fontSize: ms(18),
+      color: theme ? colorsDark.black : colors.black,
+    },
+  });

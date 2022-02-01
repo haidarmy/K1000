@@ -9,9 +9,12 @@ import ProductDummy4 from './Dummy/ProductDummy4.jpg';
 import ProductDummy5 from './Dummy/ProductDummy5.jpg';
 import GifLoading from './Gif/gif-loading.gif';
 import IcBack from './Icons/ic-back.svg';
+import IcBackGrey from  './Icons/ic-back-grey.svg'
+import IcBackDark from './Icons/ic-back-dark.svg'
 import IcBarcode from './Icons/ic-barcode.svg';
 import IcCamera from './Icons/ic-camera.svg';
 import IcCartActive from './Icons/ic-cart-active.svg';
+import IcCartActiveDark from './Icons/ic-cart-active-dark.svg'
 import IcCartInactive from './Icons/ic-cart-inactive.svg';
 import IcCash from './Icons/ic-cash.png';
 import IcCashWd from './Icons/ic-cashwd.svg';
@@ -32,10 +35,12 @@ import IcHeartRed from './Icons/ic-heart-red.svg';
 import IcHeartSolid from './Icons/ic-heart-solid.svg';
 //Icons
 import IcHomeActive from './Icons/ic-home-active.svg';
+import IcHomeActiveDark from './Icons/ic-home-active-dark.svg'
 import IcHomeInactive from './Icons/ic-home-inactive.svg';
 import IcLogout from './Icons/ic-logout.svg';
 import IcMan from './Icons/ic-man.svg';
 import IcMap from './Icons/ic-map.svg';
+import IcMapDark from './Icons/ic-map-dark.svg'
 import IcPin from './Icons/ic-pin';
 import IcProduct from './Icons/ic-product.svg';
 import IcProfileActive from './Icons/ic-profile-active.svg';
@@ -53,24 +58,30 @@ import IcWishlistInactive from './Icons/ic-wishlist-inactive.svg';
 import IcWoman from './Icons/ic-woman.svg';
 import IcShipping from './Icons/ic_shipping.svg';
 import IcStore from './Icons/ic_store.svg';
-import IcDelete from './Icons/ic-delete.svg'
-import IcCC from './Icons/ic-cc.svg'
-import IcPlus from './Icons/ic-plus.svg'
-import IcBri from './Icons/ic-bri.svg'
-import IcBni from './Icons/ic-bni.svg'
-import IcBca from './Icons/ic-bca.svg'
-import IcBsi from './Icons/ic-bsi.svg'
-import IcBtn from './Icons/ic-btn.svg'
-import IcMandiri from './Icons/ic-mandiri.svg'
+import IcDelete from './Icons/ic-delete.svg';
+import IcCC from './Icons/ic-cc.svg';
+import IcPlus from './Icons/ic-plus.svg';
+import IcBri from './Icons/ic-bri.svg';
+import IcBni from './Icons/ic-bni.svg';
+import IcBca from './Icons/ic-bca.svg';
+import IcBsi from './Icons/ic-bsi.svg';
+import IcBtn from './Icons/ic-btn.svg';
+import IcMandiri from './Icons/ic-mandiri.svg';
 //Illustration
 import IllDefaultAvatar from './Illustrations/ill-default-avatar.png';
 import IllEmptyAddress from './Illustrations/ill-empty-address.svg';
 import IllEmptyCart from './Illustrations/ill-empty-cart.svg';
 import IllEmptyProduct from './Illustrations/ill-empty-product.svg';
+import IllEmptyAccount from './Illustrations/ill-empty-account.svg';
 import IllEmptyWishlist from './Illustrations/ill-empty-wishlist.svg';
+import IllEmptyOrder from './Illustrations/ill-empty-order.svg';
+import IllEmptySearch from './Illustrations/ill-empty-search.svg';
 import IllSuccess from './Illustrations/ill-success.svg';
-import IllSuccessWD from './Illustrations/ill-success-wd.svg'
+import IllSuccessWD from './Illustrations/ill-success-wd.svg';
 import IllWelcomePage from './Illustrations/ill-welcome-page.svg';
+import IllFillForm from './Illustrations/ill-fill-form.svg';
+import IllOrderDelivered from './Illustrations/ill-order-delivered.svg';
+import IllLogo from './Illustrations/ill-logo.svg';
 
 export {
   GifLoading,
@@ -78,10 +89,16 @@ export {
   IllEmptyAddress,
   IllEmptyCart,
   IllEmptyProduct,
+  IllEmptyOrder,
+  IllEmptySearch,
   IllEmptyWishlist,
+  IllEmptyAccount,
+  IllFillForm,
+  IllOrderDelivered,
   IllSuccess,
   IllSuccessWD,
   IllDefaultAvatar,
+  IllLogo,
   Ikan,
   IcBri,
   IcBca,
@@ -97,14 +114,18 @@ export {
   IcSell,
   IcProduct,
   IcHomeActive,
+  IcHomeActiveDark,
   IcHomeInactive,
   IcCartActive,
+  IcCartActiveDark,
   IcCartInactive,
   IcWishlistActive,
   IcWishlistInactive,
   IcProfileActive,
   IcProfileInactive,
   IcBack,
+  IcBackGrey,
+  IcBackDark,
   IcBarcode,
   IcChevronRight,
   IcDelete,
@@ -120,6 +141,7 @@ export {
   IcClose,
   IcCloseSolid,
   IcMap,
+  IcMapDark,
   IcCamera,
   IcClipboard,
   IcGallery,

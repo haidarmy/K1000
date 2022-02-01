@@ -7,7 +7,9 @@ import {
   View,
 } from 'react-native';
 import TextInputMask from 'react-native-text-input-mask';
-import {colors} from '../../utils';
+import {colors, colorsDark} from '../../utils';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import { useSelector } from 'react-redux';
 
 const ProfileField = ({
   label,
@@ -23,6 +25,8 @@ const ProfileField = ({
   textInputMask,
 }) => {
   const [press, setPress] = useState(false);
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   return (
     <View style={styles.container}>
       <View style={{flex: 1}}>
@@ -66,26 +70,27 @@ const ProfileField = ({
 
 export default ProfileField;
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    // backgroundColor: 'white'
   },
   label: {
-    fontSize: 18,
+    fontSize: ms(18),
     fontFamily: 'Poppins-Medium',
-    color: colors.black,
-    paddingLeft: 3,
+    color: theme ? colorsDark.black : colors.black,
+    paddingLeft: ms(3),
   },
   value: (underline, edit) => ({
-    fontSize: 18,
+    fontSize: ms(18),
     fontFamily: 'Poppins-Regular',
-    color: colors.black,
+    color: theme ? colorsDark.black : colors.black,
     borderBottomWidth: edit ? underline : 0,
     borderBottomColor: colors.default,
   }),
   option: {
-    fontSize: 18,
+    fontSize: ms(18),
     fontFamily: 'Poppins-Medium',
     color: colors.default,
   },

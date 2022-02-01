@@ -1,26 +1,53 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {colors} from '../../utils';
+import {colors, colorsDark} from '../../utils';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {Gap} from '../../components';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import {useSelector} from 'react-redux';
 
 const Product = () => {
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   return (
     <View style={styles.product}>
-      <SkeletonPlaceholder backgroundColor={'#DDDDDD'} speed={1200}>
+      <SkeletonPlaceholder
+        backgroundColor={theme ? colorsDark.grey : '#DDDDDD'}
+        highlightColor={theme ? colors.grey : '#F2F8FC'}
+        speed={1200}>
         <View style={styles.image} />
       </SkeletonPlaceholder>
-      <View style={{paddingHorizontal: 10, paddingVertical: 5}}>
-        <SkeletonPlaceholder backgroundColor={'#DDDDDD'} speed={1200}>
-          <View style={{height: 30, width: 100, borderRadius: 5}}></View>
+      <View style={{paddingHorizontal: mvs(10), paddingVertical: mvs(5)}}>
+        <SkeletonPlaceholder
+          backgroundColor={theme ? colorsDark.grey : '#DDDDDD'}
+          highlightColor={theme ? colors.grey : '#F2F8FC'}
+          speed={1200}>
+          <View
+            style={{
+              height: vs(30),
+              width: s(100),
+              borderRadius: mvs(5),
+            }}></View>
         </SkeletonPlaceholder>
-        <Gap height={15} />
-        <SkeletonPlaceholder backgroundColor={'#DDDDDD'} speed={1200}>
-          <View style={{height: 30, width: 150, borderRadius: 5}}></View>
+        <Gap height={vs(15)} />
+        <SkeletonPlaceholder
+          backgroundColor={theme ? colorsDark.grey : '#DDDDDD'}
+          highlightColor={theme ? colors.grey : '#F2F8FC'}
+          speed={1200}>
+          <View
+            style={{
+              height: vs(30),
+              width: s(130),
+              borderRadius: mvs(5),
+            }}></View>
         </SkeletonPlaceholder>
-        <Gap height={10} />
-        <SkeletonPlaceholder backgroundColor={'#DDDDDD'} speed={1200}>
-          <View style={{height: 20, width: 50, borderRadius: 5}}></View>
+        <Gap height={vs(10)} />
+        <SkeletonPlaceholder
+          backgroundColor={theme ? colorsDark.grey : '#DDDDDD'}
+          highlightColor={theme ? colors.grey : '#F2F8FC'}
+          speed={1200}>
+          <View
+            style={{height: vs(20), width: s(50), borderRadius: mvs(5)}}></View>
         </SkeletonPlaceholder>
       </View>
     </View>
@@ -28,6 +55,8 @@ const Product = () => {
 };
 
 const ProductSkeleton = () => {
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   return (
     <View style={styles.container}>
       <Product />
@@ -40,31 +69,32 @@ const ProductSkeleton = () => {
 
 export default ProductSkeleton;
 
-const styles = StyleSheet.create({
-  container: {
-    // paddingVertical: 10,
-    // paddingHorizontal: 28,
-    // backgroundColor: colors.white,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  product: {
-    backgroundColor: colors.lightgrey,
-    minHeight: 296,
-    maxHeight: 360,
-    paddingBottom: 20,
-    width: 168,
-    marginBottom: 16,
-    borderRadius: 10,
-  },
-  image: {
-    // resizeMode: 'cover',
-    // backgroundColor: 'yellow',
-    height: 160,
-    width: 168,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    marginBottom: 8,
-  },
-});
+const getStyles = theme =>
+  StyleSheet.create({
+    container: {
+      // paddingVertical: 10,
+      // paddingHorizontal: 28,
+      // backgroundColor: colors.white,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+    },
+    product: {
+      backgroundColor: theme ? colorsDark.lightgrey : colors.lightgrey,
+      minHeight: vs(280),
+      maxHeight: vs(320),
+      paddingBottom: mvs(20),
+      width: s(150),
+      marginBottom: mvs(16),
+      borderRadius: mvs(10),
+    },
+    image: {
+      // resizeMode: 'cover',
+      // backgroundColor: 'yellow',
+      height: vs(160),
+      width: s(150),
+      borderTopLeftRadius: mvs(10),
+      borderTopRightRadius: mvs(10),
+      marginBottom: mvs(8),
+    },
+  });

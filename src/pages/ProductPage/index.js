@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {height, width} from 'styled-system';
 import {
   IcCartInactive,
@@ -24,19 +24,22 @@ import {
   ProductDummy1,
   IcStore,
   IcTrash,
+  IcBackGrey,
 } from '../../assets';
-import {SubmitButton, Gap} from '../../components';
+import {SubmitButton, Gap, Number} from '../../components';
 import {addToCart, getCartList} from '../../redux/action/CartAction';
 import {deleteProduct} from '../../redux/action/StoreAction';
 import {
   addToWishlist,
   deleteWishlistItem,
 } from '../../redux/action/WishlistAction';
-import {colors, getData, showWarning, useForm, usePrevious} from '../../utils';
+import {colors, colorsDark, getData, showWarning, useForm, usePrevious} from '../../utils';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
   const dispatch = useDispatch();
-
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   const [isFavourite, setIsFavourite] = useState(false);
   const [dialog, setDialog] = useState(null);
   const [isActive, setIsActive] = useState(0);
@@ -75,7 +78,7 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
     getData('user').then(res => {
       if (res) {
         setForm('uid', res.uid);
-        dispatch(getCartList(res.uid))
+        dispatch(getCartList(res.uid));
       }
     });
   }, [form.uid]);
@@ -183,7 +186,7 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
               <Text
                 style={styles.text(
                   'Poppins-Regular',
-                  24,
+                  ms(18),
                   colors.white,
                 )}>{`Produk\nHabis`}</Text>
             </View>
@@ -214,27 +217,23 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
               </Text>
             ))}
           </View>
-          <View
-            style={{
-              width: Dimensions.get('window').width,
-              justifyContent: 'space-between',
-              flexDirection: 'row',
-              position: 'absolute',
-              paddingTop: 40,
-              paddingHorizontal: 20,
-            }}>
+          <View style={styles.navWrapper}>
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() => navigation.navigate('HomePage')}
+              onPress={() => navigation.goBack()}
               style={styles.backButton}>
-              <IcBack width={30} height={30} />
+              <IcBackGrey width={ms(24)} height={mvs(24)} />
             </TouchableOpacity>
             {!route.params.store && (
               <TouchableOpacity
                 style={styles.loveButton}
                 onPress={() => sendToWishlist()}
                 activeOpacity={0.7}>
-                {isFavourite ? <IcHeartRed /> : <IcWishlistInactive />}
+                {isFavourite ? (
+                  <IcHeartRed width={ms(24)} height={mvs(24)} />
+                ) : (
+                  <IcWishlistInactive width={ms(24)} height={mvs(24)} />
+                )}
               </TouchableOpacity>
             )}
           </View>
@@ -256,16 +255,10 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
               menus={() => null}
               enableSwipeDown={true}
               imageUrls={images}></ImageViewer>
-            <View
-              style={{
-                flexDirection: 'row-reverse',
-                position: 'absolute',
-                top: 15,
-                right: 15,
-              }}>
+            <View style={styles.closeWrapper}>
               <IcClose
-                width={30}
-                height={30}
+                width={ms(30)}
+                height={mvs(30)}
                 onPress={() => setDialog(false)}
               />
             </View>
@@ -275,11 +268,11 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
             <View style={styles.infoContainer}>
               <Text style={styles.name}>{name}</Text>
-              <Text style={styles.price}>Rp {price}</Text>
+              <Number number={price} textStyle={styles.price} />
               <Text style={styles.weight}>{weight} kg</Text>
             </View>
             {!route.params.store ? (
-              <View style={{flexDirection: 'row', paddingTop: 5}}>
+              <View style={styles.counterContainer}>
                 <TouchableOpacity
                   activeOpacity={0.5}
                   onPress={() => minusFunc()}
@@ -287,7 +280,10 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
                   <Text style={styles.counterText}>-</Text>
                 </TouchableOpacity>
                 <TextInput
-                  style={(styles.counterText, styles.counterWrapper.value)}
+                  style={[
+                    styles.text('Poppins-Medium'),
+                    styles.counterWrapper.value,
+                  ]}
                   defaultValue="1"
                   value={`${
                     route.params.orderAmount
@@ -314,16 +310,15 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
               </View>
             ) : null}
           </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginTop: -15,
-              paddingVertical: 10,
-            }}>
+          <View style={styles.storeWrapper}>
             <IcStore fill={colors.default} />
-            <Gap width={5} />
-            <Text style={{fontFamily: 'Poppins-SemiBold', fontSize: 16}}>
+            <Gap width={ms(5)} />
+            <Text
+              style={{
+                fontFamily: 'Poppins-SemiBold',
+                fontSize: ms(16),
+                color: theme ? colorsDark.black : colors.black,
+              }}>
               {store}
             </Text>
           </View>
@@ -336,18 +331,11 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
               {description}
             </Text>
             {lengthMore ? (
-              <Text
-                onPress={toggleNumberOfLines}
-                style={{
-                  lineHeight: 21,
-                  marginTop: 10,
-                  color: colors.default,
-                  fontFamily: 'Poppins-Bold',
-                }}>
+              <Text onPress={toggleNumberOfLines} style={styles.showMore}>
                 {textShown ? 'Baca lebih sedikit...' : 'Baca selengkapnya...'}
               </Text>
             ) : null}
-            <Gap height={20} />
+            <Gap height={mvs(20)} />
           </View>
         </View>
       </ScrollView>
@@ -356,11 +344,11 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
           <View style={styles.footerWrapper}>
             <TouchableOpacity activeOpacity={0.7} style={styles.cart}>
               {route.params.store ? (
-                <IcTrash width={24} height={24} onPress={onDelete} />
+                <IcTrash width={ms(24)} height={mvs(24)} onPress={onDelete} />
               ) : (
                 <IcCartInactive
-                  width={24}
-                  height={24}
+                  width={ms(24)}
+                  height={mvs(24)}
                   onPress={() => navigation.navigate('CartPage')}
                 />
               )}
@@ -368,7 +356,11 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
                 !route.params.store ? (
                   <View style={styles.badge}>
                     <Text
-                      style={styles.text('Poppins-SemiBold', 10, colors.white)}>
+                      style={styles.text(
+                        'Poppins-SemiBold',
+                        ms(10),
+                        colors.white,
+                      )}>
                       {Object.keys(getCartResult.orders).length < 99
                         ? Object.keys(getCartResult.orders).length
                         : '99+'}
@@ -400,94 +392,97 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
   );
 };
 
-const styles = {
+const getStyles = theme => ({
   page: {
-    backgroundColor: colors.white,
+    backgroundColor: theme ? colorsDark.white : colors.white,
     flex: 1,
   },
   container: {
     flex: 1,
   },
   imageContainer: {
-    width: undefined,
-    height: 375,
+    height: '50%',
   },
   backButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255, 0.8)',
+    width: ms(32),
+    height: mvs(32),
+    borderRadius: ms(16),
+    backgroundColor: theme ? colorsDark.whiteTranslucent : colors.whiteTranslucent,
     justifyContent: 'center',
     alignItems: 'center',
   },
   loveButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255, 0.8)',
+    width: ms(32),
+    height: mvs(32),
+    borderRadius: ms(16),
+    backgroundColor: theme ? colorsDark.whiteTranslucent : colors.whiteTranslucent,
     justifyContent: 'center',
     alignItems: 'center',
   },
   content: {
-    paddingHorizontal: 20,
-    paddingTop: 35,
+    paddingHorizontal: ms(20),
+    paddingTop: mvs(30),
   },
   infoContainer: {
-    marginBottom: 20,
+    marginBottom: mvs(20),
+    flex: 1,
   },
   name: {
-    fontSize: 24,
-    color: colors.black,
+    fontSize: mvs(24),
+    color: theme ? colorsDark.black : colors.black,
     fontFamily: 'Poppins-SemiBold',
   },
   price: {
-    fontSize: 24,
+    fontSize: mvs(24),
     color: colors.default,
     fontFamily: 'Poppins-SemiBold',
   },
   weight: {
-    marginTop: -5,
-    fontSize: 14,
+    marginTop: mvs(-5),
+    fontSize: mvs(14),
     color: colors.grey,
     fontFamily: 'Poppins-SemiBold',
   },
   desc: {
-    fontSize: 20,
-    color: colors.black,
+    fontSize: mvs(20),
+    color: theme ? colorsDark.black : colors.black,
     fontFamily: 'Poppins-Medium',
   },
   detail: {
-    fontSize: 16,
+    fontSize: mvs(16),
     color: colors.grey,
     fontFamily: 'Poppins-Regular',
-    lineHeight: 21,
+    lineHeight: mvs(21),
     textAlign: 'justify',
   },
   footer: {
-    height: 122,
-    backgroundColor: colors.lightgrey,
+    // height: 122,
+    backgroundColor: theme ? colorsDark.lightgrey : colors.lightgrey,
   },
   footerWrapper: {
-    paddingHorizontal: 20,
-    paddingVertical: 32,
+    paddingVertical: vs(20),
+    paddingHorizontal: s(15),
     justifyContent: 'space-between',
     flexDirection: 'row',
+    // backgroundColor: colors.red
   },
   cart: {
-    width: 58,
-    height: 58,
-    backgroundColor: colors.white,
-    borderRadius: 10,
+    width: ms(58),
+    height: mvs(58),
+    backgroundColor: theme ? colorsDark.white : colors.white,
+    borderRadius: ms(10),
     justifyContent: 'center',
     alignItems: 'center',
   },
   button: {
-    height: 58,
-    width: 280,
+    height: mvs(58),
+    width: '75%',
+    // width: ms(280),
+    // padding: 20
   },
   image: {
     width: Dimensions.get('window').width,
-    height: 375,
+    height: mvs(375),
     resizeMode: 'cover',
   },
   pagination: {
@@ -495,7 +490,7 @@ const styles = {
     position: 'absolute',
     bottom: 0,
     alignSelf: 'center',
-    marginBottom: 15,
+    marginBottom: mvs(15),
   },
   pagingText: {
     color: colors.black,
@@ -505,47 +500,49 @@ const styles = {
   },
   counterText: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 16,
-    color: colors.black,
+    fontSize: ms(16),
+    color: theme ? colorsDark.black : colors.black,
   },
+  counterContainer: {flexDirection: 'row', paddingTop: mvs(5)},
   counterWrapper: {
     plus: {
-      width: 32,
-      height: 32,
-      backgroundColor: colors.white,
-      borderWidth: 2,
-      borderColor: colors.lightgrey,
-      borderTopRightRadius: 8,
-      borderBottomRightRadius: 8,
+      width: ms(32),
+      height: mvs(32),
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      borderWidth: ms(2),
+      borderColor: theme ? colorsDark.lightgrey : colors.lightgrey,
+      borderTopRightRadius: ms(8),
+      borderBottomRightRadius: ms(8),
       justifyContent: 'center',
       alignItems: 'center',
     },
     value: {
-      width: 32,
-      height: 32,
+      color: theme ? colorsDark.black : colors.black,
+      width: ms(32),
+      height: mvs(32),
       padding: 0,
-      backgroundColor: colors.lightgrey,
+      backgroundColor: theme ? colorsDark.lightgrey : colors.lightgrey,
       justifyContent: 'center',
       alignItems: 'center',
-      borderWidth: 2,
-      borderColor: colors.lightgrey,
+      borderWidth: ms(2),
+      borderColor: theme ? colorsDark.lightgrey : colors.lightgrey,
     },
     minus: {
-      width: 32,
-      height: 32,
-      backgroundColor: colors.white,
-      borderColor: colors.lightgrey,
-      borderWidth: 2,
-      borderTopLeftRadius: 8,
-      borderBottomLeftRadius: 8,
+      width: ms(32),
+      height: mvs(32),
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      borderColor: theme ? colorsDark.lightgrey : colors.lightgrey,
+      borderWidth: ms(2),
+      borderTopLeftRadius: ms(8),
+      borderBottomLeftRadius: ms(8),
       justifyContent: 'center',
       alignItems: 'center',
     },
   },
   text: (
     fontFamily = 'Poppins-Regular',
-    fontSize = 16,
-    color = colors.black,
+    fontSize = ms(16),
+    color = theme ? colorsDark.black : colors.black,
   ) => ({
     textAlign: 'center',
     fontFamily: fontFamily,
@@ -554,11 +551,11 @@ const styles = {
   }),
   outOfStock: {
     backgroundColor: 'rgba(0,0,0,0.75)',
-    width: 160,
-    height: 160,
-    borderRadius: 80,
+    width: ms(120),
+    height: mvs(120),
+    borderRadius: ms(80),
     position: 'absolute',
-    top: 107.5,
+    top: mvs(107.5),
     zIndex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -566,16 +563,42 @@ const styles = {
   },
   badge: {
     backgroundColor: colors.red,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: ms(24),
+    height: mvs(24),
+    borderRadius: ms(12),
     position: 'absolute',
-    top: 6,
-    right: 6,
+    top: mvs(6),
+    right: ms(6),
     alignItems: 'center',
     justifyContent: 'center',
   },
-};
+  navWrapper: {
+    width: Dimensions.get('window').width,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    position: 'absolute',
+    padding: mvs(20),
+    paddingTop: StatusBar.currentHeight + mvs(10),
+  },
+  closeWrapper: {
+    flexDirection: 'row-reverse',
+    position: 'absolute',
+    top: mvs(15),
+    right: ms(15),
+  },
+  storeWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: mvs(-15),
+    paddingVertical: mvs(10),
+  },
+  showMore: {
+    lineHeight: mvs(21),
+    marginTop: mvs(10),
+    color: colors.default,
+    fontFamily: 'Poppins-Bold',
+  },
+});
 
 const mapStateToProps = state => ({
   setCartLoading: state.CartReducer.setCartLoading,

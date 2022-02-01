@@ -9,6 +9,7 @@ import {
 } from '../../redux/action/ProductAction';
 import {getStoreProduct, getStoreProductByCategory} from '../../redux/action/StoreAction';
 import {colors} from '../../utils/';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 const Categories = ({
   label,
@@ -53,9 +54,9 @@ const Categories = ({
 
 const styles = StyleSheet.create({
   wrapper: (sliderState, id) => ({
-    borderRadius: 10,
-    padding: 5,
-    paddingHorizontal: 12,
+    borderRadius: ms(10),
+    padding: mvs(4),
+    paddingHorizontal: ms(12),
     // marginRight: 24,
     maxWidth: 'auto',
     alignItems: 'center',
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
   }),
   text: (sliderState, id) => ({
     color: sliderState === id ? colors.default : colors.grey,
-    fontSize: 18,
+    fontSize: ms(18),
     fontFamily: 'Poppins-SemiBold',
   }),
 });

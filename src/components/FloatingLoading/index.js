@@ -1,9 +1,13 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from 'react-native';
 import {GifLoading} from '../../assets';
-import {colors} from '../../utils';
+import {colors, colorsDark} from '../../utils';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import { useSelector } from 'react-redux';
 
 const FloatingLoading = () => {
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   return (
     <View style={styles.container}>
       <View style={styles.loadingWrapper}>
@@ -15,10 +19,10 @@ const FloatingLoading = () => {
 
 export default FloatingLoading;
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.loading,
+    backgroundColor: theme ? colorsDark.loading : colors.loading,
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
@@ -26,15 +30,15 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   loadingWrapper: {
-    backgroundColor: 'white',
-    width: 150,
-    height: 100,
+    backgroundColor: theme ? colorsDark.white : colors.white,
+    width: ms(120),
+    height: mvs(80),
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: ms(15),
   },
   gifWrapper: {
-    width: 50,
-    height: 50,
+    width: ms(50),
+    height: mvs(50),
   },
 });

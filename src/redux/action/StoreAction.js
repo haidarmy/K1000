@@ -4,6 +4,7 @@ import {
   dispatchError,
   dispatchLoading,
   dispatchSuccess,
+  getData,
   showError,
   showSucces,
 } from '../../utils';
@@ -48,13 +49,15 @@ export const getStoreProduct = (
   rangeMaximum,
   rangeMinimum,
 ) => {
-  console.log(`🚀 → file: StoreAction.js → line 55 → idCategory`, idCategory)
+  console.log(`🚀 → file: StoreAction.js → line 55 → idCategory`, idCategory);
   return dispatch => {
-
     //Loading
     dispatchLoading(dispatch, GET_STORE_PRODUCT);
     if (idCategory) {
-      console.log(`🚀 → file: StoreAction.js → line 55 → idCategory`, idCategory)
+      console.log(
+        `🚀 → file: StoreAction.js → line 55 → idCategory`,
+        idCategory,
+      );
       FIREBASE.database()
         .ref('product')
         .orderByChild('category')
@@ -75,7 +78,8 @@ export const getStoreProduct = (
           showError(error.message);
         });
     } else if (keyword) {
-      FIREBASE.database()
+      getData('user').then(res => {
+        FIREBASE.database()
         .ref('product')
         .orderByChild('name')
         .equalTo(keyword)
@@ -83,7 +87,16 @@ export const getStoreProduct = (
           //Result
           // console.log("DATA FIREBASE", data);
           // Success
-          dispatchSuccess(dispatch, GET_STORE_PRODUCT, querySnapshot.val() ? querySnapshot.val() : []);
+          dispatchSuccess(
+            dispatch,
+            GET_STORE_PRODUCT,
+            Object.keys(querySnapshot.val() ?? {}).some(
+              key =>
+                querySnapshot.val()[key].uid === res.uid,
+            )
+              ? querySnapshot.val()
+              : [],
+          );
 
           //Clear Redux Data
           // dispatchClear(dispatch, GET_STORE_PRODUCT)
@@ -93,6 +106,7 @@ export const getStoreProduct = (
           dispatchError(dispatch, GET_STORE_PRODUCT, error.message);
           showError(error.message);
         });
+      })
     } else if (rangeMaximum || rangeMinimum) {
       if (rangeMaximum && rangeMinimum) {
         FIREBASE.database()
@@ -280,7 +294,15 @@ export const getStoreProduct = (
             dataSorted.unshift({...e.val()});
           });
           // Success
-          dispatchSuccess(dispatch, GET_STORE_PRODUCT, dataSorted);
+          dispatchSuccess(
+            dispatch,
+            GET_STORE_PRODUCT,
+            dataSorted.length > 0 ? dataSorted : null,
+          );
+          console.log(
+            `🚀 → file: StoreAction.js → line 290 → dataSorted`,
+            dataSorted,
+          );
 
           //Clear Redux Data
           // dispatchClear(dispatch, GET_STORE_PRODUCT)
@@ -327,7 +349,6 @@ export const getStoreProductByRange = (maximum, minimum) => ({
 export const deleteParameterStoreProduct = () => ({
   type: DELETE_PARAMETER_STORE_PRODUCT,
 });
-
 
 export const uploadProduct = data => {
   return dispatch => {
@@ -385,16 +406,22 @@ export const uploadProduct = data => {
     };
 
     const pushData = () => {
+      var myRef = FIREBASE.database().ref('product').push();
+      var key = myRef.getKey();
+
       const newData = {
         ...data,
         image: url,
+        productId: key,
       };
+
       console.log('data baru', newData);
       FIREBASE.database()
         .ref('product')
-        .push(newData)
+        .child(key)
+        .set(newData)
         .then(response => {
-          dispatch(getStoreProduct())
+          dispatch(getStoreProduct());
           dispatchSuccess(dispatch, UPLOAD_PRODUCT, response ? response : []);
           dispatchClear(dispatch, UPLOAD_PRODUCT);
         })
@@ -405,8 +432,13 @@ export const uploadProduct = data => {
     };
 
     const uploadData = async () => {
-      await pushImage();
-      pushData();
+      try {
+        await pushImage();
+        pushData();
+      } catch (error) {
+        dispatchError(dispatch, UPLOAD_PRODUCT, error);
+        showError(error);
+      }
     };
     uploadData();
   };
@@ -444,7 +476,7 @@ export const editProduct = (data, newImage, deleteImage, oldImage, id) => {
               snapshot => {
                 console.log(snapshot.totalBytes);
               },
-              error=> {
+              error => {
                 dispatchError(dispatch, EDIT_PRODUCT, error);
                 showError(error);
                 reject(error);
@@ -493,12 +525,13 @@ export const editProduct = (data, newImage, deleteImage, oldImage, id) => {
         ...data,
         image: [...url, ...oldImage],
       };
+      console.clear()
       console.log('data baru', newData);
       FIREBASE.database()
         .ref('product/' + id)
         .update(newData)
         .then(response => {
-          dispatch(getStoreProduct())
+          dispatch(getStoreProduct());
           dispatchSuccess(dispatch, EDIT_PRODUCT, response ? response : []);
           dispatchClear(dispatch, EDIT_PRODUCT);
         })
@@ -517,15 +550,24 @@ export const editProduct = (data, newImage, deleteImage, oldImage, id) => {
           await popImage();
         }
       };
-      await image();
-      pushData();
+      try {
+        await image();
+        pushData();
+      } catch (error) {
+        dispatchError(dispatch, EDIT_PRODUCT, error);
+        showError(error);
+      }
     };
     uploadData();
   };
 };
 
 export const deleteProduct = (images, id, store) => {
-console.log(`🚀 → file: StoreAction.js → line 528 → deleteProduct → store`, id)
+  console.log(`🚀 → file: StoreAction.js → line 543 → deleteProduct → store`, {
+    images,
+    id,
+    store,
+  });
   return dispatch => {
     dispatchLoading(dispatch, DELETE_PRODUCT);
 
@@ -554,15 +596,15 @@ console.log(`🚀 → file: StoreAction.js → line 528 → deleteProduct → st
         .ref('product/' + id)
         .remove()
         .then(response => {
-          dispatch(getStoreProduct())
+          dispatch(getStoreProduct());
           dispatchSuccess(
             dispatch,
             DELETE_PRODUCT,
             'Product berhasil dihapus!',
           );
           dispatchClear(dispatch, DELETE_PRODUCT);
-          dispatch(getStoreProduct(store))
-          showSucces('Product berhasil dihapus!')
+          dispatch(getStoreProduct(store));
+          showSucces('Product berhasil dihapus!');
         })
         .catch(error => {
           dispatchError(dispatch, DELETE_PRODUCT, error);
@@ -570,9 +612,14 @@ console.log(`🚀 → file: StoreAction.js → line 528 → deleteProduct → st
         });
     };
     const popProduct = async () => {
-      await popImage()
-      popData()
-    }
-    popProduct()
+      try {
+        popData();
+        popImage();
+      } catch (error) {
+        dispatchError(dispatch, DELETE_PRODUCT, error);
+        showError(error);
+      }
+    };
+    popProduct();
   };
 };

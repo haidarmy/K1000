@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -7,21 +7,29 @@ import {
   ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
+  useWindowDimensions,
+  Dimensions,
 } from 'react-native';
-import {colors, useForm} from '../../utils';
+import {colors, colorsDark, useForm} from '../../utils';
 import {IcSwiper} from '../../assets';
 import SubmitButton from '../SubmitButton';
 import Categories from '../Categories';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   getProductByRange,
   getProductBySort,
 } from '../../redux/action/ProductAction';
-import { getStoreProductByRange, getStoreProductBySort } from '../../redux/action/StoreAction';
+import {
+  getStoreProductByRange,
+  getStoreProductBySort,
+} from '../../redux/action/StoreAction';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 const FilterProduct = ({setModalOff, type}) => {
   const dispatch = useDispatch();
   const [sliderState, setSliderState] = useState('');
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   const setBackgroundSliderToParent = childdata => {
     setSliderState(childdata);
   };
@@ -34,17 +42,17 @@ const FilterProduct = ({setModalOff, type}) => {
   const onSubmit = () => {
     setModalOff(toggle => !toggle);
     if (range.minimum || range.maximum) {
-     if(type === 'Home'){
-      dispatch(getProductByRange(range.maximum, range.minimum));
-     }else if(type === 'Store'){
-      dispatch(getStoreProductByRange(range.maximum, range.minimum));
-     }
+      if (type === 'Home') {
+        dispatch(getProductByRange(range.maximum, range.minimum));
+      } else if (type === 'Store') {
+        dispatch(getStoreProductByRange(range.maximum, range.minimum));
+      }
     }
     if (sort) {
-      if(type === 'Home'){
+      if (type === 'Home') {
         dispatch(getProductBySort(sort));
-      }else if(type === 'Store'){
-        dispatch(getStoreProductBySort(sort))
+      } else if (type === 'Store') {
+        dispatch(getStoreProductBySort(sort));
       }
     }
   };
@@ -52,17 +60,10 @@ const FilterProduct = ({setModalOff, type}) => {
     <KeyboardAvoidingView behavior="position" enabled>
       <View style={styles.container}>
         <View style={styles.swiper}>
-          <IcSwiper width={50} height={6} />
+          <IcSwiper width={ms(50)} height={mvs(6)}/>
         </View>
-        <View style={{height: 102, marginBottom: 24}}>
-          <Text
-            style={{
-              marginBottom: 16,
-              fontSize: 16,
-              fontFamily: 'Poppins-Medium',
-            }}>
-            Urutkan Berdasarkan
-          </Text>
+        <View style={{height: mvs(102), marginBottom: mvs(24)}}>
+          <Text style={styles.text(mvs(16))}>Urutkan Berdasarkan</Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -110,15 +111,8 @@ const FilterProduct = ({setModalOff, type}) => {
           </ScrollView>
         </View>
 
-        <View style={{height: 108, marginBottom: 50}}>
-          <Text
-            style={{
-              marginBottom: 6,
-              fontSize: 16,
-              fontFamily: 'Poppins-Medium',
-            }}>
-            Rentang Harga
-          </Text>
+        <View style={{height: mvs(108), marginBottom: mvs(50)}}>
+          <Text style={styles.text(mvs(6))}>Rentang Harga</Text>
           <View style={styles.range.wrapper}>
             <TextInput
               style={styles.range.input}
@@ -129,7 +123,7 @@ const FilterProduct = ({setModalOff, type}) => {
               value={range.minimum}
               onChangeText={value => setRange('minimum', value)}
             />
-            <Text style={{fontSize: 32, marginBottom: 15}}>—</Text>
+            <Text style={{fontSize: ms(28), marginBottom: mvs(15), color: colors.grey}}>—</Text>
             <TextInput
               style={styles.range.input}
               placeholder="Maksimal"
@@ -147,24 +141,24 @@ const FilterProduct = ({setModalOff, type}) => {
   );
 };
 
-const styles = {
+const getStyles = theme => ({
   container: {
-    height: 470,
-    marginBottom: -50,
-    backgroundColor: colors.white,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    height: mvs(460),
+    marginBottom: mvs(-50),
+    backgroundColor: theme ? colorsDark.white : colors.white,
+    paddingHorizontal: ms(20),
+    paddingVertical: mvs(16),
+    borderTopLeftRadius: ms(10),
+    borderTopRightRadius: ms(10),
   },
   swiper: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginBottom: 16,
+    marginBottom: mvs(16),
   },
   sort: {
-    height: 35,
-    marginBottom: 24,
+    height: mvs(35),
+    marginBottom: mvs(24),
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
@@ -175,18 +169,25 @@ const styles = {
       alignItems: 'center',
     },
     input: {
-      width: 142,
-      height: 58,
-      backgroundColor: colors.lightgrey,
-      borderRadius: 10,
-      marginTop: 16,
-      marginBottom: 26,
-      paddingVertical: 16,
-      paddingHorizontal: 24,
-      fontSize: 18,
+      color: theme ? colorsDark.black : colors.black,
+      width: ms(142),
+      height: mvs(58),
+      backgroundColor: theme ? colorsDark.lightgrey : colors.lightgrey,
+      borderRadius: ms(10),
+      marginTop: mvs(16),
+      marginBottom: mvs(26),
+      paddingVertical: mvs(16),
+      paddingHorizontal: ms(24),
+      fontSize: ms(18),
       fontFamily: 'Poppins-Regular',
     },
   },
-};
+  text: marginBottom => ({
+    marginBottom: marginBottom,
+    fontSize: ms(16),
+    fontFamily: 'Poppins-Medium',
+    color: theme ? colorsDark.black : colors.black
+  }),
+});
 
 export default FilterProduct;

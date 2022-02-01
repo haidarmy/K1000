@@ -9,16 +9,17 @@ import {
   KeyboardAvoidingView,
   RefreshControl,
 } from 'react-native';
-import {colors, useForm} from '../../utils';
+import {colors, colorsDark, useForm} from '../../utils';
 import {IcSwiper} from '../../assets';
 import SubmitButton from '../SubmitButton';
 import Categories from '../Categories';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {
   getProductByRange,
   getProductBySort,
 } from '../../redux/action/ProductAction';
-import {objectExpression} from '@babel/types';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import {Number} from '..';
 
 const ShippingModal = ({
   setModalOff,
@@ -28,6 +29,8 @@ const ShippingModal = ({
   setSubtotalToParent,
 }) => {
   const dispatch = useDispatch();
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
 
   useEffect(() => {
     Object.values(shippingResult).map(item => {
@@ -71,7 +74,7 @@ const ShippingModal = ({
         showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <View style={styles.swiper}>
-            <IcSwiper width={50} height={6} />
+            <IcSwiper width={ms(50)} height={mvs(6)} />
           </View>
           {shippingResult ? (
             Object.values(shippingResult).map(item => {
@@ -83,9 +86,7 @@ const ShippingModal = ({
                   onPress={() =>
                     onSubmit(
                       Object.values(item)[1],
-                      `${Object.values(item.costs)[key].service} (Rp ${
-                        Object.values(item.costs)[key].cost[0].value
-                      })`,
+                      `${Object.values(item.costs)[key].service}`,
                       Object.values(item.costs)[key].cost[0].value,
                       `Estimasi tiba dalam ${
                         Object.values(item.costs)[key].cost[0].etd.includes(
@@ -99,14 +100,22 @@ const ShippingModal = ({
                     )
                   }>
                   <Text
-                    style={styles.text('Poppins-SemiBold', 18, colors.default)}>
+                    style={styles.text(
+                      'Poppins-SemiBold',
+                      ms(18),
+                      colors.default,
+                    )}>
                     {Object.values(item)[1]}
                   </Text>
-                  <Text style={styles.text('Poppins-SemiBold', 16)}>
-                    {`${Object.values(item.costs)[key].service} (Rp ${
-                      Object.values(item.costs)[key].cost[0].value
-                    })`}
+                  <Text style={styles.text('Poppins-SemiBold', ms(16))}>
+                    {`${Object.values(item.costs)[key].service}`}
+                    <Text> (</Text>
+                    <Number
+                      number={Object.values(item.costs)[key].cost[0].value}
+                    />
+                    <Text>)</Text>
                   </Text>
+                  <View></View>
                   <Text style={styles.text()}>{`Estimasi tiba dalam ${
                     Object.values(item.costs)[key].cost[0].etd.includes('HARI')
                       ? Object.values(item.costs)[key].cost[0].etd
@@ -128,36 +137,37 @@ const ShippingModal = ({
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
   container: {
     height: 'auto',
     // marginBottom: -50,
-    backgroundColor: colors.white,
-    paddingTop: 30,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    backgroundColor: theme ? colorsDark.white : colors.white,
+    paddingTop: mvs(30),
+    paddingHorizontal: ms(20),
+    paddingVertical: mvs(16),
+    borderTopLeftRadius: ms(10),
+    borderTopRightRadius: ms(10),
   },
   swiper: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    marginBottom: 16,
+    marginBottom: mvs(16),
+    marginTop: mvs(8),
   },
   text: (
     fontFamily = 'Poppins-Regular',
-    fontSize = 14,
-    color = colors.black,
+    fontSize = ms(14),
+    color = theme ? colorsDark.black : colors.black,
   ) => ({
     fontFamily: fontFamily,
     fontSize: fontSize,
     color: color,
   }),
   shippingCourier: {
-    borderBottomWidth: 0.5,
-    borderBottomColor: colors.grey,
-    paddingVertical: 10,
-    paddingHorizontal: 5,
+    borderBottomWidth: ms(0.5),
+    borderBottomColor: theme ? colorsDark.grey : colors.grey,
+    paddingVertical: mvs(10),
+    paddingHorizontal: ms(5),
   },
 });
 

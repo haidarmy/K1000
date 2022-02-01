@@ -1,33 +1,23 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  StatusBar,
+  StatusBar, StyleSheet,
+  Text, TouchableOpacity, View
 } from 'react-native';
-import CartItem from './CartItem';
-import {colors, getData, usePrevious} from '../../utils';
-import {ScrollView} from 'react-native-gesture-handler';
-import {
-  ProductDummy1,
-  ProductDummy2,
-  ProductDummy3,
-  ProductDummy4,
-} from '../../assets';
+import { ScrollView } from 'react-native-gesture-handler';
+import { ms, mvs, s, vs } from 'react-native-size-matters';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import {
   EmptyPage,
   Gap,
   Header,
   ItemSkeleton,
+  Number,
   OrderItem,
-  SubmitButton,
+  SubmitButton
 } from '../../components';
-import {connect, useDispatch} from 'react-redux';
-import {getCartList} from '../../redux/action/CartAction';
-import lodash from 'lodash';
+import { getCartList } from '../../redux/action/CartAction';
+import { colors, colorsDark, getData, usePrevious } from '../../utils';
 
 const CartPage = ({
   getCartResult,
@@ -39,11 +29,14 @@ const CartPage = ({
   navigation,
 }) => {
   const dispatch = useDispatch();
-  const [data, setData] = useState({});
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
+  const [uid, setUid] = useState('');
   useEffect(() => {
     getData('user').then(res => {
       if (res) {
         dispatch(getCartList(res.uid));
+        setUid(res.uid);
       }
     });
   }, []);
@@ -62,28 +55,15 @@ const CartPage = ({
   }, [deleteCartResult]);
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <View style={{backgroundColor: colors.white}}>
+      <StatusBar barStyle={theme ? 'light-content' : 'dark-content'} backgroundColor={theme ? colorsDark.white : colors.white} />
+      <View style={{backgroundColor: theme ? colorsDark.white : colors.white}}>
         <Header label="Keranjang Saya" />
       </View>
       {getCartResult ? (
-        // (
-        //   Object.keys(getCartResult.orders).map(key => {
-        //     return (
-        //       <CartItem
-        //         item={getCartResult.orders[key].product.name}
-        //         orders={getCartResult.orders[key]}
-        //         mainCart={getCartResult}
-        //         id={key}
-        //         key={key}
-        //         price={getCartResult.orders[key].product.price}
-        //         image={getCartResult.orders[key].product.image[0]}
-        //       />
-        //     );
-        //   })
-        // )
         <>
-          <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{flex: 1, paddingHorizontal: mvs(20)}}>
             {Object.keys(
               Object.keys(getCartResult.orders).reduce((r, a) => {
                 r[getCartResult.orders[a].product.store] = [
@@ -129,7 +109,7 @@ const CartPage = ({
                       return r;
                     }, {}),
                   ).length !== 1 && (
-                    <View style={{backgroundColor: colors.lightgrey}}>
+                    <View style={{backgroundColor: theme ? colorsDark.lightgrey : colors.lightgrey}}>
                       <Gap height={7} />
                     </View>
                   )}
@@ -137,27 +117,59 @@ const CartPage = ({
               );
             })}
           </ScrollView>
-          <View style={styles.totalContainer}>
-            <Text style={styles.totalPrice}>
-              Rp {getCartResult !== null ? getCartResult.totalPrice : 0}
-            </Text>
-            <TouchableOpacity activeOpacity={0.7} style={{width: '50%'}}>
-              <SubmitButton
-                label="Check Out"
-                onPress={() =>
-                  navigation.navigate('CheckoutPage', {getCartResult})
-                }
-              />
-            </TouchableOpacity>
-          </View>
         </>
       ) : getCartLoading ? (
-       <ItemSkeleton/>
+        <ItemSkeleton />
       ) : getCartError ? (
         <Text>{getCartError}</Text>
-      ) : (
+      ) : uid ? (
         <EmptyPage illustration="EmptyCart" text="Keranjang Anda Kosong" />
-      )}
+      ) : null}
+      {getCartResult ? (
+        <View style={styles.totalContainer}>
+          <Number
+            number={getCartResult !== null ? getCartResult.totalPrice : 0}
+            textStyle={styles.totalPrice}
+          />
+          <TouchableOpacity activeOpacity={0.7} style={{width: '50%'}}>
+            <SubmitButton
+              height={mvs(50)}
+              label="Check Out"
+              onPress={() => {
+                getData('user').then(res => {
+                  if (!res?.number || !res?.address) {
+                    navigation.replace('FillIdentityCautionPage', {
+                      originPage: 'CheckoutPage',
+                      getCartResult,
+                    });
+                  } else {
+                    navigation.navigate('CheckoutPage', {getCartResult});
+                  }
+                });
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+      ) : getCartLoading ? (
+        <View style={styles.totalContainer}>
+          <SkeletonPlaceholder
+            backgroundColor={theme ? colorsDark.grey : '#DDDDDD'}
+            highlightColor={theme ? colors.grey : '#F2F8FC'}
+            speed={1200}>
+            <View
+              style={{width: ms(120), height: mvs(30), borderRadius: ms(5)}}
+            />
+          </SkeletonPlaceholder>
+          <SkeletonPlaceholder
+            backgroundColor={theme ? colorsDark.grey : '#DDDDDD'}
+            highlightColor={theme ? colors.grey : '#F2F8FC'}
+            speed={1200}>
+            <View
+              style={{width: ms(180), height: mvs(50), borderRadius: ms(10)}}
+            />
+          </SkeletonPlaceholder>
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -174,29 +186,32 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, null)(CartPage);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  totalContainer: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: colors.lightgrey,
-    flexDirection: 'row',
-    paddingTop: 17,
-    paddingBottom: 15,
-    paddingHorizontal: 14,
-  },
-  totalLabel: {
-    fontSize: 24,
-    fontFamily: 'Poppins-SemiBold',
-    color: colors.black,
-    paddingLeft: 11,
-  },
-  totalPrice: {
-    fontSize: 24,
-    fontFamily: 'Poppins-SemiBold',
-    color: colors.default,
-  },
-});
+const getStyles = theme =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: StatusBar.currentHeight,
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      // padding: mvs(20),
+    },
+    totalContainer: {
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: theme ? colorsDark.lightgrey : colors.lightgrey,
+      flexDirection: 'row',
+      paddingTop: vs(12),
+      paddingBottom: vs(12),
+      paddingHorizontal: ms(12),
+    },
+    totalLabel: {
+      fontSize: ms(20),
+      fontFamily: 'Poppins-SemiBold',
+      color: theme ? colorsDark.black : colors.black,
+      paddingLeft: ms(11),
+    },
+    totalPrice: {
+      fontSize: s(22),
+      fontFamily: 'Poppins-SemiBold',
+      color: colors.default,
+    },
+  });

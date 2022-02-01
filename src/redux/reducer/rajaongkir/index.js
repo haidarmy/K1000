@@ -1,7 +1,5 @@
 import { CALCULATE_SHIPPING_COST } from "../../action/RajaOngkir";
 
-CALCULATE_SHIPPING_COST
-
 const initialState = {
  shippingLoading: false,
  shippingResult: false,

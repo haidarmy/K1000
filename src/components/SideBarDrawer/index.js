@@ -7,6 +7,7 @@ import {
   FlatList,
   TouchableWithoutFeedback,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import {
   DrawerContentScrollView,
@@ -21,17 +22,22 @@ import {
   IcProduct,
   IcSell,
 } from '../../assets';
-import {colors, getData, storeData} from '../../utils';
-import {Gap} from '..';
-import { getUserInfo } from '../../redux/action/UserAction';
-import { useDispatch } from 'react-redux';
+import {colors, colorsDark, getData, storeData} from '../../utils';
+import {Gap, Number} from '..';
+import {getUserInfo} from '../../redux/action/UserAction';
+import {useDispatch, useSelector} from 'react-redux';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import {useNavigation} from '@react-navigation/core';
 
 const SideBarDrawer = props => {
-  const dispatch = useDispatch()
-  const [profile, setProfile] = useState(false)
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
+  const [profile, setProfile] = useState(false);
   useEffect(() => {
     getData('user').then(res => {
-      dispatch(getUserInfo(res.uid))
+      dispatch(getUserInfo(res.uid));
       console.log(res);
       setProfile({
         ...profile,
@@ -40,8 +46,8 @@ const SideBarDrawer = props => {
         balance: res.balance,
         name: res.name ? res.name : '',
       });
-    })
-  }, [])
+    });
+  }, []);
   const [selectedId, setSelectedId] = useState('Produk');
   const listArray = [
     {icon: IcProduct, title: 'Produk'},
@@ -52,21 +58,23 @@ const SideBarDrawer = props => {
   const Icon = ({title, icon}) => {
     switch (title) {
       case 'Produk':
-        return <IcProduct fill={icon} width={24} height={24} />;
+        return <IcProduct fill={icon} width={ms(24)} height={mvs(24)} />;
       case 'Penjualan':
-        return <IcSell fill={icon} width={24} height={24} />;
+        return <IcSell fill={icon} width={ms(24)} height={mvs(24)} />;
       case 'Tarik Dana':
-        return <IcCashWd fill={icon} width={24} height={24} />;
+        return <IcCashWd fill={icon} width={ms(24)} height={mvs(24)} />;
       default:
         break;
     }
   };
 
   const Item = ({title, onPress, backgroundColor, color, icon, index}) => (
-    <TouchableOpacity onPress={() => onPress(index)} style={styles.itemWrapper(backgroundColor)}>
+    <TouchableOpacity
+      onPress={() => onPress(index)}
+      style={styles.itemWrapper(backgroundColor)}>
       <Icon title={title} icon={icon} />
-      <Gap width={20} />
-      <Text style={styles.text('Poppins-Regular', 18, color)}>{title}</Text>
+      <Gap width={ms(20)} />
+      <Text style={styles.text('Poppins-Regular', ms(18), color)}>{title}</Text>
     </TouchableOpacity>
   );
 
@@ -90,42 +98,46 @@ const SideBarDrawer = props => {
     );
   };
   return (
-    <View style={{flex: 1, padding: 20}}>
+    <View style={styles.container}>
       <View style={{flex: 0.3}}>
         <IcHamburger
-          width={24}
-          height={24}
-          onPress={(props) => props.navigation.closeDrawer()}
+          width={ms(24)}
+          height={mvs(24)}
+          onPress={() => props.navigation.toggleDrawer()}
         />
-        <Gap height={40} />
+        <Gap height={mvs(20)} />
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Image
-            source={{uri:'data:image/png;base64,' + profile.avatar}}
+            source={{uri: 'data:image/png;base64,' + profile.avatar}}
             style={styles.avatar}
           />
-          <Gap width={20} />
-          <Text style={[styles.text('Poppins-SemiBold', 20), {flex: 1}]}>
+          <Gap width={ms(20)} />
+          <Text style={[styles.text('Poppins-SemiBold', ms(20)), {flex: 1}]}>
             {profile.name}
           </Text>
         </View>
-        <Gap height={30} />
-        <View
-          style={styles.balance}>
+        <Gap height={mvs(30)} />
+        <View style={styles.balance}>
           <Text style={styles.text()}>Saldo</Text>
           <View style={{flexDirection: 'row'}}>
             <Image
               source={IcCash}
-              style={{width: 26, height: 20, alignSelf: 'center'}}
+              style={{width: ms(26), height: mvs(20), alignSelf: 'center'}}
             />
-            <Gap width={5} />
-            <Text style={styles.text('Poppins-SemiBold', 16, colors.default)}>
-             Rp {profile.balance}
-            </Text>
+            <Gap width={7} />
+            <Number
+              number={profile.balance}
+              textStyle={styles.text(
+                'Poppins-SemiBold',
+                ms(16),
+                colors.default,
+              )}
+            />
           </View>
         </View>
       </View>
       <View style={{flex: 0.7}}>
-        <Gap height={30} />
+        <Gap height={mvs(30)} />
         <FlatList
           data={listArray}
           renderItem={renderItem}
@@ -133,48 +145,47 @@ const SideBarDrawer = props => {
         />
       </View>
     </View>
-    // <DrawerContentScrollView {...props}>
-    //   <DrawerItemList {...props} />
-    //   <DrawerItem
-    //     label="Help"
-    //     onPress={() => Linking.openURL('https://mywebsite.com/help')}
-    //   />
-    // </DrawerContentScrollView>
   );
 };
 
 export default SideBarDrawer;
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: mvs(20),
+    backgroundColor: theme ? colorsDark.white : colors.white,
+    paddingTop: StatusBar.currentHeight + mvs(20),
+  },
   text: (
     fontFamily = 'Poppins-Regular',
-    fontSize = 16,
-    color = colors.black,
+    fontSize = ms(16),
+    color = theme ? colorsDark.black : colors.black,
   ) => ({
     fontFamily: fontFamily,
     fontSize: fontSize,
     color: color,
   }),
-  itemWrapper: (backgroundColor) => ({
+  itemWrapper: backgroundColor => ({
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: mvs(15),
     backgroundColor: backgroundColor,
-    height: 50,
+    height: mvs(50),
     width: '100%',
-    padding: 10,
-    borderRadius: 12,
+    padding: mvs(10),
+    borderRadius: ms(10),
   }),
   avatar: {
-    width: 80,
-    height: 80,
-    borderWidth: 2,
+    width: ms(80),
+    height: mvs(80),
+    borderWidth: ms(2),
     borderColor: colors.default,
-    borderRadius: 40,
+    borderRadius: ms(40),
   },
   balance: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  }
+  },
 });

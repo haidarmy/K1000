@@ -32,6 +32,8 @@ export const getListProduct = (
         .once('value', querySnapshot => {
           //Result
           let data = querySnapshot.val();
+          // console.clear()
+          console.log(`🚀 → file: ProductAction.js → line 35 → data`, data)
           // console.log("DATA FIREBASE", data);
           // Success
           dispatchSuccess(dispatch, GET_LIST_PRODUCT, data);
@@ -54,6 +56,7 @@ export const getListProduct = (
           // console.log("DATA FIREBASE", data);
           // Success
           dispatchSuccess(dispatch, GET_LIST_PRODUCT, querySnapshot.val() ? querySnapshot.val() : []);
+          console.log(`🚀 → file: ProductAction.js → line 59 → querySnapshot.val()`, querySnapshot.val())
 
           //Clear Redux Data
           // dispatchClear(dispatch, GET_LIST_PRODUCT)
@@ -82,7 +85,7 @@ export const getListProduct = (
                 }
               });
               //Success
-              dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
+              dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
             } else {
               let data = querySnapshot.val();
               // Success
@@ -114,7 +117,7 @@ export const getListProduct = (
                 }
               });
               //Success
-              dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
+              dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
             } else {
               let data = querySnapshot.val();
               // Success
@@ -146,7 +149,7 @@ export const getListProduct = (
                 }
               });
               //Success
-              dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
+              dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
             } else {
               let data = querySnapshot.val();
               // Success
@@ -180,7 +183,7 @@ export const getListProduct = (
               }
             });
             //Success
-            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
+            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
 
             //Clear Redux Data
             // dispatchClear(dispatch, GET_LIST_PRODUCT)
@@ -204,7 +207,7 @@ export const getListProduct = (
               }
             });
             //Success
-            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
+            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
 
             //Clear Redux Data
             // dispatchClear(dispatch, GET_LIST_PRODUCT)
@@ -228,7 +231,7 @@ export const getListProduct = (
               }
             });
             //Success
-            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
+            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
 
             //Clear Redux Data
             // dispatchClear(dispatch, GET_LIST_PRODUCT)
@@ -250,7 +253,7 @@ export const getListProduct = (
             dataSorted.unshift({...e.val()});
           });
           // Success
-          dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
+          dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
 
           //Clear Redux Data
           // dispatchClear(dispatch, GET_LIST_PRODUCT)

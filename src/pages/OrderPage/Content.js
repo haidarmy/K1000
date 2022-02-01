@@ -7,11 +7,19 @@ import {
   View,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {IcShowLess, IcShowMore} from '../../assets';
-import {Gap, ItemSkeleton, OrderItem, SubmitButton} from '../../components';
+import {
+  EmptyPage,
+  Gap,
+  ItemSkeleton,
+  OrderItem,
+  SubmitButton,
+} from '../../components';
 import {getListOrder} from '../../redux/action/OrderAction';
-import {colors, getData} from '../../utils';
+import {colors, colorsDark, getData} from '../../utils';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import EmptySearchResult from '../../components/EmptySearchResult';
 
 const Content = ({
   getListOrderLoading,
@@ -20,14 +28,15 @@ const Content = ({
   status,
   jumpTo,
   keyword,
-  route
+  route,
 }) => {
   const [uid, setUid] = useState(false);
+  const [foundOnChild, setFoundOnChild] = useState(true);
   const dispatch = useDispatch();
   useEffect(() => {
-   if(route.params !== 'payment'){
-    jumpTo('finished')
-   }
+    if (route?.params ?? null !== 'payment') {
+      jumpTo('finished');
+    }
     getData('user').then(res => {
       if (res) {
         setUid(res.uid);
@@ -44,6 +53,18 @@ const Content = ({
     }
   };
 
+  const isFoundOnChild = param => {
+   if(keyword.length){
+    setFoundOnChild(param);
+   }
+  };
+
+  useEffect(() => {
+    if(keyword.length === 0){
+      setFoundOnChild(true)
+    }
+  }, [keyword]);
+
   const filteredOrder = (key, e) => {
     if (keyword.includes('k1000')) {
       return (
@@ -51,23 +72,34 @@ const Content = ({
         getListOrderResult[key].orderDetails[e].orderId.toLowerCase() ===
           keyword
       );
-    }
-    else {
+    } else {
       return getListOrderResult[key].orderDetails[e].status === status;
     }
   };
+  
+ const isFoundOnParent = () => {
+  if(keyword.includes('k1000')){
+    return Object.values(getListOrderResult).every(e => e.order_id.toLowerCase() !== keyword)
+  }
+ }
+
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={{flex: 1}}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={{flex: 1, marginHorizontal: ms(-20)}}>
       {getListOrderResult ? (
-        Object.keys(getListOrderResult).map(key => {
-          return (
-            Object.keys(getListOrderResult[key].orderDetails)
+        !foundOnChild && keyword.length || isFoundOnParent() ? (
+          <EmptySearchResult />
+        ) : (
+          Object.keys(getListOrderResult).map(key => {
+            return Object.keys(getListOrderResult[key].orderDetails)
               .filter(e => filteredOrder(key, e))
               .map(index => {
                 const orderDetail = getListOrderResult[key].orderDetails[index];
                 return (
-                  <View key={index}>
+                  <View key={index} style={{paddingHorizontal: ms(20)}}>
                     <OrderItem
+                      isFoundOnChild={isFoundOnChild}
                       isFound={isFound()}
                       keyword={keyword}
                       jumpTo={jumpTo}
@@ -84,14 +116,14 @@ const Content = ({
                     />
                   </View>
                 );
-              })
-          );
-        })
+              });
+          })
+        )
       ) : getListOrderLoading ? (
-        <ItemSkeleton/>
-      ) : (
-        <Text>Data kosong</Text>
-      )}
+        <ItemSkeleton />
+      ) : uid ? (
+        <EmptyPage illustration="EmptyOrder" text="Pesanan Anda Kosong" />
+      ) : null}
     </ScrollView>
   );
 };
@@ -104,14 +136,14 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, null)(Content);
 
-const styles = StyleSheet.create({
-  text: (
-    fontFamily = 'Poppins-Regular',
-    fontSize = 16,
-    color = colors.black,
-  ) => ({
-    fontFamily: fontFamily,
-    fontSize: fontSize,
-    color: color,
-  }),
-});
+// const getStyles = StyleSheet.create({
+//   text: (
+//     fontFamily = 'Poppins-Regular',
+//     fontSize = ms(16),
+//     color = colors.black,
+//   ) => ({
+//     fontFamily: fontFamily,
+//     fontSize: fontSize,
+//     color: color,
+//   }),
+// });

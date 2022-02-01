@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   StatusBar,
 } from 'react-native';
-import {colors} from '../../utils';
+import {colors, colorsDark, getData} from '../../utils';
 import {SearchBar, FilterProduct, Header, EmptyPage} from '../../components';
 import Content from './Content';
 import Slider from './Slider';
@@ -20,6 +20,7 @@ import {
   getStoreProduct,
 } from '../../redux/action/StoreAction';
 import {getCategory} from '../../redux/action/CategoryAction';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 const StorePage = ({
   navigation,
@@ -28,9 +29,11 @@ const StorePage = ({
   idSort,
   rangeMaximum,
   rangeMinimum,
+  theme
 }) => {
   const dispatch = useDispatch();
   const [isModalVisible, setModalVisible] = useState(false);
+  const styles = getStyles(theme);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -46,7 +49,7 @@ const StorePage = ({
       dispatch(getCategory());
     }
     return () => {
-      active = false
+      active = false;
       dispatch(deleteParameterStoreProduct());
     };
   }, []);
@@ -59,7 +62,7 @@ const StorePage = ({
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      <StatusBar barStyle={theme ? 'light-content' : 'dark-content'} backgroundColor={theme ? colorsDark.white : colors.white} />
       <Header
         label="Toko Saya"
         onPress={() => navigation.navigate('ProfilePage')}
@@ -73,12 +76,12 @@ const StorePage = ({
         onSwipeComplete={() => setModalVisible(false)}
         onBackButtonPress={() => setModalVisible(false)}
         swipeDirection="down">
-        <FilterProduct setModalOff={setModalOff} type={'Store'}/>
+        <FilterProduct setModalOff={setModalOff} type={'Store'} />
       </Modal>
-      <View style={{flex: 1, backgroundColor: colors.white, paddingTop: 9}}>
-        <View style={{paddingHorizontal: 20}}>
+      <View style={styles.content}>
+        <View style={{paddingHorizontal: ms(20)}}>
           {/* Search */}
-          <SearchBar onPress={toggleModal} Filter Store type='store'/>
+          <SearchBar onPress={toggleModal} Filter Store type="store" />
           {/* Slider */}
           <Slider />
         </View>
@@ -86,7 +89,7 @@ const StorePage = ({
         <Content onPress={() => navigation.navigate('ProductPage')} />
         <TouchableOpacity
           activeOpacity={0.9}
-          style={{position: 'absolute', bottom: 36, right: 36}}
+          style={styles.plusWrapper}
           onPress={() => navigation.navigate('AddProductPage')}>
           <IcFloatButton fill={colors.default} />
         </TouchableOpacity>
@@ -96,12 +99,20 @@ const StorePage = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.white,
-    flex: 1,
-  },
-});
+const getStyles = theme =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      flex: 1,
+      paddingTop: StatusBar.currentHeight,
+    },
+    content: {
+      flex: 1,
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      paddingTop: mvs(9),
+    },
+    plusWrapper: {position: 'absolute', bottom: mvs(36), right: ms(36)},
+  });
 
 const mapStateToProps = state => ({
   idCategory: state.StoreReducer.idCategory,
@@ -109,6 +120,7 @@ const mapStateToProps = state => ({
   idSort: state.StoreReducer.idSort,
   rangeMaximum: state.StoreReducer.rangeMaximum,
   rangeMinimum: state.StoreReducer.rangeMinimum,
+  theme: state.DarkModeReducer.isDarkMode,
 });
 
 export default connect(mapStateToProps, null)(StorePage);

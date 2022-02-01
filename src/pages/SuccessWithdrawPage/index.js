@@ -3,9 +3,13 @@ import {StatusBar, StyleSheet, Text, View} from 'react-native';
 import {padding} from 'styled-system';
 import {IllSuccessWD} from '../../assets';
 import {Gap, SubmitButton} from '../../components';
-import {colors} from '../../utils';
+import {colors, colorsDark} from '../../utils';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import { useSelector } from 'react-redux';
 
 const SuccessWithdrawPage = ({navigation}) => {
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   useEffect(() => {
     setTimeout(() => {
       navigation.replace('StoreDrawer')
@@ -14,7 +18,7 @@ const SuccessWithdrawPage = ({navigation}) => {
   }, [])
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      <StatusBar barStyle={theme ? 'light-content' : 'dark-content'} backgroundColor={theme ? colorsDark.white : colors.white} />
       <View style={styles.illustration}>
         <IllSuccessWD height={320} width={320} />
         <Text style={styles.text()}>Penarikan Dana</Text>
@@ -27,16 +31,17 @@ const SuccessWithdrawPage = ({navigation}) => {
 
 export default SuccessWithdrawPage;
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
-    padding: 48,
+    paddingTop: StatusBar.currentHeight,
+    backgroundColor: theme ? colorsDark.white : colors.white,
+    padding: mvs(48),
   },
   text: (
     fontFamily = 'Poppins-SemiBold',
-    fontSize = 24,
-    color = colors.black,
+    fontSize = ms(24),
+    color = theme ? colorsDark.black : colors.black,
   ) => ({
     fontFamily: fontFamily,
     fontSize: fontSize,
@@ -47,6 +52,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 50,
+    padding: mvs(50),
   },
 });

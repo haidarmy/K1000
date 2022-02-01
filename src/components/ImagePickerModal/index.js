@@ -2,8 +2,10 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {IcCamera, IcGallery} from '../../assets';
 import Gap from '../Gap';
-import {colors, showError, showWarning} from '../../utils';
+import {colors, colorsDark, showError, showWarning} from '../../utils';
 import ImagePicker from 'react-native-image-crop-picker';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import { useSelector } from 'react-redux';
 
 const ImagePickerModal = ({
   multiple = false,
@@ -14,15 +16,17 @@ const ImagePickerModal = ({
   imageAmount,
   closeModal
 }) => {
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   const  cameraPicker = () => {
     closeModal()
     ImagePicker.openCamera({
-      width: 375,
-      height: 375,
+      width: ms(375),
+      height: mvs(375),
       cropping: true,
-      cropperToolbarColor: colors.white,
+      cropperToolbarColor: theme ? colorsDark.white : colors.white,
       cropperToolbarWidgetColor: colors.default,
-      cropperStatusBarColor: colors.white,
+      cropperStatusBarColor: theme ? colorsDark.white : colors.white,
       cropperActiveWidgetColor: colors.default,
       cropperCircleOverlay: circleOverlay,
       useFrontCamera: frontCamera,
@@ -33,7 +37,6 @@ const ImagePickerModal = ({
       compressImageQuality: 0.5,
     })
       .then(image => {
-        console.log('ngopi napa', [image])
         setImageToParent([image], image.data);
       })
       .catch(error => {
@@ -44,14 +47,14 @@ const ImagePickerModal = ({
     closeModal()
     setTimeout(() => {
       ImagePicker.openPicker({
-        width: 375,
-        height: 375,
+        width: ms(375),
+        height: mvs(375),
         multiple: multiple,
         cropping: true,
         mediaType: 'photo',
-        cropperToolbarColor: colors.white,
+        cropperToolbarColor: theme ? colorsDark.white : colors.white,
         cropperToolbarWidgetColor: colors.default,
-        cropperStatusBarColor: colors.white,
+        cropperStatusBarColor: theme ? colorsDark.white : colors.white,
         cropperActiveWidgetColor: colors.default,
         cropperCircleOverlay: circleOverlay,
         showCropGuidelines: false,
@@ -83,15 +86,15 @@ const ImagePickerModal = ({
             activeOpacity={0.7}
             style={styles.menuWrapper}
             onPress={() => cameraPicker()}>
-            <IcCamera fill={colors.default} width={24} height={24} />
+            <IcCamera fill={colors.default} width={ms(24)} height={mvs(24)} />
             <Text style={styles.text}>Ambil dari Camera</Text>
           </TouchableOpacity>
-          <Gap height={24} />
+          <Gap height={mvs(24)} />
           <TouchableOpacity
             activeOpacity={0.7}
             style={styles.menuWrapper}
             onPress={() => galleryPicker()}>
-            <IcGallery fill={colors.default} width={24} height={24} />
+            <IcGallery fill={colors.default} width={ms(24)} height={mvs(24)} />
             <Text style={styles.text}>Pilih dari Galeri</Text>
           </TouchableOpacity>
         </View>
@@ -102,7 +105,7 @@ const ImagePickerModal = ({
 
 export default ImagePickerModal;
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
   page: {
     flex: 1,
     alignItems: 'center',
@@ -111,16 +114,16 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 32,
-    backgroundColor: colors.white,
-    width: '80%',
+    paddingVertical: mvs(32),
+    backgroundColor: theme ? colorsDark.white : colors.white,
+    width: '90%',
     height: 'auto',
   },
   text: {
-    fontSize: 18,
+    fontSize: ms(18),
     fontFamily: 'Poppins-Medium',
     color: colors.grey,
-    paddingLeft: 10,
+    paddingLeft: ms(10),
   },
   menuWrapper: {
     flexDirection: 'row',

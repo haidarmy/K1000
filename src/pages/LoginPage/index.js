@@ -1,12 +1,15 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {colors, useForm, usePrevious, showError} from '../../utils';
-import {InputField, SubmitButton} from '../../components';
-import {IcEyeActive, IcEyeInactive} from '../../assets';
-import {loginUser} from '../../redux/action/AuthAction';
-import {connect, useDispatch} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { ScaledSheet } from 'react-native-size-matters';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { IcEyeActive, IcEyeInactive } from '../../assets';
+import { InputField, SubmitButton } from '../../components';
+import { loginUser } from '../../redux/action/AuthAction';
+import { colors, colorsDark, showError, useForm, usePrevious } from '../../utils';
 
 const LoginPage = ({navigation, loginResult, loginLoading}) => {
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   const dispatch = useDispatch();
   const [form, setForm] = useForm({
     email: '',
@@ -32,7 +35,7 @@ const LoginPage = ({navigation, loginResult, loginLoading}) => {
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
-        <View style={styles.input}>
+        {/* <View style={styles.input}> */}
           <InputField
             placeholder="Email"
             label="Email"
@@ -57,27 +60,17 @@ const LoginPage = ({navigation, loginResult, loginLoading}) => {
               {!isSecureEntry ? <IcEyeActive /> : <IcEyeInactive />}
             </TouchableOpacity>
           </View>
-        </View>
+        {/* </View> */}
         <View style={styles.button}>
           <SubmitButton label="Masuk" onPress={onSubmit} />
         </View>
         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
           <Text
-            style={{
-              textAlign: 'center',
-              color: colors.grey,
-              fontFamily: 'Poppins-Medium',
-              fontSize: 14,
-            }}>
+            style={styles.buttonText(colors.grey)}>
             Tidak memiliki akun?{' '}
           </Text>
           <Text
-            style={{
-              textAlign: 'center',
-              color: colors.default,
-              fontFamily: 'Poppins-Medium',
-              fontSize: 14,
-            }}
+            style={styles.buttonText(colors.default)}
             onPress={() => navigation.navigate('SignUpPage')}>
             Daftar
           </Text>
@@ -87,34 +80,44 @@ const LoginPage = ({navigation, loginResult, loginLoading}) => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = theme => ScaledSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: colors.white,
+    backgroundColor: theme ? colorsDark.white : colors.white,
     flex: 1,
-    padding: 24,
+    padding: '24@msr',
+    paddingTop: StatusBar.currentHeight
   },
   wrapper: {
-    marginTop: 112,
-    width: 335,
-    height: 363,
+    marginTop: '112@vs',
+    width: '335@s',
+    paddingHorizontal: '20@s',
+    // height: verticalScale(363),
+    // backgroundColor: 'yellow'
   },
   input: {
-    width: 335,
-    height: 223,
+    // width: scale(335),
+    // height: verticalScale(223),
+    // backgroundColor: 'green'
   },
   button: {
-    width: 334,
-    height: 58,
-    marginTop: 82,
-    marginBottom: 32,
+    // width: scale(334),
+    // height: verticalScale(58),
+    marginTop: '82@vs',
+    marginBottom: '32@vs',
   },
+  buttonText: (color) =>  ({
+    textAlign: 'center',
+    color: color,
+    fontFamily: 'Poppins-Medium',
+    fontSize: 14,
+  }),
   eye: {
-    width: 24,
-    height: 24,
+    width: '24@s',
+    height: '24@vs',
     position: 'absolute',
-    top: 65,
-    right: 15,
+    top: '62@vs',
+    right: '15@s',
   },
 });
 

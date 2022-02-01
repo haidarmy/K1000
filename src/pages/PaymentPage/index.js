@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StatusBar, StyleSheet, Text, View} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {useDispatch} from 'react-redux';
 import {Loading} from '../../components';
@@ -15,13 +15,14 @@ const PaymentPage = ({route, navigation}) => {
     }
   }, []);
 
-  const onMessage = (data) => {
-      if(data.nativeEvent.data === 'done'){
-        navigation.replace('OrderPage', 'payment')
-      }
-  }
+  const onMessage = data => {
+    if (data.nativeEvent.data === 'done') {
+      navigation.replace('OrderPage', 'payment');
+    }
+  };
   return (
     <WebView
+      style={{marginTop: StatusBar.currentHeight}}
       source={{uri: `${route.params.url}`}}
       renderLoading={() => <Loading />}
       onMessage={onMessage}

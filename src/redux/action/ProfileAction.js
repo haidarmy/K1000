@@ -19,7 +19,7 @@ export const updateProfile = data => {
     const newData = {
       uid: data.uid,
       avatar: data.avatar ? data.avatar : '',
-      balance: 0,
+      balance: data.balance,
       name: data.name,
       email: data.email,
       dateOfBirth: data.dateOfBirth,

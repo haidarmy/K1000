@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StatusBar, StyleSheet, Text, View} from 'react-native';
 import WebView from 'react-native-webview';
 import {Header} from '../../components';
 import { colors } from '../../utils';
@@ -21,6 +21,7 @@ export default CheckResiPage;
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    backgroundColor: colors.white
+    paddingTop: StatusBar.currentHeight,
+    // backgroundColor: colors.white
   },
 });

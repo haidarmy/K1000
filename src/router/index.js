@@ -28,10 +28,11 @@ import {
   InputResiPage,
   CheckResiPage,
   SuccessWithdrawPage,
-  Skeleton,
 } from '../pages';
 import { colors } from '../utils';
 import SideBarDrawer from '../components/SideBarDrawer';
+import FillIdentityCautionPage from '../pages/FillIdentityCautionPage';
+import SuccessDeliveredOrder from '../pages/SuccessDeliveredOrder';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -70,11 +71,6 @@ const MainApp = () => {
 const Router = () => {
   return (
     <Stack.Navigator>
-       {/* <Stack.Screen
-        name="Skeleton"
-        component={Skeleton}
-        options={{headerShown: false}}
-      /> */}
       <Stack.Screen
         name="SplashScreen"
         component={SplashScreen}
@@ -168,6 +164,16 @@ const Router = () => {
       <Stack.Screen
         name="SuccessWithdrawPage"
         component={SuccessWithdrawPage}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="SuccessDeliveredOrder"
+        component={SuccessDeliveredOrder}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="FillIdentityCautionPage"
+        component={FillIdentityCautionPage}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

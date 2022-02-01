@@ -22,10 +22,8 @@ import SuccessAddToCartPage from './SuccessAddToCartPage';
 import WelcomePage from './WelcomePage';
 import WishlistPage from './WishlistPage';
 import SuccessWithdrawPage from './SuccessWithdrawPage'
-import Skeleton from './Skeleton'
 
 export {
-  Skeleton,
   AddAddressPage,
   AddProductPage,
   AddressPage,

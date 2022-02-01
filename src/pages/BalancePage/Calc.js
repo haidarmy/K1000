@@ -1,9 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {IcDelete} from '../../assets';
-import {colors, usePrevious} from '../../utils';
+import {colors, colorsDark, usePrevious} from '../../utils';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import { useSelector } from 'react-redux';
 
 const Calc = ({setResultCalc}) => {
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   const [currentNumber, setCurrentNumber] = useState('');
   const buttons = [
     // 'C',
@@ -43,11 +47,17 @@ const Calc = ({setResultCalc}) => {
         btnPressed === '÷'
       ) {
         if (btnPressed === '×') {
-          setCurrentNumber(currentNumber + '*');
+          if (currentNumber.length < 10) {
+            setCurrentNumber(currentNumber + '*');
+          }
         } else if (btnPressed === '÷') {
-          setCurrentNumber(currentNumber + '/');
+          if (currentNumber.length < 10) {
+            setCurrentNumber(currentNumber + '/');
+          }
         } else {
-          setCurrentNumber(currentNumber + btnPressed);
+          if (currentNumber.length < 10) {
+            setCurrentNumber(currentNumber + btnPressed);
+          }
         }
         return;
       }
@@ -80,12 +90,16 @@ const Calc = ({setResultCalc}) => {
       )
     ) {
       console.log(`🚀 --------Here------------`);
-      setCurrentNumber(currentNumber + btnPressed);
+      if (currentNumber.length < 10) {
+        setCurrentNumber(currentNumber + btnPressed);
+      }
     } else if (
       (btnPressed === '0' || btnPressed === '000') &&
       (lastNum === '/' || lastNum === '*' || lastNum === '-' || lastNum === '+')
     ) {
-      setCurrentNumber(currentNumber.substring(0, currentNumber.length - 1));
+      if (currentNumber.length < 10) {
+        setCurrentNumber(currentNumber.substring(0, currentNumber.length - 1));
+      }
       return;
     }
   };
@@ -104,6 +118,8 @@ const Calc = ({setResultCalc}) => {
   }, [currentNumber]);
 
   const calculate = () => {
+    console.clear()
+    console.log(`🚀 → file: Calc.js → line 132 → calculate → currentNumber`, `${currentNumber} - Length: ${currentNumber.length}`)
     let lastArr = currentNumber[currentNumber.length - 1];
     if (
       lastArr === '/' ||
@@ -112,11 +128,15 @@ const Calc = ({setResultCalc}) => {
       lastArr === '+' ||
       lastArr === '.'
     ) {
-      setCurrentNumber(currentNumber);
+      if (currentNumber.length < 10) {
+        setCurrentNumber(currentNumber);
+      }
     } else {
-      let result = eval(currentNumber).toString();
-      setCurrentNumber(result);
-      setResultCalc(result);
+      let result = Math.round(eval(currentNumber)).toString();
+      if (currentNumber.length < 10) {
+        setCurrentNumber(result);
+        setResultCalc(result);
+      }
       return;
     }
   };
@@ -127,10 +147,10 @@ const Calc = ({setResultCalc}) => {
         {buttons.map(btn => (
           <TouchableOpacity
             key={btn}
-            style={[styles.button, {backgroundColor: colors.white}]}
+            style={[styles.button, {backgroundColor: theme ? colorsDark.white : colors.white}]}
             onPress={() => handleInput(btn)}>
             {btn === 'D' ? (
-              <IcDelete width={32} height={32} />
+              <IcDelete width={ms(32)} height={mvs(32)} />
             ) : btn === '/' ||
               btn === '×' ||
               btn === '-' ||
@@ -140,7 +160,7 @@ const Calc = ({setResultCalc}) => {
                 {btn}
               </Text>
             ) : (
-              <Text style={[styles.textButton]}>{btn}</Text>
+              <Text style={[styles.textButton, {color: theme ? colorsDark.black : colors.black}]}>{btn}</Text>
             )}
           </TouchableOpacity>
         ))}
@@ -149,7 +169,7 @@ const Calc = ({setResultCalc}) => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
   results: {
     backgroundColor: '#f5f5f5',
     maxWidth: '100%',
@@ -158,10 +178,10 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   resultText: {
-    maxHeight: 45,
+    maxHeight: mvs(45),
     color: '#FF6666',
-    margin: 15,
-    fontSize: 35,
+    margin: mvs(15),
+    fontSize: ms(35),
   },
   buttons: {
     width: '100%',
@@ -178,9 +198,8 @@ const styles = StyleSheet.create({
     flex: 2,
   },
   textButton: {
-    // color: '#7c7c7c',
     color: colors.black,
-    fontSize: 28,
+    fontSize: ms(28),
     fontFamily: 'Poppins-Bold',
   },
 });

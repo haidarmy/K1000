@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import { roundToNearestPixel } from 'react-native/Libraries/Utilities/PixelRatio';
-import { connect, useDispatch } from 'react-redux';
+import {roundToNearestPixel} from 'react-native/Libraries/Utilities/PixelRatio';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {
   IcHomeActive,
   IcHomeInactive,
@@ -11,21 +11,40 @@ import {
   IcCartActive,
   IcWishlistActive,
   IcProfileActive,
+  IcHomeActiveDark,
+  IcCartActiveDark,
 } from '../../assets';
-import { deleteParamaterProduct } from '../../redux/action/ProductAction';
-import {colors} from '../../utils';
+import {deleteParamaterProduct} from '../../redux/action/ProductAction';
+import {colors, colorsDark} from '../../utils';
 import Gap from '../Gap';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
 
-const Icon = ({label, focus}) => {
+const Icon = ({label, focus, theme}) => {
   switch (label) {
     case 'HomePage':
-      return focus ? <IcHomeActive fill={colors.default}/> : <IcHomeInactive />;
+      return focus ? (
+        theme ? <IcHomeActiveDark fill={colors.default} stroke={colors.red}/> : <IcHomeActive fill={colors.default} stroke={colors.red}/>
+      ) : (
+        <IcHomeInactive />
+      );
     case 'CartPage':
-      return focus ? <IcCartActive fill={colors.default}/> : <IcCartInactive />;
+      return focus ? (
+        theme ? <IcCartActiveDark fill={colors.default} /> : <IcCartActive fill={colors.default} />
+      ) : (
+        <IcCartInactive />
+      );
     case 'WishlistPage':
-      return focus ? <IcWishlistActive fill={colors.default}/> : <IcWishlistInactive />;
+      return focus ? (
+        <IcWishlistActive fill={colors.default} />
+      ) : (
+        <IcWishlistInactive />
+      );
     case 'ProfilePage':
-      return focus ? <IcProfileActive fill={colors.default}/> : <IcProfileInactive />;
+      return focus ? (
+        <IcProfileActive fill={colors.default} />
+      ) : (
+        <IcProfileInactive />
+      );
     default:
       return <IcHomeInactive />;
   }
@@ -35,31 +54,94 @@ const Title = ({label, focus}) => {
   switch (label) {
     case 'HomePage':
       return focus ? (
-        <Text style={{color: colors.default, fontFamily: 'Poppins-SemiBold', fontSize: 14}}>Beranda</Text>
+        <Text
+          style={{
+            color: colors.default,
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: ms(14),
+          }}>
+          Beranda
+        </Text>
       ) : (
-        <Text style={{color: colors.grey, fontFamily: 'Poppins-SemiBold', fontSize: 14}}>Beranda</Text>
+        <Text
+          style={{
+            color: colors.grey,
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: ms(14),
+          }}>
+          Beranda
+        </Text>
       );
     case 'CartPage':
       return focus ? (
-        <Text style={{color: colors.default, fontFamily: 'Poppins-SemiBold', fontSize: 14}}>Keranjang</Text>
+        <Text
+          style={{
+            color: colors.default,
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: ms(14),
+          }}>
+          Keranjang
+        </Text>
       ) : (
-        <Text style={{color: colors.grey, fontFamily: 'Poppins-SemiBold', fontSize: 14}}>Keranjang</Text>
+        <Text
+          style={{
+            color: colors.grey,
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: ms(14),
+          }}>
+          Keranjang
+        </Text>
       );
     case 'WishlistPage':
       return focus ? (
-        <Text style={{color: colors.default, fontFamily: 'Poppins-SemiBold', fontSize: 14}}>Favorit</Text>
+        <Text
+          style={{
+            color: colors.default,
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: ms(14),
+          }}>
+          Favorit
+        </Text>
       ) : (
-        <Text style={{color: colors.grey, fontFamily: 'Poppins-SemiBold', fontSize: 14}}>Favorit</Text>
+        <Text
+          style={{
+            color: colors.grey,
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: ms(14),
+          }}>
+          Favorit
+        </Text>
       );
     case 'ProfilePage':
       return focus ? (
-        <Text style={{color: colors.default, fontFamily: 'Poppins-SemiBold', fontSize: 14}}>Profil</Text>
+        <Text
+          style={{
+            color: colors.default,
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: ms(14),
+          }}>
+          Profil
+        </Text>
       ) : (
-        <Text style={{color: colors.grey, fontFamily: 'Poppins-SemiBold', fontSize: 14}}>Profil</Text>
+        <Text
+          style={{
+            color: colors.grey,
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: ms(14),
+          }}>
+          Profil
+        </Text>
       );
     default:
       return focus ? (
-        <Text style={{color: colors.default, fontFamily: 'Poppins-SemiBold', fontSize: 14}}>Home</Text>
+        <Text
+          style={{
+            color: colors.default,
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: ms(14),
+          }}>
+          Home
+        </Text>
       ) : (
         <Text style={{color: colors.grey}}>Home</Text>
       );
@@ -67,12 +149,14 @@ const Title = ({label, focus}) => {
 };
 
 const BottomNavigation = ({navigation, state, descriptors}) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const focusedOptions = descriptors[state.routes[state.index].key].options;
 
   if (focusedOptions.tabBarVisible === false) {
     return null;
   }
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode)
+  const styles = getStyles(theme);
   return (
     <View style={styles.container}>
       {state.routes.map((route, index) => {
@@ -96,8 +180,8 @@ const BottomNavigation = ({navigation, state, descriptors}) => {
           if (!isFocused && !event.defaultPrevented) {
             navigation.navigate(route.name);
           }
-          if(route.name !== 'HomePage'){
-            dispatch(deleteParamaterProduct())
+          if (route.name !== 'HomePage') {
+            dispatch(deleteParamaterProduct());
           }
         };
 
@@ -119,7 +203,7 @@ const BottomNavigation = ({navigation, state, descriptors}) => {
             onPress={onPress}
             onLongPress={onLongPress}
             style={{alignItems: 'center'}}>
-            <Icon label={label} focus={isFocused} />
+            <Icon label={label} focus={isFocused} theme={theme}/>
             <Gap height={3} />
             <Title label={label} focus={isFocused} />
           </TouchableOpacity>
@@ -129,16 +213,15 @@ const BottomNavigation = ({navigation, state, descriptors}) => {
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingHorizontal: 32,
-    paddingVertical: 16,
+    paddingHorizontal: ms(24),
+    paddingVertical: vs(12),
     justifyContent: 'space-between',
-    backgroundColor: colors.white,
+    backgroundColor: theme ? colorsDark.white : colors.white,
+    elevation: 12,
   },
 });
-
-
 
 export default connect()(BottomNavigation);

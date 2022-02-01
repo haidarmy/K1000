@@ -23,7 +23,7 @@ export const getListSale = uid => {
         querySnapshot.forEach(e => {
           dataSorted.unshift({...e.val()});
         });
-        dispatchSuccess(dispatch, GET_LIST_SALE, dataSorted);
+        dispatchSuccess(dispatch, GET_LIST_SALE, dataSorted.length > 0 ? dataSorted : null);
       })
       .catch(error => {
         console.log(error);
@@ -34,8 +34,8 @@ export const getListSale = uid => {
 };
 
 export const updateStatusSale = (
-  // orderId = 'K1000-1635669525808-AkrMPrVhlmZxGNYzfFHVbOMIgsj1',
-  // storeId = 'AkrMPrVhlmZxGNYzfFHVbOMIgsj1',
+  orderId,
+  storeId,
   resi,
   shipping,
 ) => {

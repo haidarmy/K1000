@@ -1,17 +1,26 @@
 import { NavigationContainer } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react';
 //import type {Node} from 'react';
-import { StatusBar, StyleSheet } from 'react-native';
+import {
+  StatusBar,
+  StyleSheet, useColorScheme
+} from 'react-native';
 import FlashMessage from 'react-native-flash-message';
-import { Provider, useSelector } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { Loading } from './components';
 import FloatingLoading from './components/FloatingLoading';
+import { setDarkMode } from './redux/action/DarkModeAction';
 import store from './redux/store';
 import Router from './router';
-import { colors } from './utils';
-
+import { colors, colorsDark } from './utils';
 
 const MainApp = () => {
+  const dispatch = useDispatch();
+  const colorScheme = useColorScheme();
+  useEffect(() => {
+    dispatch(setDarkMode(colorScheme));
+    console.log(`🚀 → file: App.js → line 22 → useEffect → colorScheme`, colorScheme)
+  }, [colorScheme]);
   const loading = useSelector(
     state =>
       state.AuthReducer.registerLoading || state.AuthReducer.loginLoading,
@@ -21,13 +30,18 @@ const MainApp = () => {
       state.StoreReducer.uploadStoreProductLoading ||
       state.StoreReducer.editStoreProductLoading,
   );
-  console.log('--------------------------------------', loading);
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
   return (
     <>
       <StatusBar
-        barStyle="dark-content"
+        translucent
+        barStyle={theme ? 'light-content' : 'dark-content'}
         backgroundColor={
-          loading || floatingLoading ? colors.loading : colors.white
+          loading || floatingLoading
+            ? colors.loading
+            : theme
+            ? colorsDark.white
+            : colors.white
         }
       />
       <NavigationContainer>
@@ -42,7 +56,7 @@ const MainApp = () => {
 const App = () => {
   return (
     <Provider store={store}>
-        <MainApp />
+      <MainApp />
     </Provider>
   );
 };

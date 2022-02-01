@@ -92,7 +92,6 @@ export const addToWishlist = (data, id) => {
 };
 
 export const getWishlist = (id) => {
-console.log(`🚀 → file: WishlistAction.js → line 95 → id`, id)
   return dispatch => {
     //Loading
     dispatchLoading(dispatch, GET_WISHLIST_LIST);
@@ -100,13 +99,10 @@ console.log(`🚀 → file: WishlistAction.js → line 95 → id`, id)
       .ref('wishlist')
       .child(id)
       .once('value', querySnapshot => {
-        console.log(`🚀 → file: WishlistAction.js → line 104 → data`, querySnapshot.val())
-       if(querySnapshot.val()){
           //Result
-        let data = querySnapshot.val();
+          let data = querySnapshot.val();
         // Success
         dispatchSuccess(dispatch, GET_WISHLIST_LIST, data);
-       }
       })
       .catch(error => {
         //Error
@@ -130,7 +126,7 @@ export const getWishlistByKeyword = (id, keyword) => {
           // console.log(`🚀 → file: WishlistAction.js → line 131 → getWishlistByKeyword → querySnapshot.val()`, querySnapshot.val())
         // Result
         // Success
-        dispatchSuccess(dispatch, GET_WISHLIST_LIST, querySnapshot.val() ? {productList: querySnapshot.val()} : {productList: []});
+        dispatchSuccess(dispatch, GET_WISHLIST_LIST, querySnapshot.val() ? {productList: querySnapshot.val()} : []);
       })
       .catch(error => {
         //Error

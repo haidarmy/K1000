@@ -1,22 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import {StatusBar, StyleSheet, Text, View} from 'react-native';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {IcChevronRight, IcShipping, IcStore} from '../../assets';
 import {
   EmptyPage,
   Gap,
   Header,
+  Number,
   OrderItem,
   SubmitButton,
 } from '../../components';
 import {updateAddress} from '../../redux/action/ProfileAction';
-import {colors, getData, months, showError, usePrevious} from '../../utils';
+import {colors, colorsDark, getData, months, showError, usePrevious} from '../../utils';
 import lodash from 'lodash';
 import {snapTransactions} from '../../redux/action/PaymentAction';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 const CheckoutPage = ({navigation, route, snapTransactionsResult}) => {
   const dispatch = useDispatch();
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   const [checkoutItems, setCheckoutItems] = useState('');
   const [priceDetails, setPriceDetails] = useState({
     dataByStore: [],
@@ -57,7 +61,14 @@ const CheckoutPage = ({navigation, route, snapTransactionsResult}) => {
         [`${tokoId}`]: {
           store: {storeName: store, storeId: tokoId},
           order: items,
-          shipping: {expedition: exp, service: service, estimate: etd, cost: parseInt(priceDetails.totalShippingCost) + parseInt(totalShippingCost)},
+          shipping: {
+            expedition: exp,
+            service: service,
+            estimate: etd,
+            cost:
+              parseInt(priceDetails.totalShippingCost) +
+              parseInt(totalShippingCost),
+          },
           subTotal: subTotalByStore,
           orderId: `K1000-${checkoutItems.date}-${checkoutItems.uid}`,
           status: 'pending',
@@ -127,7 +138,6 @@ const CheckoutPage = ({navigation, route, snapTransactionsResult}) => {
       snapTransactionsResult !== false &&
       snapTransactionsResult !== prevSnapTransactionsResult
     ) {
-      console.log('berisik ajg')
       const params = {
         user: checkoutItems.uid,
         url: snapTransactionsResult.redirect_url,
@@ -142,10 +152,11 @@ const CheckoutPage = ({navigation, route, snapTransactionsResult}) => {
       navigation.navigate('PaymentPage', params);
     }
   }, [snapTransactionsResult]);
+
   return (
-    <>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
-      <View style={{backgroundColor: colors.white}}>
+    <View style={styles.page}>
+      <StatusBar barStyle={theme ? 'light-content' : 'dark-content'} backgroundColor={theme ? colorsDark.white : colors.white} />
+      <View style={{backgroundColor: theme ? colorsDark.white : colors.white}}>
         <Header
           label="Ringkasan pesanan"
           onPress={() => navigation.goBack('ProfilePage')}
@@ -168,7 +179,9 @@ const CheckoutPage = ({navigation, route, snapTransactionsResult}) => {
           ) : (
             Object.keys(data).map(key => {
               return (
-                <View key={key}>
+                <View
+                  key={key}
+                  style={{...styles.itemContainer, paddingVertical: 0}}>
                   <OrderItem
                     label="CheckoutPage"
                     key={key}
@@ -180,50 +193,54 @@ const CheckoutPage = ({navigation, route, snapTransactionsResult}) => {
                     mainCart={route.params.getCartResult}
                     setPriceDetailsToParent={setPriceDetailsToParent}
                   />
-                  <View style={{backgroundColor: colors.lightgrey}}>
+                  {/* <View style={{backgroundColor: colors.lightgrey}}>
                     <Gap height={7} />
-                  </View>
+                  </View> */}
                 </View>
               );
             })
           )}
-          <View style={{...styles.itemContainer, marginBottom: -20}}>
+          <View style={{...styles.itemContainer, marginBottom: mvs(-20)}}>
             <Text style={styles.text('Poppins-SemiBold')}>
               Ringkasan Belanja
             </Text>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={styles.text()}>Total Harga</Text>
-              <Text style={styles.text('Poppins-SemiBold')}>
-                Rp{' '}
-                {route.params.getCartResult !== null
-                  ? route.params.getCartResult.totalPrice
-                  : 0}
-              </Text>
+              <Number
+                number={
+                  route.params.getCartResult !== null
+                    ? route.params.getCartResult.totalPrice
+                    : 0
+                }
+                textStyle={styles.text('Poppins-SemiBold')}
+              />
             </View>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={styles.text()}>Total Ongkir</Text>
-              <Text style={styles.text('Poppins-SemiBold')}>
-                Rp {priceDetails.totalShippingCost}
-              </Text>
+              <Number
+                number={priceDetails.totalShippingCost}
+                textStyle={styles.text('Poppins-SemiBold')}
+              />
             </View>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={styles.text('Poppins-SemiBold', 20)}>
+              <Text style={styles.text('Poppins-SemiBold', ms(20))}>
                 Total Pembayaran
               </Text>
-              <Text style={styles.text('Poppins-Bold', 20, colors.default)}>
-                Rp {priceDetails.totalPayment}
-              </Text>
+              <Number
+                number={priceDetails.totalPayment}
+                textStyle={styles.text('Poppins-Bold', ms(20), colors.default)}
+              />
             </View>
           </View>
-          <View style={{backgroundColor: colors.white, padding: 20}}>
+          <View style={{backgroundColor: theme ? colorsDark.white : colors.white, padding: mvs(20)}}>
             <SubmitButton label={'Bayar sekarang'} onPress={checkout} />
           </View>
         </View>
       </ScrollView>
-    </>
+    </View>
   );
 };
 
@@ -239,37 +256,42 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, null)(CheckoutPage);
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
+  page: {
+    paddingTop: StatusBar.currentHeight,
+    backgroundColor: theme ? colorsDark.lightgrey : colors.lightgrey,
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: colors.lightgrey,
+    backgroundColor: theme ? colorsDark.lightgrey : colors.lightgrey,
   },
   content: {
     flex: 1,
-    // paddingBottom: 20,
+    // paddingHorizontal: 20,
   },
   itemContainer: {
-    backgroundColor: colors.white,
-    padding: 20,
-    marginBottom: 7,
+    backgroundColor: theme ? colorsDark.white : colors.white,
+    padding: mvs(20),
+    marginBottom: mvs(7),
   },
   text: (
     fontFamily = 'Poppins-Regular',
-    fontSize = 16,
-    color = colors.black,
+    fontSize = ms(16),
+    color = theme ? colorsDark.black : colors.black,
   ) => ({
     fontFamily: fontFamily,
     fontSize: fontSize,
     color: color,
   }),
-  shippingWrapper: {
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: colors.grey,
-    height: 60,
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginBottom: 20,
-  },
+  // shippingWrapper: {
+  //   padding: 10,
+  //   borderWidth: 1,
+  //   borderRadius: 10,
+  //   borderColor: colors.grey,
+  //   height: 60,
+  //   alignItems: 'center',
+  //   flexDirection: 'row',
+  //   marginBottom: 20,
+  // },
 });

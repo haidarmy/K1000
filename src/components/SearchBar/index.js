@@ -6,9 +6,9 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {colors, useCustomState, usePrevious} from '../../utils';
+import {colors, colorsDark, useCustomState, usePrevious} from '../../utils';
 import {IcSearch, IcFilter, IcClose, IcHamburger} from '../../assets';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   getListProduct,
   getProductByKeyword,
@@ -22,6 +22,7 @@ import {
   getStoreProduct,
   getStoreProductByKeyword,
 } from '../../redux/action/StoreAction';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 const SearchBar = ({
   onPress,
@@ -36,6 +37,8 @@ const SearchBar = ({
   searchBank,
 }) => {
   const dispatch = useDispatch();
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode)
+  const styles = getStyles(theme);
   const navigation = useNavigation();
   const [input, setInput] = useCustomState(false);
   const search = () => {
@@ -98,31 +101,27 @@ const SearchBar = ({
       <View style={styles.box}>
         {Store ? (
           <TouchableOpacity
-            onPress={() => navigation.openDrawer()}
-            style={{
-              zIndex: 1,
-              width: 32,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+            onPress={() => navigation.toggleDrawer()}
+            style={styles.hamburgerWrapper}>
             <IcHamburger
-              width={24}
-              height={24}
-              style={{position: 'absolute', top: 16, left: 2}}
+              width={ms(24)}
+              height={mvs(24)}
+              style={{position: 'absolute', top: mvs(16), left: ms(2)}}
             />
           </TouchableOpacity>
         ) : (
-          <View style={{zIndex: 1, marginRight: 30}}>
+          <View style={{zIndex: 1, marginRight: ms(30)}}>
             <IcSearch
-              width={24}
-              height={24}
-              style={{position: 'absolute', top: 16, left: 0}}
+              width={ms(24)}
+              height={mvs(24)}
+              style={{position: 'absolute', top: mvs(16), left: ms(0)}}
             />
           </View>
         )}
         <TextInput
           style={styles.input}
           placeholder={placeholder}
+          placeholderTextColor={colors.grey}
           value={input ? input : ''}
           onChangeText={value => setInput(value)}
           onSubmitEditing={() => search()}
@@ -131,16 +130,8 @@ const SearchBar = ({
         <TouchableOpacity
           onPress={() => setInput('')}
           activeOpacity={0.7}
-          style={{
-            width: 30,
-            height: 30,
-            position: 'absolute',
-            top: 14,
-            right: 20,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          {input ? <IcClose width={24} height={24} /> : null}
+          style={styles.clearWrapper}>
+          {input ? <IcClose width={ms(24)} height={mvs(24)} /> : null}
         </TouchableOpacity>
       </View>
       {Filter && (
@@ -148,51 +139,66 @@ const SearchBar = ({
           onPress={onPress}
           style={styles.filter}
           activeOpacity={0.7}>
-          <IcFilter width={24} height={24} />
+          <IcFilter width={ms(24)} height={mvs(24)} />
         </TouchableOpacity>
       )}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: colors.white,
-    height: 58,
-    marginBottom: 24,
+    // backgroundColor: colors.white,
+    height: mvs(58),
+    marginBottom: mvs(16),
   },
   box: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     position: 'relative',
-    backgroundColor: colors.lightgrey,
-    borderRadius: 10,
-    paddingLeft: 20,
-    paddingRight: 40,
+    backgroundColor: theme ? colorsDark.lightgrey : colors.lightgrey,
+    borderRadius: ms(10),
+    paddingLeft: ms(20),
+    paddingRight: ms(40),
   },
   input: {
     // paddingLeft: 54,
     // paddingRight: 55,
     flex: 10,
-    fontSize: 18,
-    color: colors.grey,
+    fontSize: ms(18),
+    color: theme ? colorsDark.black : colors.black,
     alignItems: 'center',
-    height: 60,
+    height: mvs(60),
     fontFamily: 'Poppins-Regular',
-    marginRight: 10,
+    marginRight: ms(10),
   },
   filter: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 56,
-    height: 56,
+    width: ms(56),
+    height: mvs(56),
     backgroundColor: colors.default,
-    borderRadius: 10,
-    marginLeft: 16,
+    borderRadius: ms(10),
+    marginLeft: ms(16),
+  },
+  clearWrapper: {
+    width: ms(30),
+    height: mvs(30),
+    position: 'absolute',
+    top: mvs(14),
+    right: ms(20),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  hamburgerWrapper: {
+    zIndex: 1,
+    width: ms(32),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

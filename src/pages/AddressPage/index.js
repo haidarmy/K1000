@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import {StatusBar, StyleSheet, Text, View} from 'react-native';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import {EmptyPage, Header, SubmitButton} from '../../components';
 import { updateAddress } from '../../redux/action/ProfileAction';
-import {colors, getData} from '../../utils';
+import {colors, colorsDark, getData} from '../../utils';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 const AddressPage = ({navigation, updateAddressResult}) => {
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   const [profile, setProfile] = useState('')
   const getUserData = () => {
     getData('user').then(res => {
@@ -33,7 +36,7 @@ const AddressPage = ({navigation, updateAddressResult}) => {
         label="Alamat Saya"
         onPress={() => navigation.goBack('ProfilePage')}
       />
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      <StatusBar barStyle={theme ? 'light-content' : 'dark-content'} backgroundColor={theme ? colorsDark.white : colors.white} />
       <View style={styles.content}>
         {profile.address ? <View style={styles.addresWrapper}>
           <Text style={styles.textName}>{profile.name}</Text>
@@ -60,31 +63,35 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, null)(AddressPage);
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    paddingTop: StatusBar.currentHeight,
+    backgroundColor: theme ? colorsDark.white : colors.white,
   },
   content: {
     justifyContent: 'space-between',
     flex: 1,
-    paddingBottom: 20,
-    padding: 20,
+    paddingBottom: mvs(20),
+    padding: mvs(20),
   },
   addresWrapper: {
-    height: '30%',
-    backgroundColor: '#E5D9FF',
-    padding: 20,
-    borderRadius: 5,
+    // height: '40%',
+    backgroundColor: theme ? colorsDark.lightgrey : '#E5D9FF',
+    padding: mvs(20),
+    paddingBottom: mvs(40),
+    borderRadius: ms(5),
     borderColor: colors.default,
-    borderWidth: 2,
+    borderWidth: ms(2),
   },
   textName: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 20,
+    fontSize: ms(20),
+    color: theme ? colorsDark.black : colors.black
   },
   text: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 16,
+    fontSize: ms(16),
+    color: theme ? colorsDark.black : colors.black
   },
 });

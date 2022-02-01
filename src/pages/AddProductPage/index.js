@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {IcCloseSolid, IcDropdown, IcFloatButton} from '../../assets';
 import {
   Gap,
@@ -21,12 +21,15 @@ import {
 import {editProduct, uploadProduct} from '../../redux/action/StoreAction';
 import {
   colors,
+  colorsDark,
   fullAddressToCityId,
   getData,
   showError,
   showSucces,
   usePrevious,
 } from '../../utils';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import CurrencyInput from 'react-native-currency-input';
 
 const CategorySelector = ({
   toggleCategoryModal,
@@ -78,9 +81,11 @@ const AddProductPage = ({
   uploadStoreProductLoading,
   uploadStoreProductResult,
   editStoreProductLoading,
-  editStoreProductResult
+  editStoreProductResult,
 }) => {
   const dispatch = useDispatch();
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   const [isModalVisible, setModalVisible] = useState(false);
   const [categoryModal, setCategoryModal] = useState(false);
   const [form, setForm] = useState({
@@ -100,12 +105,15 @@ const AddProductPage = ({
   });
 
   useEffect(() => {
-    console.log('hadeeh', route.params);
     getData('user').then(res => {
-      console.log(res);
       if (route.params) {
+        console.log(
+          `🚀 → file: index.js → line 107 → getData → route.params`,
+          route.params,
+        );
         setForm({
           ...form,
+          date: Date.now(),
           store: res.name,
           storeLocation: fullAddressToCityId(res.address),
           uid: res.uid,
@@ -177,11 +185,21 @@ const AddProductPage = ({
           item => !form.image.includes(item),
         );
         const oldImage = form.image.filter(item => !newImage.includes(item));
-        console.log('new Image', newImage);
-        console.log('delete Image', deleteImage);
-        dispatch(editProduct({...form, weight: parseFloat(form.weight)}, newImage, deleteImage, oldImage, route.params.id));
+        dispatch(
+          editProduct(
+            {...form, weight: parseFloat(form.weight)},
+            newImage,
+            deleteImage,
+            oldImage,
+            route.params.productData.productId,
+          ),
+        );
       } else {
-        dispatch(uploadProduct({...form, weight: parseFloat(form.weight)}));
+        // dispatch(uploadProduct({...form, weight: parseFloat(form.weight)}));
+        console.log(
+          `🚀 → file: index.js → line 197 → addProductToDB → form`,
+          form.price,
+        );
       }
     } else {
       showError('Pastikan semua kolom terisi!');
@@ -191,34 +209,37 @@ const AddProductPage = ({
   const prevUploadStoreProductResult = usePrevious(uploadStoreProductResult);
   const prevEditStoreProductResult = usePrevious(editStoreProductResult);
   useEffect(() => {
-    if(route.params){
+    if (route.params) {
       if (
         editStoreProductResult !== false &&
         editStoreProductResult !== prevEditStoreProductResult
       ) {
-        navigation.replace('StoreDrawer');
+        // navigation.replace('StoreDrawer');
+        navigation.goBack();
         setTimeout(() => {
           showSucces('Product berhasil diubah!');
-        }, 1000);
+        }, 500);
       }
-    }else {
+    } else {
       if (
         uploadStoreProductResult !== false &&
         uploadStoreProductResult !== prevUploadStoreProductResult
       ) {
-        navigation.replace('StoreDrawer');
+        navigation.goBack('StoreDrawer');
         setTimeout(() => {
           showSucces('Product berhasil ditambahkan!');
-        }, 1000);
+        }, 500);
       }
     }
   }, [uploadStoreProductResult, editStoreProductResult]);
   return (
     <View style={styles.container}>
       <StatusBar
-        barStyle="dark-content"
+        barStyle={theme ? 'light-content' : 'dark-content'}
         backgroundColor={
-          uploadStoreProductLoading || editStoreProductLoading ? colors.loading : colors.white
+          uploadStoreProductLoading || editStoreProductLoading
+            ? colors.loading
+            : theme ? colorsDark.white : colors.white
         }
       />
       <Header
@@ -254,10 +275,12 @@ const AddProductPage = ({
           }
           placeholder="Nama Produk"
           label="Nama Produk"
+          maxlength={20}
         />
         <InputField
+          currencyMasked
           onChangeText={value =>
-            value.length === 0
+            value?.length === 0
               ? setForm({...form, price: ''})
               : setForm({...form, price: isNaN(value) ? '' : parseInt(value)})
           }
@@ -273,6 +296,7 @@ const AddProductPage = ({
           placeholder="Harga Produk dalam (Rp)"
           label="Harga"
           keyboard="numeric"
+          maxlength={12}
         />
         <InputField
           onChangeText={value =>
@@ -283,7 +307,9 @@ const AddProductPage = ({
                   weight:
                     isNaN(value) && value !== '.'
                       ? ''
-                      : value[0] == '.' ? '0.' : value.includes('.')
+                      : value[0] == '.'
+                      ? '0.'
+                      : value.includes('.')
                       ? value
                       : parseFloat(value),
                 })
@@ -300,6 +326,7 @@ const AddProductPage = ({
           placeholder="Berat Produk dalam (Kg)"
           label="Berat"
           keyboard="numeric"
+          maxlength={3}
         />
         <InputField
           onChangeText={value =>
@@ -344,8 +371,8 @@ const AddProductPage = ({
             label="Category"
             disabled
           />
-          <View style={{position: 'absolute', right: 20, top: 60}}>
-            <IcDropdown height={32} width={32} />
+          <View style={styles.dropdownWrapper}>
+            <IcDropdown height={mvs(32)} width={ms(32)} />
           </View>
         </TouchableOpacity>
         <InputField
@@ -368,18 +395,7 @@ const AddProductPage = ({
         />
         <View>
           <Text style={styles.textFotoProduct}>Foto Produk</Text>
-          <View
-            activeOpacity={0.7}
-            style={{
-              ...styles.containerFotoProduct,
-              flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'flex-start',
-              height: 'auto',
-              backgroundColor: colors.lightgrey,
-              paddingHorizontal: 20,
-              paddingVertical: 5,
-            }}>
+          <View activeOpacity={0.7} style={styles.imageContainer}>
             {form.image
               ? Object.values(form.image).map((image, index) => {
                   return (
@@ -387,20 +403,15 @@ const AddProductPage = ({
                       key={index}
                       source={{uri: image}}
                       resizeMode="cover"
-                      style={{
-                        width: 100,
-                        height: 120,
-                        marginBottom: 20,
-                        marginRight: 10,
-                      }}
-                      imageStyle={{borderRadius: 5}}>
+                      style={styles.imageWrapper}
+                      imageStyle={{borderRadius: ms(5)}}>
                       <TouchableOpacity
                         activeOpacity={0.8}
-                        style={{position: 'absolute', top: -7, right: -7}}>
+                        style={styles.closeWrapper}>
                         <IcCloseSolid
                           fill={'#FF605C'}
-                          height={24}
-                          width={24}
+                          height={mvs(24)}
+                          width={ms(24)}
                           onPress={() => deleteImage(image)}
                         />
                       </TouchableOpacity>
@@ -415,20 +426,15 @@ const AddProductPage = ({
                         key={index}
                         source={{uri: image}}
                         resizeMode="cover"
-                        style={{
-                          width: 100,
-                          height: 120,
-                          marginBottom: 20,
-                          marginRight: 10,
-                        }}
-                        imageStyle={{borderRadius: 5}}>
+                        style={styles.imageWrapper}
+                        imageStyle={{borderRadius: ms(5)}}>
                         <TouchableOpacity
                           activeOpacity={0.8}
-                          style={{position: 'absolute', top: -7, right: -7}}>
+                          style={styles.closeWrapper}>
                           <IcCloseSolid
                             fill={'#FF605C'}
-                            height={24}
-                            width={24}
+                            height={mvs(24)}
+                            width={ms(24)}
                             onPress={() => deleteImage(image)}
                           />
                         </TouchableOpacity>
@@ -442,28 +448,22 @@ const AddProductPage = ({
             route.params?.productData.image.length < 5 ? (
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
-                style={{
-                  width: 100,
-                  height: 120,
-                  marginBottom: 20,
-                  borderRadius: 5,
-                  borderWidth: 2,
-                  borderColor: colors.default,
-                  borderStyle: 'dashed',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <IcFloatButton fill={colors.default} width={24} height={24} />
+                style={styles.imagePreview}>
+                <IcFloatButton
+                  fill={colors.default}
+                  width={ms(24)}
+                  height={mvs(24)}
+                />
               </TouchableOpacity>
             ) : null}
           </View>
         </View>
-        <Gap height={96} />
+        <Gap height={mvs(72)} />
         <SubmitButton
           label={route.params ? 'Simpan Perubahan' : 'Tambah'}
           onPress={() => addProductToDB()}
         />
-        <Gap height={64} />
+        <Gap height={mvs(64)} />
       </ScrollView>
     </View>
   );
@@ -485,31 +485,58 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, null)(AddProductPage);
 
-const styles = {
+const getStyles = theme => ({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    paddingTop: StatusBar.currentHeight,
+    backgroundColor: theme ? colorsDark.white : colors.white,
   },
+  closeWrapper: {position: 'absolute', top: mvs(-7), right: ms(-7)},
+  dropdownWrapper: {position: 'absolute', right: ms(20), top: mvs(60)},
   inputForm: {
-    paddingHorizontal: 20,
-    paddingVertical: 32,
+    paddingHorizontal: ms(20),
+    paddingVertical: mvs(32),
   },
   textFotoProduct: {
-    fontSize: 18,
+    fontSize: ms(18),
     fontWeight: 'normal',
     fontFamily: 'Poppins-Medium',
+    color: theme ? colorsDark.black : colors.black
   },
-  containerFotoProduct: {
-    backgroundColor: colors.lightgrey,
-    borderRadius: 10,
-    marginTop: 16,
-    marginBottom: 26,
-    height: 160,
+  imageContainer: {
+    backgroundColor: theme ? colorsDark.lightgrey : colors.lightgrey,
+    borderRadius: ms(10),
+    marginTop: mvs(16),
+    marginBottom: mvs(26),
+    height: mvs(160),
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    height: 'auto',
+    paddingHorizontal: ms(15),
+    paddingVertical: mvs(5),
+  },
+  imageWrapper: {
+    width: ms(100),
+    height: mvs(120),
+    marginBottom: mvs(20),
+    marginRight: ms(10),
+  },
+  imagePreview: {
+    width: ms(100),
+    height: mvs(120),
+    marginBottom: mvs(20),
+    borderRadius: ms(5),
+    borderWidth: ms(2),
+    borderColor: colors.default,
+    borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: 'center',
   },
   placeholderFotoProduct: {
-    fontSize: 18,
+    fontSize: ms(18),
     fontWeight: 'normal',
     fontFamily: 'Poppins-Medium',
     color: colors.grey,
@@ -521,17 +548,17 @@ const styles = {
       justifyContent: 'center',
     },
     container: {
-      paddingVertical: 32,
+      paddingVertical: mvs(32),
       backgroundColor: colors.white,
       width: '80%',
       height: 'auto',
     },
     text: {
-      fontSize: 20,
+      fontSize: ms(20),
       fontFamily: 'Poppins-Regular',
       color: colors.black,
-      paddingLeft: 25,
-      marginBottom: 10,
+      paddingLeft: ms(25),
+      marginBottom: mvs(10),
     },
   },
-};
+});

@@ -9,6 +9,7 @@ import {
 import {colors} from '../../utils';
 import {Categories, CategoriesSkeleton} from '../../components';
 import {connect} from 'react-redux';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 const Slider = ({getCategoryResult, getCategoryLoading}) => {
   const [sliderState, setSliderState] = useState('')
@@ -20,11 +21,11 @@ const Slider = ({getCategoryResult, getCategoryLoading}) => {
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      style={{marginRight: 8}}
+      style={{marginRight: ms(8)}}
       contentContainerStyle={styles.container}>
       {getCategoryResult ? (
         Object.keys(getCategoryResult).map(key => {
-          console.log('KEY', key);
+          // console.log('KEY', key);
           return (
             <Categories
               type={"Home"}
@@ -47,9 +48,11 @@ const Slider = ({getCategoryResult, getCategoryLoading}) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: 35,
-    paddingHorizontal: 2,
-    marginBottom: 16,
+    // height: 35,
+    paddingHorizontal: ms(2),
+    paddingBottom: mvs(3),
+    // backgroundColor: colors.red,
+    marginBottom: mvs(2),
     flexDirection: 'row',
     justifyContent: 'space-around',
   },

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {colors, getData, useForm} from '../../utils';
+import {colors, colorsDark, getData, useForm} from '../../utils';
 import {
   Home,
   Bag,
@@ -11,6 +11,7 @@ import {
   IcHeartSolid,
   IcCloseSolid,
   IcEdit,
+  IcHeartRed,
 } from '../../assets';
 import {
   StyleSheet,
@@ -20,16 +21,18 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  ImageBackground,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/core';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   addToWishlist,
   deleteWishlistItem,
   getWishlist,
 } from '../../redux/action/WishlistAction';
 import {deleteProduct} from '../../redux/action/StoreAction';
-import {Gap} from '..';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import {Gap, Number} from '..';
 
 const ProductCard = ({
   stock,
@@ -43,7 +46,7 @@ const ProductCard = ({
   rest,
   love,
   id,
-  sold
+  sold,
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -101,64 +104,101 @@ const ProductCard = ({
   };
 
   const productDetail = () => {
-    navigation.navigate('ProductPage', {productData: rest, id, love: love || isFavourite});
+    navigation.navigate('ProductPage', {
+      productData: rest,
+      id,
+      love: love || isFavourite,
+      store,
+    });
   };
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode)
+  const styles = getStyles(theme);
   return (
     <TouchableOpacity
       onPress={productDetail}
       style={styles.container}
       activeOpacity={0.7}>
-      <Image source={image} style={styles.image} />
-      {stock === 0 && (
-        <View style={styles.stockLabel}>
-          <Text style={styles.textStock('Poppins-SemiBold', 14, colors.white)}>
-            Stok Habis
-          </Text>
-        </View>
-      )}
-      <View style={{marginHorizontal: 16}}>
-        <View style={{marginBottom: 8}}>
+      <ImageBackground
+        source={image}
+        imageStyle={{
+          borderTopLeftRadius: ms(10),
+          borderTopRightRadius: ms(10),
+        }}
+        style={styles.image}>
+        {store ? (
+          <TouchableOpacity
+            style={styles.loveWrapper('marginLeft', 'flex-start')}
+            onPress={onNavigate}>
+            <IcEdit fill={colors.grey} width={ms(24)} height={mvs(24)} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.loveWrapper('marginRight', 'flex-end')}
+            onPress={() => sendToWishlist()}>
+            {isFavourite ? <IcHeartRed /> : <IcWishlistInactive />}
+          </TouchableOpacity>
+        )}
+        {stock === 0 && (
+          <View style={styles.stockLabel}>
+            <Text
+              style={styles.textStock(
+                'Poppins-SemiBold',
+                ms(14),
+                colors.white,
+              )}>
+              Stok Habis
+            </Text>
+          </View>
+        )}
+      </ImageBackground>
+      <View style={{marginHorizontal: ms(16), paddingBottom: mvs(10)}}>
+        <View style={{marginBottom: mvs(8)}}>
           <Text style={styles.text.title}>{name}</Text>
         </View>
         <View style={styles.info}>
           <View style={{flex: 1}}>
-            <Text style={styles.text.price}>Rp {price}</Text>
+            <Number number={price} textStyle={styles.text.price}/>
             <Text style={styles.text.weight}>{weight} kg</Text>
           </View>
-          {store ? (
-            <TouchableOpacity style={styles.loveWrapper} onPress={onNavigate}>
-              <IcEdit fill={colors.grey} width={24} height={24} />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              style={styles.loveWrapper}
-              onPress={() => sendToWishlist()}>
-              {isFavourite ? <IcHeartSolid /> : <IcWishlistInactive />}
-            </TouchableOpacity>
-          )}
         </View>
         {store && (
           <>
-            <Gap height={10} />
+            <Gap height={mvs(10)} />
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text
-                style={styles.textStock('Poppins-SemiBold', 16, colors.black)}>
+                style={styles.textStock(
+                  'Poppins-SemiBold',
+                  ms(16),
+                  theme ? colorsDark.black :colors.black,
+                )}>
                 Stok
               </Text>
               <Text
-                style={styles.textStock('Poppins-SemiBold', 16, colors.black)}>
+                style={styles.textStock(
+                  'Poppins-SemiBold',
+                  ms(16),
+                  theme ? colorsDark.black :colors.black,
+                )}>
                 {stock}
               </Text>
             </View>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text
-                style={styles.textStock('Poppins-SemiBold', 16, colors.black)}>
+                style={styles.textStock(
+                  'Poppins-SemiBold',
+                  ms(16),
+                  theme ? colorsDark.black :colors.black,
+                )}>
                 Terjual
               </Text>
               <Text
-                style={styles.textStock('Poppins-SemiBold', 16, colors.black)}>
+                style={styles.textStock(
+                  'Poppins-SemiBold',
+                  ms(16),
+                  theme ? colorsDark.black :colors.black,
+                )}>
                 {sold}
               </Text>
             </View>
@@ -166,13 +206,11 @@ const ProductCard = ({
         )}
       </View>
       {store && (
-        <TouchableOpacity
-          activeOpacity={0.8}
-          style={{position: 'absolute', top: -8, right: -8}}>
+        <TouchableOpacity activeOpacity={0.8} style={styles.delete}>
           <IcCloseSolid
             fill={'#FF605C'}
-            height={32}
-            width={32}
+            height={mvs(32)}
+            width={ms(32)}
             onPress={delProduct}
           />
         </TouchableOpacity>
@@ -181,59 +219,64 @@ const ProductCard = ({
   );
 };
 
-const styles = {
+const getStyles = theme => ({
   container: {
-    backgroundColor: colors.lightgrey,
-    minHeight: 296,
-    maxHeight:360,
-    paddingBottom: 20,
-    width: 168,
-    marginBottom: 16,
+    backgroundColor: theme ? colorsDark.lightgrey :colors.lightgrey,
+    minHeight: vs(280),
+    // maxHeight: vs(320),
+    paddingBottom: mvs(20),
+    width: s(150),
+    marginBottom: mvs(16),
     borderRadius: 10,
+    elevation: 8,
   },
   image: {
+    flex: 1,
     resizeMode: 'cover',
-    height: 160,
-    width: 168,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    marginBottom: 8,
+    height: mvs(175),
+    width: '100%',
+    borderTopLeftRadius: ms(10),
+    borderTopRightRadius: ms(10),
+    marginBottom: mvs(8),
   },
   info: {
     flexDirection: 'row',
-    height: 40,
+    height: vs(40),
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   text: {
     title: {
-      fontSize: 20,
+      fontSize: ms(20),
       fontFamily: 'Poppins-SemiBold',
-      color: colors.black,
+      color: theme ? colorsDark.black :colors.black,
     },
     price: {
-      fontSize: 16,
+      fontSize: ms(16),
       color: colors.default,
       fontFamily: 'Poppins-SemiBold',
     },
     weight: {
-      fontSize: 12,
+      fontSize: ms(12),
       color: colors.grey,
       fontFamily: 'Poppins-SemiBold',
     },
   },
-  loveWrapper: {
-    width: 40,
-    height: 40,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255, 0.5)',
+  loveWrapper: (marginPosition, flexPosition) => ({
+    width: s(32),
+    height: vs(32),
+    borderRadius: ms(18),
+    backgroundColor: theme ? colorsDark.whiteTranslucent : colors.whiteTranslucent,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+    [`${marginPosition}`]: s(10),
+    marginTop: vs(10),
+    alignSelf: `${flexPosition}`,
+  }),
   textStock: (
     fontFamily = 'Poppins-Regular',
-    fontSize = 16,
-    color = colors.black,
+    fontSize = ms(16),
+    color = theme ? colorsDark.black : colors.black,
   ) => ({
     fontFamily: fontFamily,
     fontSize: fontSize,
@@ -241,15 +284,16 @@ const styles = {
   }),
   stockLabel: {
     backgroundColor: 'rgba(33,33,33,0.6)',
-    width: 90,
-    height: 28,
-    borderRadius: 5,
+    width: s(90),
+    height: vs(28),
+    borderRadius: ms(5),
     position: 'absolute',
-    top: 125,
-    left: 5,
+    top: vs(125),
+    left: s(5),
     justifyContent: 'center',
     alignItems: 'center',
   },
-};
+  delete: {position: 'absolute', top: mvs(-8), right: ms(-8)},
+});
 
 export default ProductCard;

@@ -1,9 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, ScrollView, StatusBar} from 'react-native';
-import {SearchBar, ProductCard, Header, EmptyPage, ProductSkeleton} from '../../components';
-import {colors, getData, usePrevious} from '../../utils';
-import {connect, useDispatch} from 'react-redux';
+import {
+  SearchBar,
+  ProductCard,
+  Header,
+  EmptyPage,
+  ProductSkeleton,
+} from '../../components';
+import {colors, colorsDark, getData, usePrevious} from '../../utils';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {getWishlist} from '../../redux/action/WishlistAction';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import EmptySearchResult from '../../components/EmptySearchResult';
 
 const WishlistPage = ({
   navigation,
@@ -13,12 +21,14 @@ const WishlistPage = ({
   deleteWishlistResult,
 }) => {
   const dispatch = useDispatch();
-  const [uid, setUid] = useState('')
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
+  const [uid, setUid] = useState('');
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       getData('user').then(res => {
         if (res) {
-          setUid(res.uid)
+          setUid(res.uid);
           dispatch(getWishlist(res.uid));
         }
       });
@@ -30,30 +40,32 @@ const WishlistPage = ({
   useEffect(() => {
     const unsubscribe = () => {
       console.log('delete wish', deleteWishlistResult);
-    if (
-      deleteWishlistResult !== false &&
-      deleteWishlistResult !== prevDeleteWishlistResult
-    ) {
-      getData('user').then(res => {
-        if (res) {
-          dispatch(getWishlist(res.uid));
-        }
-      });
-    }
-    }
-    return unsubscribe
+      if (
+        deleteWishlistResult !== false &&
+        deleteWishlistResult !== prevDeleteWishlistResult
+      ) {
+        getData('user').then(res => {
+          if (res) {
+            dispatch(getWishlist(res.uid));
+          }
+        });
+      }
+    };
+    return unsubscribe;
   }, [deleteWishlistResult]);
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+      <StatusBar barStyle={theme ? 'light-content' : 'dark-content'} backgroundColor={theme ? colorsDark.white : colors.white} />
       <Header label="Favorit" />
-      <SearchBar type="wishlist" id={uid}/>
-        {getWishlistResult ? (
-          <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.content}>
-          {Object.keys(getWishlistResult.productList).map(key => {
+      <View style={{paddingHorizontal: ms(18)}}>
+        <SearchBar type="wishlist" id={uid} />
+      </View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.content}>
+        {Object.values(getWishlistResult ?? {}).length > 0 ? (
+          Object.keys(getWishlistResult.productList).map(key => {
             const product = getWishlistResult.productList[key];
             return (
               <ProductCard
@@ -74,15 +86,17 @@ const WishlistPage = ({
                 }
               />
             );
-          })}
-          </ScrollView>
+          })
+        ) : getWishlistResult?.length === 0 ? (
+          <EmptySearchResult />
         ) : getWishlistLoading ? (
-          <ProductSkeleton/>
+          <ProductSkeleton />
         ) : getWishlistError ? (
           <Text>{getWishlistError}</Text>
-        ) : (
+        ) : uid ? (
           <EmptyPage illustration="EmptyWishlist" text="Wishlist Anda Kosong" />
-        )}
+        ) : null}
+      </ScrollView>
     </View>
   );
 };
@@ -103,16 +117,17 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, null)(WishlistPage);
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
-    paddingHorizontal: 20,
+    paddingTop: StatusBar.currentHeight,
+    backgroundColor: theme ? colorsDark.white : colors.white,
   },
   content: {
+    paddingHorizontal: ms(18),
     // height:698,
-    paddingHorizontal: 8,
-    backgroundColor: colors.white,
+    // paddingHorizontal: 8,
+    backgroundColor: theme ? colorsDark.white : colors.white,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',

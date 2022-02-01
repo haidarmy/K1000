@@ -2,30 +2,54 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {Gap} from '..';
-import {colors} from '../../utils';
+import {colors, colorsDark} from '../../utils';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import {borderRadius} from 'styled-system';
+import {useSelector} from 'react-redux';
 
 const Account = () => {
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   return (
     <View
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: mvs(20),
       }}>
-      <SkeletonPlaceholder backgroundColor={'#DDDDDD'} speed={1200}>
+      <SkeletonPlaceholder
+        backgroundColor={theme ? colorsDark.grey : '#DDDDDD'}
+        highlightColor={theme ? colors.grey : '#F2F8FC'}
+        speed={1200}>
         <View style={styles.iconWrapper} />
       </SkeletonPlaceholder>
-      <Gap width={15} />
+      <Gap width={ms(15)} />
       <View>
-        <SkeletonPlaceholder backgroundColor={'#DDDDDD'} speed={1200}>
+        <SkeletonPlaceholder
+          backgroundColor={theme ? colorsDark.grey : '#DDDDDD'}
+          highlightColor={theme ? colors.grey : '#F2F8FC'}
+          speed={1200}>
           <View
-            style={{backgroundColor: colors.grey, width: 180, height: 20}}
+            style={{
+              backgroundColor: theme ? colorsDark.grey : colors.grey,
+              width: ms(180),
+              height: mvs(20),
+              borderRadius: ms(5),
+            }}
           />
         </SkeletonPlaceholder>
-        <Gap height={5} />
-        <SkeletonPlaceholder backgroundColor={'#DDDDDD'} speed={1200}>
+        <Gap height={mvs(5)} />
+        <SkeletonPlaceholder
+          backgroundColor={theme ? colorsDark.grey : '#DDDDDD'}
+          highlightColor={theme ? colors.grey : '#F2F8FC'}
+          speed={1200}>
           <View
-            style={{backgroundColor: colors.grey, width: 120, height: 20}}
+            style={{
+              backgroundColor: theme ? colorsDark.grey : colors.grey,
+              width: ms(120),
+              height: mvs(20),
+              borderRadius: ms(5),
+            }}
           />
         </SkeletonPlaceholder>
       </View>
@@ -49,13 +73,14 @@ const BankAccSkeleton = () => {
 
 export default BankAccSkeleton;
 
-const styles = StyleSheet.create({
-  iconWrapper: {
-    backgroundColor: colors.grey,
-    width: 42,
-    height: 42,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+const getStyles = theme =>
+  StyleSheet.create({
+    iconWrapper: {
+      backgroundColor: theme ? colorsDark.grey : colors.grey,
+      width: ms(42),
+      height: mvs(42),
+      borderRadius: ms(8),
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });

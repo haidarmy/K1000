@@ -2,9 +2,13 @@ import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {IcMan, IcWoman} from '../../assets';
 import {Gap} from '../../components';
-import {colors} from '../../utils';
+import {colors, colorsDark} from '../../utils';
+import {s, vs, ms, mvs} from 'react-native-size-matters';
+import { useSelector } from 'react-redux';
 
 const GenderModal = ({childToParent}) => {
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   return (
     <View style={styles.page}>
       <View style={styles.container}>
@@ -26,7 +30,7 @@ const GenderModal = ({childToParent}) => {
 
 export default GenderModal;
 
-const styles = StyleSheet.create({
+const getStyles = theme => StyleSheet.create({
   page: {
     flex: 1,
     alignItems: 'center',
@@ -35,16 +39,16 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 32,
-    backgroundColor: colors.white,
+    paddingVertical: mvs(28),
+    backgroundColor: theme ? colorsDark.white : colors.white,
     width: '80%',
     height: 'auto',
   },
   text: {
-    fontSize: 18,
+    fontSize: ms(18),
     fontFamily: 'Poppins-Medium',
-    color: colors.black,
-    paddingLeft: 20,
+    color: colors.grey,
+    paddingLeft: s(20),
   },
   menuWrapper: {
     flexDirection: 'row',

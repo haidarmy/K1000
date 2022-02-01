@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 const ActionButton = ({bgColor, borderWidth, borderColor, txtcolor, label, onPress}) => {
     return (
@@ -10,8 +11,8 @@ const ActionButton = ({bgColor, borderWidth, borderColor, txtcolor, label, onPre
               borderWidth:borderWidth, 
               borderColor:borderColor, 
               borderRadius:10, 
-              width:158, 
-              height:58, 
+              width: scale(158), 
+              height: verticalScale(58), 
             }}  onPress={onPress}  
             >
             <Text style={{

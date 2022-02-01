@@ -16,10 +16,11 @@ import ProductSkeleton from './Skeleton/ProductSkeleton';
 import CategoriesSkeleton from './Skeleton/CategoriesSkeleton';
 import ItemSkeleton from './Skeleton/ItemSkeleton';
 import BankAccSkeleton from './Skeleton/BankAccSkeleton';
-
+import Number from './Number';
 
 export {
   InputField,
+  Number,
   SubmitButton,
   BottomNavigation,
   ProductCard,
@@ -36,5 +37,5 @@ export {
   ProductSkeleton,
   CategoriesSkeleton,
   ItemSkeleton,
-  BankAccSkeleton
+  BankAccSkeleton,
 };
