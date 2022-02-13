@@ -1,6 +1,5 @@
 {
   "replaceAttrValues": {
     "#6F5F90": "{props.fill}",
-    "white": "{props.stroke}"
   }
 }

@@ -36,6 +36,8 @@ const CategorySelector = ({
   categoryData,
   setSelectedCategory,
 }) => {
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
+  const styles = getStyles(theme);
   return (
     <Modal
       deviceHeight={Dimensions.get('screen').height}

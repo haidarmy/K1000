@@ -16,7 +16,7 @@ const SuccessAddToCartPage = ({navigation}) => {
         backgroundColor={theme ? colorsDark.white : colors.white}
       />
       <View style={styles.illustration}>
-        <IllSuccess />
+        <IllSuccess fill={ theme ? colorsDark.white : colors.white}/>
         <Text style={styles.text}>Produk Berhasil</Text>
         <Text style={styles.text}>Ditambahkan</Text>
       </View>

@@ -128,9 +128,12 @@ export const getStoreProduct = (
               //Success
               dispatchSuccess(dispatch, GET_STORE_PRODUCT, dataSorted);
             } else {
-              let data = querySnapshot.val();
+              let dataSorted = [];
+              querySnapshot.forEach(e => {
+                  dataSorted.push({...e.val()});
+              });
               // Success
-              dispatchSuccess(dispatch, GET_STORE_PRODUCT, data);
+              dispatchSuccess(dispatch, GET_STORE_PRODUCT, dataSorted);
             }
 
             //Clear Redux Data

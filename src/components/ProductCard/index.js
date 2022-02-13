@@ -111,7 +111,7 @@ const ProductCard = ({
       store,
     });
   };
-  const theme = useSelector(state => state.DarkModeReducer.isDarkMode)
+  const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
   const styles = getStyles(theme);
   return (
     <TouchableOpacity
@@ -153,12 +153,20 @@ const ProductCard = ({
       </ImageBackground>
       <View style={{marginHorizontal: ms(16), paddingBottom: mvs(10)}}>
         <View style={{marginBottom: mvs(8)}}>
+          {stock <= 10 && !store ? (
+            <Text style={styles.text.stock}>Sisa {stock}</Text>
+          ) : null}
           <Text style={styles.text.title}>{name}</Text>
         </View>
         <View style={styles.info}>
           <View style={{flex: 1}}>
-            <Number number={price} textStyle={styles.text.price}/>
-            <Text style={styles.text.weight}>{weight} kg</Text>
+            <Number number={price} textStyle={styles.text.price} />
+            <View style={{flexDirection: 'row'}}>
+              <Text style={styles.text.weight}>{weight} kg</Text>
+              {sold && !store ? (
+                <Text style={styles.text.weight}> | Terjual {sold} </Text>
+              ) : null}
+            </View>
           </View>
         </View>
         {store && (
@@ -170,7 +178,7 @@ const ProductCard = ({
                 style={styles.textStock(
                   'Poppins-SemiBold',
                   ms(16),
-                  theme ? colorsDark.black :colors.black,
+                  theme ? colorsDark.black : colors.black,
                 )}>
                 Stok
               </Text>
@@ -178,7 +186,7 @@ const ProductCard = ({
                 style={styles.textStock(
                   'Poppins-SemiBold',
                   ms(16),
-                  theme ? colorsDark.black :colors.black,
+                  theme ? colorsDark.black : colors.black,
                 )}>
                 {stock}
               </Text>
@@ -189,7 +197,7 @@ const ProductCard = ({
                 style={styles.textStock(
                   'Poppins-SemiBold',
                   ms(16),
-                  theme ? colorsDark.black :colors.black,
+                  theme ? colorsDark.black : colors.black,
                 )}>
                 Terjual
               </Text>
@@ -197,7 +205,7 @@ const ProductCard = ({
                 style={styles.textStock(
                   'Poppins-SemiBold',
                   ms(16),
-                  theme ? colorsDark.black :colors.black,
+                  theme ? colorsDark.black : colors.black,
                 )}>
                 {sold}
               </Text>
@@ -221,7 +229,7 @@ const ProductCard = ({
 
 const getStyles = theme => ({
   container: {
-    backgroundColor: theme ? colorsDark.lightgrey :colors.lightgrey,
+    backgroundColor: theme ? colorsDark.lightgrey : colors.lightgrey,
     minHeight: vs(280),
     // maxHeight: vs(320),
     paddingBottom: mvs(20),
@@ -249,7 +257,7 @@ const getStyles = theme => ({
     title: {
       fontSize: ms(20),
       fontFamily: 'Poppins-SemiBold',
-      color: theme ? colorsDark.black :colors.black,
+      color: theme ? colorsDark.black : colors.black,
     },
     price: {
       fontSize: ms(16),
@@ -261,12 +269,19 @@ const getStyles = theme => ({
       color: colors.grey,
       fontFamily: 'Poppins-SemiBold',
     },
+    stock: {
+      fontSize: ms(14),
+      color: colors.red,
+      fontFamily: 'Poppins-SemiBold',
+    },
   },
   loveWrapper: (marginPosition, flexPosition) => ({
     width: s(32),
     height: vs(32),
     borderRadius: ms(18),
-    backgroundColor: theme ? colorsDark.whiteTranslucent : colors.whiteTranslucent,
+    backgroundColor: theme
+      ? colorsDark.whiteTranslucent
+      : colors.whiteTranslucent,
     justifyContent: 'center',
     alignItems: 'center',
     [`${marginPosition}`]: s(10),

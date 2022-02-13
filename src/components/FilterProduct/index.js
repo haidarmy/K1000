@@ -24,6 +24,8 @@ import {
   getStoreProductBySort,
 } from '../../redux/action/StoreAction';
 import {s, vs, ms, mvs} from 'react-native-size-matters';
+import {InputField} from '..';
+import CurrencyInput from 'react-native-currency-input';
 
 const FilterProduct = ({setModalOff, type}) => {
   const dispatch = useDispatch();
@@ -60,7 +62,7 @@ const FilterProduct = ({setModalOff, type}) => {
     <KeyboardAvoidingView behavior="position" enabled>
       <View style={styles.container}>
         <View style={styles.swiper}>
-          <IcSwiper width={ms(50)} height={mvs(6)}/>
+          <IcSwiper width={ms(50)} height={mvs(6)} />
         </View>
         <View style={{height: mvs(102), marginBottom: mvs(24)}}>
           <Text style={styles.text(mvs(16))}>Urutkan Berdasarkan</Text>
@@ -114,24 +116,43 @@ const FilterProduct = ({setModalOff, type}) => {
         <View style={{height: mvs(108), marginBottom: mvs(50)}}>
           <Text style={styles.text(mvs(6))}>Rentang Harga</Text>
           <View style={styles.range.wrapper}>
-            <TextInput
+            <CurrencyInput
+              value={range.minimum}
+              onChangeValue={value => setRange('minimum', value)}
+              prefix="Rp "
+              delimiter="."
+              separator=","
+              precision={0}
+              textAlign="center"
               style={styles.range.input}
               placeholder="Minimal"
               placeholderTextColor={colors.grey}
-              textAlign="center"
+              maxLength={12}
               keyboardType={'numeric'}
-              value={range.minimum}
-              onChangeText={value => setRange('minimum', value)}
+              minValue={0}
             />
-            <Text style={{fontSize: ms(28), marginBottom: mvs(15), color: colors.grey}}>—</Text>
-            <TextInput
+            <Text
+              style={{
+                fontSize: ms(28),
+                marginBottom: mvs(15),
+                color: colors.grey,
+              }}>
+              —
+            </Text>
+            <CurrencyInput
+              value={range.maximum}
+              onChangeValue={value => setRange('maximum', value)}
+              prefix="Rp "
+              delimiter="."
+              separator=","
+              precision={0}
+              textAlign="center"
               style={styles.range.input}
               placeholder="Maksimal"
               placeholderTextColor={colors.grey}
-              textAlign="center"
+              maxLength={12}
               keyboardType={'numeric'}
-              value={range.maximum}
-              onChangeText={value => setRange('maximum', value)}
+              minValue={0}
             />
           </View>
         </View>
@@ -186,7 +207,7 @@ const getStyles = theme => ({
     marginBottom: marginBottom,
     fontSize: ms(16),
     fontFamily: 'Poppins-Medium',
-    color: theme ? colorsDark.black : colors.black
+    color: theme ? colorsDark.black : colors.black,
   }),
 });
 

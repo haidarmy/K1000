@@ -88,7 +88,6 @@ const SearchBar = ({
         searchBank(newKeyword);
       }
     }
-    // setInput('');
   };
   const prevInput = usePrevious(input);
   useEffect(() => {
@@ -124,7 +123,7 @@ const SearchBar = ({
           placeholderTextColor={colors.grey}
           value={input ? input : ''}
           onChangeText={value => setInput(value)}
-          onSubmitEditing={() => search()}
+          onSubmitEditing={() => input.length && search()}
           returnKeyType={'search'}
         />
         <TouchableOpacity

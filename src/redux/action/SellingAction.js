@@ -48,6 +48,7 @@ export const updateStatusSale = (
       .update({status: 'shipped', shipping: {...shipping, resi: `${resi}`}})
       .then(response => {
         dispatchSuccess(dispatch, UPDATE_STATUS_SALE, response ? response : []);
+        dispatch(getListSale(storeId))
       })
       .catch(error => {
         dispatchError(dispatch, UPDATE_STATUS_SALE, error);

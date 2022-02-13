@@ -14,7 +14,7 @@ import {
 import {TextInput} from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import {connect, useDispatch, useSelector} from 'react-redux';
-import {height, width} from 'styled-system';
+import {alignItems, height, textAlign, width} from 'styled-system';
 import {
   IcCartInactive,
   IcWishlistInactive,
@@ -33,7 +33,14 @@ import {
   addToWishlist,
   deleteWishlistItem,
 } from '../../redux/action/WishlistAction';
-import {colors, colorsDark, getData, showWarning, useForm, usePrevious} from '../../utils';
+import {
+  colors,
+  colorsDark,
+  getData,
+  showWarning,
+  useForm,
+  usePrevious,
+} from '../../utils';
 import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
@@ -44,7 +51,8 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
   const [dialog, setDialog] = useState(null);
   const [isActive, setIsActive] = useState(0);
   const {productData, id, love} = route.params;
-  const {image, name, price, weight, description, store, stock} = productData;
+  const {image, name, price, weight, description, store, stock, sold} =
+    productData;
 
   const images = image.map(img => {
     return {
@@ -270,43 +278,65 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
               <Text style={styles.name}>{name}</Text>
               <Number number={price} textStyle={styles.price} />
               <Text style={styles.weight}>{weight} kg</Text>
+              <Text
+                style={[
+                  styles.text('Poppins-Medium', 16, theme ? colorsDark.black : colors.black),
+                  {textAlign: 'left'},
+                ]}>
+                Terjual {sold}
+              </Text>
+              {route.params.store && (
+                <Text
+                  style={[
+                    styles.text('Poppins-Medium', 16, theme ? colorsDark.black : colors.black),
+                    {textAlign: 'left'},
+                  ]}>
+                  Stok {stock}
+                </Text>
+              )}
             </View>
             {!route.params.store ? (
-              <View style={styles.counterContainer}>
-                <TouchableOpacity
-                  activeOpacity={0.5}
-                  onPress={() => minusFunc()}
-                  style={styles.counterWrapper.minus}>
-                  <Text style={styles.counterText}>-</Text>
-                </TouchableOpacity>
-                <TextInput
-                  style={[
-                    styles.text('Poppins-Medium'),
-                    styles.counterWrapper.value,
-                  ]}
-                  defaultValue="1"
-                  value={`${
-                    route.params.orderAmount
-                      ? route.params.orderAmount
-                      : form.amount
-                      ? form.amount
-                      : 1
-                  }`}
-                  textAlign="center"
-                  keyboardType="numeric"
-                  maxLength={2}
-                  onChangeText={value =>
-                    form.amount < 99
-                      ? setForm('amount', parseInt(value))
-                      : setForm('amount', 1)
-                  }
-                />
-                <TouchableOpacity
-                  activeOpacity={0.5}
-                  onPress={() => plusFunc()}
-                  style={styles.counterWrapper.plus}>
-                  <Text style={styles.counterText}>+</Text>
-                </TouchableOpacity>
+              <View style={{alignItems: 'center'}}>
+                <View style={styles.counterContainer}>
+                  <TouchableOpacity
+                    activeOpacity={0.5}
+                    onPress={() => minusFunc()}
+                    style={styles.counterWrapper.minus}>
+                    <Text style={styles.counterText}>-</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    style={[
+                      styles.text('Poppins-Medium'),
+                      styles.counterWrapper.value,
+                    ]}
+                    defaultValue="1"
+                    value={`${
+                      route.params.orderAmount
+                        ? route.params.orderAmount
+                        : form.amount
+                        ? form.amount
+                        : 1
+                    }`}
+                    textAlign="center"
+                    keyboardType="numeric"
+                    maxLength={2}
+                    onChangeText={value =>
+                      form.amount < 99
+                        ? setForm('amount', parseInt(value))
+                        : setForm('amount', 1)
+                    }
+                  />
+                  <TouchableOpacity
+                    activeOpacity={0.5}
+                    onPress={() => plusFunc()}
+                    style={styles.counterWrapper.plus}>
+                    <Text style={styles.counterText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+                <Gap height={5} />
+                <Text style={styles.text('Poppins-Medium', 16, theme ? colorsDark.black : colors.black)}>
+                  Stok {stock}
+                </Text>
               </View>
             ) : null}
           </View>
@@ -407,7 +437,9 @@ const getStyles = theme => ({
     width: ms(32),
     height: mvs(32),
     borderRadius: ms(16),
-    backgroundColor: theme ? colorsDark.whiteTranslucent : colors.whiteTranslucent,
+    backgroundColor: theme
+      ? colorsDark.whiteTranslucent
+      : colors.whiteTranslucent,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -415,7 +447,9 @@ const getStyles = theme => ({
     width: ms(32),
     height: mvs(32),
     borderRadius: ms(16),
-    backgroundColor: theme ? colorsDark.whiteTranslucent : colors.whiteTranslucent,
+    backgroundColor: theme
+      ? colorsDark.whiteTranslucent
+      : colors.whiteTranslucent,
     justifyContent: 'center',
     alignItems: 'center',
   },

@@ -11,7 +11,7 @@ import BarcodeMask from 'react-native-barcode-mask';
 import {RNCamera} from 'react-native-camera';
 import {InputField, SubmitButton} from '../../components';
 import {IcBack, IcBackDark, IcBarcode, IcFlash} from '../../assets';
-import {colors, colorsDark, usePrevious} from '../../utils';
+import {colors, colorsDark, showError, usePrevious} from '../../utils';
 import {connect, useDispatch, useSelector} from 'react-redux';
 import {updateStatusSale} from '../../redux/action/SellingAction';
 import {s, vs, ms, mvs} from 'react-native-size-matters';
@@ -33,14 +33,18 @@ const InputResiPage = ({navigation, route, updateStatusSellingResult}) => {
   };
 
   const onGetItemPress = () => {
-    dispatch(
-      updateStatusSale(
-        data.orderId,
-        data.store.storeId,
-        barcode,
-        data.shipping,
-      ),
-    );
+    if(barcode){
+      dispatch(
+        updateStatusSale(
+          data.orderId,
+          data.store.storeId,
+          barcode,
+          data.shipping,
+        ),
+      );
+    }else{
+      showError('Harap masukkan nomor resi terlebih dahulu !')
+    }
   };
 
   const prevUpdateStatusSellingResult = usePrevious(updateStatusSellingResult);

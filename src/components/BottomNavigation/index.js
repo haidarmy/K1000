@@ -23,7 +23,7 @@ const Icon = ({label, focus, theme}) => {
   switch (label) {
     case 'HomePage':
       return focus ? (
-        theme ? <IcHomeActiveDark fill={colors.default} stroke={colors.red}/> : <IcHomeActive fill={colors.default} stroke={colors.red}/>
+        theme ? <IcHomeActiveDark fill={colors.default} /> : <IcHomeActive fill={colors.default} />
       ) : (
         <IcHomeInactive />
       );

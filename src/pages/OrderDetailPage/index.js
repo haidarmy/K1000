@@ -57,9 +57,7 @@ const orderDetailPage = ({navigation, route}) => {
 
   const snack = type => {
     Snackbar.show({
-      text: `${
-        type === 'receipt' ? 'Nomor resi' : 'Alamat'
-      } disalin ke clipboard Anda`,
+      text: `${type} berhasil disalin ke clipboard Anda`,
       duration: Snackbar.LENGTH_SHORT,
       backgroundColor: colors.default,
       fontFamily: 'Poppins-Regular',
@@ -117,7 +115,20 @@ const orderDetailPage = ({navigation, route}) => {
             <Text style={styles.text()}>Tanggal Pembelian</Text>
             <Text style={styles.text()}>{data.date}</Text>
           </View>
-          {trim(data.orderId, 25)}
+          <View style={{flexDirection: 'row'}}>
+            {trim(data.orderId, 25)}
+            <Gap width={5} />
+            <TouchableOpacity
+              onPress={() => copyToClipboard(data.orderId, 'No. Pesanan')}
+              activeOpacity={0.7}
+              style={styles.clipWrapper}>
+              <IcClipboard
+                fill={colors.default}
+                width={ms(20)}
+                height={mvs(20)}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={styles.itemContainer}>
           <View style={{flex: 1, marginBottom: mvs(20)}}>
@@ -164,7 +175,7 @@ const orderDetailPage = ({navigation, route}) => {
                   onPress={() =>
                     copyToClipboard(
                       barcode ? barcode : data.shipping?.resi,
-                      'receipt',
+                      'No. Resi',
                     )
                   }
                   activeOpacity={0.7}
@@ -190,7 +201,7 @@ const orderDetailPage = ({navigation, route}) => {
               </Text>
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => copyToClipboard(data.user.address, 'address')}>
+                onPress={() => copyToClipboard(data.user.address, 'Alamat')}>
                 <Text
                   style={styles.text(
                     'Poppins-SemiBold',

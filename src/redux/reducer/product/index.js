@@ -49,7 +49,10 @@ export default function (state = initialState, action) {
       };
 
     case GET_PRODUCT_BY_RANGE:
-      console.log("Reducer Range", action.payload.rangeMaximum + ' ' + action.payload.rangeMinimum);
+      console.log(
+        'Reducer Range',
+        action.payload.rangeMaximum + ' ' + action.payload.rangeMinimum,
+      );
       return {
         ...state,
         rangeMaximum: action.payload.rangeMaximum,

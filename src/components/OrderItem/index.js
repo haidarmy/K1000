@@ -32,6 +32,7 @@ import {
   colors,
   colorsDark,
   fullAddressToCityId,
+  thousandsSeparators,
   usePrevious,
 } from '../../utils';
 import Gap from '../Gap';
@@ -172,7 +173,7 @@ const OrderItem = ({
             height={mvs(45)}
             onPress={() => {
               Alert.alert(
-                `Melepaskan Rp ${subTotal} ke Penjual `,
+                `Melepaskan Rp ${thousandsSeparators(subTotal)} ke Penjual `,
                 'Pastikan produk sesuai dan dalam kondisi baik',
                 [
                   {

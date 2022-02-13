@@ -57,6 +57,7 @@ const InputField = ({
           returnKeyType={returnKeyType}
           autoCapitalize={autoCapitalize}
           editable={!disabled}
+          minValue={0}
           // onChangeText={onChangeText}
           //  onChangeText={(formattedValue) => {
           //    console.log(value); // $2,310.46

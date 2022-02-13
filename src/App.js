@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 //import type {Node} from 'react';
 import {
+  LogBox,
   StatusBar,
   StyleSheet, useColorScheme
 } from 'react-native';
@@ -18,8 +19,9 @@ const MainApp = () => {
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   useEffect(() => {
-    dispatch(setDarkMode(colorScheme));
     console.log(`🚀 → file: App.js → line 22 → useEffect → colorScheme`, colorScheme)
+    LogBox.ignoreAllLogs(true)
+    dispatch(setDarkMode(colorScheme));
   }, [colorScheme]);
   const loading = useSelector(
     state =>

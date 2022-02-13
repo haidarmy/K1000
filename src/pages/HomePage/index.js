@@ -16,7 +16,10 @@ import Slider from './Slider';
 import Modal from 'react-native-modal';
 import {connect, useDispatch} from 'react-redux';
 import {getCategory} from '../../redux/action/CategoryAction';
-import {getListProduct} from '../../redux/action/ProductAction';
+import {
+  getListProduct,
+  getProductByKeyword,
+} from '../../redux/action/ProductAction';
 import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 const HomePage = ({
@@ -26,7 +29,7 @@ const HomePage = ({
   idSort,
   rangeMaximum,
   rangeMinimum,
-  theme
+  theme,
 }) => {
   const dispatch = useDispatch();
   const [isModalVisible, setModalVisible] = useState(false);
@@ -43,11 +46,17 @@ const HomePage = ({
     dispatch(getCategory());
   }, []);
 
+  useEffect( () => {
+    dispatch(getListProduct(undefined, keyword));
+    dispatch(getProductByKeyword(false));
+  }, [keyword]);
+
   useEffect(() => {
     dispatch(
-      getListProduct(idCategory, keyword, idSort, rangeMaximum, rangeMinimum),
+      getListProduct(idCategory, undefined, idSort, rangeMaximum, rangeMinimum),
     );
-  }, [idCategory, keyword, idSort, rangeMinimum, rangeMaximum]);
+    console.log(`🚀 → file: index.js → line 49 → useEffect → keyword`, keyword);
+  }, [idCategory, idSort, rangeMinimum, rangeMaximum]);
 
   const styles = getStyles(theme);
   return (
@@ -78,14 +87,19 @@ const HomePage = ({
   );
 };
 
-const getStyles = theme => StyleSheet.create({
-  container: {
-    backgroundColor: theme ? colorsDark.white : colors.white,
-    flex: 1,
-    paddingTop: StatusBar.currentHeight,
-  },
-  content: {flex: 1, backgroundColor: theme ? colorsDark.white : colors.white, paddingTop: mvs(9)},
-});
+const getStyles = theme =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      flex: 1,
+      paddingTop: StatusBar.currentHeight,
+    },
+    content: {
+      flex: 1,
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      paddingTop: mvs(9),
+    },
+  });
 
 const mapStateToProps = state => ({
   idCategory: state.ProductReducer.idCategory,
@@ -93,7 +107,7 @@ const mapStateToProps = state => ({
   idSort: state.ProductReducer.idSort,
   rangeMaximum: state.ProductReducer.rangeMaximum,
   rangeMinimum: state.ProductReducer.rangeMinimum,
-  theme: state.DarkModeReducer.isDarkMode
+  theme: state.DarkModeReducer.isDarkMode,
 });
 
 export default connect(mapStateToProps, null)(HomePage);

@@ -33,7 +33,7 @@ export const getListProduct = (
           //Result
           let data = querySnapshot.val();
           // console.clear()
-          console.log(`🚀 → file: ProductAction.js → line 35 → data`, data)
+          console.log(`🚀 → file: ProductAction.js → line 35 → data`, data);
           // console.log("DATA FIREBASE", data);
           // Success
           dispatchSuccess(dispatch, GET_LIST_PRODUCT, data);
@@ -55,8 +55,15 @@ export const getListProduct = (
           //Result
           // console.log("DATA FIREBASE", data);
           // Success
-          dispatchSuccess(dispatch, GET_LIST_PRODUCT, querySnapshot.val() ? querySnapshot.val() : []);
-          console.log(`🚀 → file: ProductAction.js → line 59 → querySnapshot.val()`, querySnapshot.val())
+          dispatchSuccess(
+            dispatch,
+            GET_LIST_PRODUCT,
+            querySnapshot.val() ? querySnapshot.val() : [],
+          );
+          console.log(
+            `🚀 → file: ProductAction.js → line 59 → querySnapshot.val()`,
+            querySnapshot.val(),
+          );
 
           //Clear Redux Data
           // dispatchClear(dispatch, GET_LIST_PRODUCT)
@@ -85,11 +92,18 @@ export const getListProduct = (
                 }
               });
               //Success
-              dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
+              dispatchSuccess(
+                dispatch,
+                GET_LIST_PRODUCT,
+                dataSorted.length > 0 ? dataSorted : null,
+              );
             } else {
-              let data = querySnapshot.val();
+              let dataSorted = [];
+              querySnapshot.forEach(e => {
+                dataSorted.push({...e.val()});
+              });
               // Success
-              dispatchSuccess(dispatch, GET_LIST_PRODUCT, data);
+              dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
             }
 
             //Clear Redux Data
@@ -117,7 +131,11 @@ export const getListProduct = (
                 }
               });
               //Success
-              dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
+              dispatchSuccess(
+                dispatch,
+                GET_LIST_PRODUCT,
+                dataSorted.length > 0 ? dataSorted : null,
+              );
             } else {
               let data = querySnapshot.val();
               // Success
@@ -149,7 +167,11 @@ export const getListProduct = (
                 }
               });
               //Success
-              dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
+              dispatchSuccess(
+                dispatch,
+                GET_LIST_PRODUCT,
+                dataSorted.length > 0 ? dataSorted : null,
+              );
             } else {
               let data = querySnapshot.val();
               // Success
@@ -183,7 +205,11 @@ export const getListProduct = (
               }
             });
             //Success
-            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
+            dispatchSuccess(
+              dispatch,
+              GET_LIST_PRODUCT,
+              dataSorted.length > 0 ? dataSorted : null,
+            );
 
             //Clear Redux Data
             // dispatchClear(dispatch, GET_LIST_PRODUCT)
@@ -207,7 +233,7 @@ export const getListProduct = (
               }
             });
             //Success
-            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
+            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
 
             //Clear Redux Data
             // dispatchClear(dispatch, GET_LIST_PRODUCT)
@@ -231,7 +257,7 @@ export const getListProduct = (
               }
             });
             //Success
-            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
+            dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted);
 
             //Clear Redux Data
             // dispatchClear(dispatch, GET_LIST_PRODUCT)
@@ -253,7 +279,11 @@ export const getListProduct = (
             dataSorted.unshift({...e.val()});
           });
           // Success
-          dispatchSuccess(dispatch, GET_LIST_PRODUCT, dataSorted.length > 0 ? dataSorted : null);
+          dispatchSuccess(
+            dispatch,
+            GET_LIST_PRODUCT,
+            dataSorted.length > 0 ? dataSorted : null,
+          );
 
           //Clear Redux Data
           // dispatchClear(dispatch, GET_LIST_PRODUCT)

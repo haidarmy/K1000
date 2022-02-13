@@ -205,6 +205,11 @@ export const completeStatusOrder = (orderId, storeId, balance) => {
           COMPLETE_STATUS_ORDER,
           response ? 'Complete order successfully' : [],
         );
+        getData('user').then(res => {
+          if (res) {
+            dispatch(getListOrder(res.uid));
+          }
+        });
       })
       .catch(error => {
         dispatchError(dispatch, COMPLETE_STATUS_ORDER, error);

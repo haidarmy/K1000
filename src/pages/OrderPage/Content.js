@@ -35,7 +35,7 @@ const Content = ({
   const dispatch = useDispatch();
   useEffect(() => {
     if (route?.params ?? null !== 'payment') {
-      jumpTo('finished');
+      jumpTo('pending');
     }
     getData('user').then(res => {
       if (res) {

@@ -47,21 +47,23 @@ const Calc = ({setResultCalc}) => {
         btnPressed === '÷'
       ) {
         if (btnPressed === '×') {
-          if (currentNumber.length < 10) {
+          if (currentNumber.length < 10 && currentNumber.length > 0) {
             setCurrentNumber(currentNumber + '*');
           }
         } else if (btnPressed === '÷') {
-          if (currentNumber.length < 10) {
+          if (currentNumber.length < 10 && currentNumber.length > 0) {
             setCurrentNumber(currentNumber + '/');
           }
         } else {
-          if (currentNumber.length < 10) {
+          if (currentNumber.length < 10  && currentNumber.length > 0) {
+            console.log(`🚀 → file: Calc.js → line 59 → Calc → currentNumber.length`, currentNumber.length)
             setCurrentNumber(currentNumber + btnPressed);
           }
         }
         return;
       }
     }
+
     switch (btnPressed) {
       case 'D':
         setCurrentNumber(currentNumber.substring(0, currentNumber.length - 1));
@@ -70,28 +72,20 @@ const Calc = ({setResultCalc}) => {
         }
         return;
     }
+
     if (
       !(
-        ((btnPressed === '0' || btnPressed === '000') &&
-          currentNumber.length === 0) ||
-        ((btnPressed === '0' || btnPressed === '000') &&
-          (lastNum === '/' ||
-            lastNum === '*' ||
-            lastNum === '-' ||
-            lastNum === '+')) ||
-        ((btnPressed === '+' ||
-          btnPressed === '-' ||
-          btnPressed === '×' ||
-          btnPressed === '÷') &&
-          (lastNum === '/' ||
-            lastNum === '*' ||
-            lastNum === '-' ||
-            lastNum === '+'))
+        ((btnPressed === '0' || btnPressed === '000') && currentNumber.length === 0) || //prevent set zero value at the beginning
+        ((btnPressed === '0' || btnPressed === '000') && (lastNum === '/' || lastNum === '*' || lastNum === '-' || lastNum === '+')) || //prevent operation with zero value
+        ((btnPressed === '+' || btnPressed === '-' || btnPressed === '×' || btnPressed === '÷') && (lastNum === '/' || lastNum === '*' || lastNum === '-' || lastNum === '+')) // prevent double operator
       )
     ) {
-      console.log(`🚀 --------Here------------`);
+      // console.clear()
+      // console.log(`🚀 --------Here------------`, btnPressed);
       if (currentNumber.length < 10) {
-        setCurrentNumber(currentNumber + btnPressed);
+        if(btnPressed !== '+' && btnPressed !== '-' && btnPressed !== '×' && btnPressed !== '÷'){
+          setCurrentNumber(currentNumber + btnPressed);
+        }
       }
     } else if (
       (btnPressed === '0' || btnPressed === '000') &&
@@ -118,8 +112,8 @@ const Calc = ({setResultCalc}) => {
   }, [currentNumber]);
 
   const calculate = () => {
-    console.clear()
-    console.log(`🚀 → file: Calc.js → line 132 → calculate → currentNumber`, `${currentNumber} - Length: ${currentNumber.length}`)
+    // console.clear()
+    // console.log(`🚀 → file: Calc.js → line 132 → calculate → currentNumber`, `${currentNumber} - Length: ${currentNumber.length}`)
     let lastArr = currentNumber[currentNumber.length - 1];
     if (
       lastArr === '/' ||
