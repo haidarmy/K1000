@@ -47,6 +47,7 @@ const ProductCard = ({
   love,
   id,
   sold,
+  onViewCount
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -109,6 +110,7 @@ const ProductCard = ({
       id,
       love: love || isFavourite,
       store,
+      onViewCount
     });
   };
   const theme = useSelector(state => state.DarkModeReducer.isDarkMode);

@@ -1,6 +1,5 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-//import type {Node} from 'react';
 import {
   LogBox,
   StatusBar,

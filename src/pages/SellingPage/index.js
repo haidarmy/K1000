@@ -38,41 +38,42 @@ const renderTabBar = props => {
   );
 };
 
-const Pending = ({jumpTo, keyword, theme}) => (
+const Pending = ({jumpTo, keyword, theme, setTab}) => (
   <View
     style={{flex: 1, backgroundColor: theme ? colorsDark.white : colors.white}}>
-    <Content status="pending" jumpTo={jumpTo} keyword={keyword} />
+    <Content status="pending" jumpTo={jumpTo} keyword={keyword} setTab={setTab} />
   </View>
 );
 
-const Packed = ({jumpTo, keyword, theme}) => (
+const Packed = ({jumpTo, keyword, theme, setTab}) => (
   <View
     style={{flex: 1, backgroundColor: theme ? colorsDark.white : colors.white}}>
-    <Content status="packed" jumpTo={jumpTo} keyword={keyword} />
+    <Content status="packed" jumpTo={jumpTo} keyword={keyword} setTab={setTab} />
   </View>
 );
-const Shipped = ({jumpTo, keyword, theme}) => (
+const Shipped = ({jumpTo, keyword, theme, setTab}) => (
   <View
     style={{flex: 1, backgroundColor: theme ? colorsDark.white : colors.white}}>
-    <Content status="shipped" jumpTo={jumpTo} keyword={keyword} />
-  </View>
-);
-
-const Finished = ({jumpTo, keyword, theme}) => (
-  <View
-    style={{flex: 1, backgroundColor: theme ? colorsDark.white : colors.white}}>
-    <Content status="finished" jumpTo={jumpTo} keyword={keyword} />
+    <Content status="shipped" jumpTo={jumpTo} keyword={keyword} setTab={setTab} />
   </View>
 );
 
-const Canceled = ({jumpTo, keyword, theme}) => (
+const Finished = ({jumpTo, keyword, theme, setTab}) => (
   <View
     style={{flex: 1, backgroundColor: theme ? colorsDark.white : colors.white}}>
-    <Content status="cancel" jumpTo={jumpTo} keyword={keyword} />
+    <Content status="finished" jumpTo={jumpTo} keyword={keyword} setTab={setTab} />
   </View>
 );
 
-const SellingPage = ({navigation}) => {
+const Canceled = ({jumpTo, keyword, theme, setTab}) => (
+  <View
+    style={{flex: 1, backgroundColor: theme ? colorsDark.white : colors.white}}>
+    <Content status="cancel" jumpTo={jumpTo} keyword={keyword} setTab={setTab} />
+  </View>
+);
+
+const SellingPage = ({navigation, route}) => {
+  const setTab = route?.params?.tab
   const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
   const styles = getStyles(theme);
   const [keyword, setKeyword] = useState('');
@@ -93,15 +94,15 @@ const SellingPage = ({navigation}) => {
   const renderScene = ({route, jumpTo}) => {
     switch (route.key) {
       case 'pending':
-        return <Pending jumpTo={jumpTo} keyword={keyword} theme={theme} />;
+        return <Pending jumpTo={jumpTo} keyword={keyword} theme={theme} setTab={setTab}/>;
       case 'packed':
-        return <Packed jumpTo={jumpTo} keyword={keyword} theme={theme} />;
+        return <Packed jumpTo={jumpTo} keyword={keyword} theme={theme} setTab={setTab}/>;
       case 'shipped':
-        return <Shipped jumpTo={jumpTo} keyword={keyword} theme={theme} />;
+        return <Shipped jumpTo={jumpTo} keyword={keyword} theme={theme} setTab={setTab}/>;
       case 'finished':
-        return <Finished jumpTo={jumpTo} keyword={keyword} theme={theme} />;
+        return <Finished jumpTo={jumpTo} keyword={keyword} theme={theme} setTab={setTab}/>;
       case 'canceled':
-        return <Canceled jumpTo={jumpTo} keyword={keyword} theme={theme} />;
+        return <Canceled jumpTo={jumpTo} keyword={keyword} theme={theme} setTab={setTab}/>;
       default:
         return null;
     }

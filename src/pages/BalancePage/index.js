@@ -8,7 +8,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {colors, colorsDark, getData, usePrevious} from '../../utils';
+import {
+  colors,
+  colorsDark,
+  getData,
+  thousandsSeparators,
+  usePrevious,
+} from '../../utils';
 import {
   FilterProduct,
   Gap,
@@ -195,7 +201,11 @@ const BalancePage = ({navigation, addRequestWithdrawResult}) => {
                       </Text>
                       <Text
                         style={{
-                          ...styles.text('Poppins-Medium', ms(16), theme ? colorsDark.grey : colors.grey),
+                          ...styles.text(
+                            'Poppins-Medium',
+                            ms(16),
+                            theme ? colorsDark.grey : colors.grey,
+                          ),
                         }}>
                         {currentSelection.bank.key} | ••••{` `}
                         {currentSelection.account.substr(
@@ -222,13 +232,22 @@ const BalancePage = ({navigation, addRequestWithdrawResult}) => {
             {/* <Text style={styles.text('Poppins-Bold', ms(32), colors.black)}>
               {result && `Rp ${result}`}
             </Text> */}
-            <Number number={result} textStyle={styles.text('Poppins-Bold', ms(32), theme ? colorsDark.black : colors.black)}/>
+            <Number
+              number={result}
+              textStyle={styles.text(
+                'Poppins-Bold',
+                ms(32),
+                theme ? colorsDark.black : colors.black,
+              )}
+            />
             <Gap height={mvs(10)} />
             <Text style={styles.text('Poppins-Regular', ms(16), colors.red)}>
               {result < 50000 && result > 0
                 ? 'Minimal penarikan Rp 50.0000'
                 : result > profile.balance
-                ? `Maksimal penarikan Rp ${profile.balance}`
+                ? `Maksimal penarikan Rp ${thousandsSeparators(
+                    profile.balance,
+                  )}`
                 : null}
             </Text>
           </View>
@@ -265,64 +284,65 @@ const mapStateToProps = state => ({
 
 export default connect(mapStateToProps, null)(BalancePage);
 
-const getStyles = theme => StyleSheet.create({
-  page: {
-    flex: 1,
-    backgroundColor: theme ? colorsDark.white : colors.white,
-    paddingTop: StatusBar.currentHeight,
-    padding: mvs(20),
-  },
-  balanceWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'rgba(111, 95, 144, 0.8)',
-    borderRadius: ms(6),
-    paddingHorizontal: ms(20),
-    paddingVertical: mvs(6),
-    marginBottom: mvs(15),
-  },
-  iconWrapper: {
-    backgroundColor: 'rgba(111, 95, 144, 0.2)',
-    width: ms(42),
-    height: mvs(42),
-    borderRadius: ms(8),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  resCalc: {
-    flex: 3,
-    backgroundColor: theme ? colorsDark.white : colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: (
-    fontFamily = 'Poppins-Regular',
-    fontSize = ms(16),
-    color = theme ? colorsDark.black : colors.black,
-  ) => ({
-    fontFamily: fontFamily,
-    fontSize: fontSize,
-    color: color,
-  }),
-  shippingWrapper: {
-    padding: mvs(10),
-    borderWidth: ms(1),
-    borderRadius: ms(10),
-    borderColor: theme ? colorsDark.lightgrey : colors.grey,
-    height: mvs(60),
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginBottom: mvs(20),
-  },
-  selectedShippingWrapper: {
-    padding: mvs(15),
-    borderWidth: ms(1),
-    borderRadius: ms(10),
-    borderColor: theme ? colorsDark.lightgrey : colors.grey,
-    alignItems: 'center',
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    marginBottom: mvs(20),
-  },
-});
+const getStyles = theme =>
+  StyleSheet.create({
+    page: {
+      flex: 1,
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      paddingTop: StatusBar.currentHeight,
+      padding: mvs(20),
+    },
+    balanceWrapper: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: 'rgba(111, 95, 144, 0.8)',
+      borderRadius: ms(6),
+      paddingHorizontal: ms(20),
+      paddingVertical: mvs(6),
+      marginBottom: mvs(15),
+    },
+    iconWrapper: {
+      backgroundColor: 'rgba(111, 95, 144, 0.2)',
+      width: ms(42),
+      height: mvs(42),
+      borderRadius: ms(8),
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    resCalc: {
+      flex: 3,
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    text: (
+      fontFamily = 'Poppins-Regular',
+      fontSize = ms(16),
+      color = theme ? colorsDark.black : colors.black,
+    ) => ({
+      fontFamily: fontFamily,
+      fontSize: fontSize,
+      color: color,
+    }),
+    shippingWrapper: {
+      padding: mvs(10),
+      borderWidth: ms(1),
+      borderRadius: ms(10),
+      borderColor: theme ? colorsDark.lightgrey : colors.grey,
+      height: mvs(60),
+      alignItems: 'center',
+      flexDirection: 'row',
+      marginBottom: mvs(20),
+    },
+    selectedShippingWrapper: {
+      padding: mvs(15),
+      borderWidth: ms(1),
+      borderRadius: ms(10),
+      borderColor: theme ? colorsDark.lightgrey : colors.grey,
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      flexDirection: 'row',
+      marginBottom: mvs(20),
+    },
+  });

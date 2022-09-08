@@ -1,36 +1,28 @@
 import React, {useEffect, useState} from 'react';
 import {
+  FlatList,
   Image,
+  StatusBar,
   StyleSheet,
   Text,
-  View,
-  FlatList,
-  TouchableWithoutFeedback,
   TouchableOpacity,
-  StatusBar,
+  View,
 } from 'react-native';
+import {ms, mvs} from 'react-native-size-matters';
+import {useDispatch, useSelector} from 'react-redux';
+import {Gap, Number} from '..';
 import {
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem,
-} from '@react-navigation/drawer';
-import {
-  AvatarDummy,
   IcCash,
   IcCashWd,
   IcHamburger,
   IcProduct,
+  IcSalesReport,
   IcSell,
 } from '../../assets';
-import {colors, colorsDark, getData, storeData} from '../../utils';
-import {Gap, Number} from '..';
 import {getUserInfo} from '../../redux/action/UserAction';
-import {useDispatch, useSelector} from 'react-redux';
-import {s, vs, ms, mvs} from 'react-native-size-matters';
-import {useNavigation} from '@react-navigation/core';
+import {colors, colorsDark, getData} from '../../utils';
 
 const SideBarDrawer = props => {
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
   const styles = getStyles(theme);
@@ -47,12 +39,14 @@ const SideBarDrawer = props => {
         name: res.name ? res.name : '',
       });
     });
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
   const [selectedId, setSelectedId] = useState('Produk');
   const listArray = [
     {icon: IcProduct, title: 'Produk'},
     {icon: IcSell, title: 'Penjualan'},
     {icon: IcCashWd, title: 'Tarik Dana'},
+    {icon: IcSalesReport, title: 'Laporan Penjualan'},
   ];
 
   const Icon = ({title, icon}) => {
@@ -63,6 +57,8 @@ const SideBarDrawer = props => {
         return <IcSell fill={icon} width={ms(24)} height={mvs(24)} />;
       case 'Tarik Dana':
         return <IcCashWd fill={icon} width={ms(24)} height={mvs(24)} />;
+      case 'Laporan Penjualan':
+        return <IcSalesReport fill={icon} width={ms(24)} height={mvs(24)} />;
       default:
         break;
     }
@@ -150,42 +146,43 @@ const SideBarDrawer = props => {
 
 export default SideBarDrawer;
 
-const getStyles = theme => StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: mvs(20),
-    backgroundColor: theme ? colorsDark.white : colors.white,
-    paddingTop: StatusBar.currentHeight + mvs(20),
-  },
-  text: (
-    fontFamily = 'Poppins-Regular',
-    fontSize = ms(16),
-    color = theme ? colorsDark.black : colors.black,
-  ) => ({
-    fontFamily: fontFamily,
-    fontSize: fontSize,
-    color: color,
-  }),
-  itemWrapper: backgroundColor => ({
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: mvs(15),
-    backgroundColor: backgroundColor,
-    height: mvs(50),
-    width: '100%',
-    padding: mvs(10),
-    borderRadius: ms(10),
-  }),
-  avatar: {
-    width: ms(80),
-    height: mvs(80),
-    borderWidth: ms(2),
-    borderColor: colors.default,
-    borderRadius: ms(40),
-  },
-  balance: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-});
+const getStyles = theme =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: mvs(20),
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      paddingTop: StatusBar.currentHeight + mvs(20),
+    },
+    text: (
+      fontFamily = 'Poppins-Regular',
+      fontSize = ms(16),
+      color = theme ? colorsDark.black : colors.black,
+    ) => ({
+      fontFamily: fontFamily,
+      fontSize: fontSize,
+      color: color,
+    }),
+    itemWrapper: backgroundColor => ({
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: mvs(15),
+      backgroundColor: backgroundColor,
+      height: mvs(50),
+      width: '100%',
+      padding: mvs(10),
+      borderRadius: ms(10),
+    }),
+    avatar: {
+      width: ms(80),
+      height: mvs(80),
+      borderWidth: ms(2),
+      borderColor: colors.default,
+      borderRadius: ms(40),
+    },
+    balance: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+  });

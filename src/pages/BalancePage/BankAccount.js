@@ -70,11 +70,15 @@ const BankAccount = ({
     const regex = /\d/;
     const doesItHaveNumber = regex.test(keyword);
     if (doesItHaveNumber) {
-      return Object.values(getBankAccountResult).some(e => e.account.includes(keyword))
+      return Object.values(getBankAccountResult).some(e =>
+        e.account.includes(keyword),
+      );
     } else {
-      return Object.values(getBankAccountResult).some(e => e.name.toLowerCase().includes(keyword))
+      return Object.values(getBankAccountResult).some(e =>
+        e.name.toLowerCase().includes(keyword),
+      );
     }
-  }
+  };
   return (
     <View style={styles.container}>
       <View style={styles.swiper}>
@@ -101,52 +105,57 @@ const BankAccount = ({
         </TouchableOpacity>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {getBankAccountResult ? 
-       (checkSearchResult() ?  (
-        Object.keys(getBankAccountResult)
-          .filter(e => filteredAccount(e))
-          .map(key => {
-            console.log(
-              `🚀 → file: BankAccount.js → line 99 → key`,
-              getBankAccountResult,
-            );
-            const item = getBankAccountResult[key];
-            return (
-              <TouchableOpacity
-                key={key}
-                onPress={() => setValueToParent(item, 'bankAcc')}
-                activeOpacity={0.7}
-                style={styles.accWrapper}>
-                <View style={styles.iconWrapper}>
-                  <IcCC
-                    fill={colors.default}
-                    width={ms(24)}
-                    height={mvs(24)}
-                  />
-                </View>
-                <Gap width={ms(15)} />
-                <View>
-                  <Text style={styles.text('Poppins-Bold', ms(16))}>
-                    {item.name}
-                  </Text>
-                  <Text
-                    style={styles.text(
-                      'Poppins-Regular',
-                      ms(16),
-                      colors.grey,
-                    )}>
-                    {item.bank.key} | ••••{' '}
-                    {item.account.substr(item.account.length - 4, 4)}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            );
-          })
-      ) : <EmptySearchResult/>) 
-        : getBankAccountLoading ? (
+        {getBankAccountResult ? (
+          checkSearchResult() ? (
+            Object.keys(getBankAccountResult)
+              .filter(e => filteredAccount(e))
+              .map(key => {
+                console.log(
+                  `🚀 → file: BankAccount.js → line 99 → key`,
+                  getBankAccountResult,
+                );
+                const item = getBankAccountResult[key];
+                return (
+                  <TouchableOpacity
+                    key={key}
+                    onPress={() => setValueToParent(item, 'bankAcc')}
+                    activeOpacity={0.7}
+                    style={styles.accWrapper}>
+                    <View style={styles.iconWrapper}>
+                      <IcCC
+                        fill={colors.default}
+                        width={ms(24)}
+                        height={mvs(24)}
+                      />
+                    </View>
+                    <Gap width={ms(15)} />
+                    <View>
+                      <Text style={styles.text('Poppins-Bold', ms(16))}>
+                        {item.name}
+                      </Text>
+                      <Text
+                        style={styles.text(
+                          'Poppins-Regular',
+                          ms(16),
+                          colors.grey,
+                        )}>
+                        {item.bank.key} | ••••{' '}
+                        {item.account.substr(item.account.length - 4, 4)}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })
+          ) : (
+            <EmptySearchResult />
+          )
+        ) : getBankAccountLoading ? (
           <BankAccSkeleton />
         ) : (
-          <EmptyPage illustration='EmptyAccount' text='Tidak Ada Rekening Yang Tersimpan'/>
+          <EmptyPage
+            illustration="EmptyAccount"
+            text="Tidak Ada Rekening Yang Tersimpan"
+          />
         )}
       </ScrollView>
     </View>
@@ -160,54 +169,55 @@ const mapStateToProps = state => ({
 });
 export default connect(mapStateToProps, null)(BankAccount);
 
-const getStyles = theme => StyleSheet.create({
-  container: {
-    flex: 1,
-    // maxHeight: '100%',
-    // marginBottom: -50,
-    backgroundColor: theme ? colorsDark.white : colors.white,
-    paddingTop: mvs(30),
-    paddingHorizontal: ms(25),
-    paddingVertical: vs(16),
-    borderTopLeftRadius: ms(10),
-    borderTopRightRadius: ms(10),
-  },
-  addAccWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: vs(12),
-  },
-  addIcWrapper: {
-    height: mvs(42),
-    width: ms(42),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  accWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: vs(16),
-  },
-  swiper: {
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    marginBottom: mvs(16),
-  },
-  text: (
-    fontFamily = 'Poppins-Regular',
-    fontSize = ms(14),
-    color = theme ? colorsDark.black : colors.black,
-  ) => ({
-    fontFamily: fontFamily,
-    fontSize: fontSize,
-    color: color,
-  }),
-  iconWrapper: {
-    backgroundColor: 'rgba(111, 95, 144, 0.2)',
-    width: ms(42),
-    height: mvs(42),
-    borderRadius: ms(8),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+const getStyles = theme =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      // maxHeight: '100%',
+      // marginBottom: -50,
+      backgroundColor: theme ? colorsDark.white : colors.white,
+      paddingTop: mvs(30),
+      paddingHorizontal: ms(25),
+      paddingVertical: vs(16),
+      borderTopLeftRadius: ms(10),
+      borderTopRightRadius: ms(10),
+    },
+    addAccWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: vs(12),
+    },
+    addIcWrapper: {
+      height: mvs(42),
+      width: ms(42),
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    accWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: vs(16),
+    },
+    swiper: {
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      marginBottom: mvs(16),
+    },
+    text: (
+      fontFamily = 'Poppins-Regular',
+      fontSize = ms(14),
+      color = theme ? colorsDark.black : colors.black,
+    ) => ({
+      fontFamily: fontFamily,
+      fontSize: fontSize,
+      color: color,
+    }),
+    iconWrapper: {
+      backgroundColor: 'rgba(111, 95, 144, 0.2)',
+      width: ms(42),
+      height: mvs(42),
+      borderRadius: ms(8),
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });

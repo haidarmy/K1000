@@ -8,20 +8,22 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Gap} from '../../components';
+import {ms, mvs, vs} from 'react-native-size-matters';
+import {useSelector} from 'react-redux';
 import {
-  AvatarDummy,
   IcCartActive,
   IcCartActiveDark,
+  IcChartBar,
   IcChevronRight,
   IcLogout,
   IcMap,
   IcMapDark,
   IcProfileActive,
   IcStoreActive,
-  IcWishlistActive,
   IllDefaultAvatar,
 } from '../../assets';
+import {Gap} from '../../components';
+import FIREBASE from '../../config/FIREBASE';
 import {
   clearStorage,
   colors,
@@ -29,10 +31,6 @@ import {
   getData,
   showError,
 } from '../../utils';
-import FIREBASE from '../../config/FIREBASE';
-import profile from '../../redux/reducer/profile';
-import {s, vs, ms, mvs} from 'react-native-size-matters';
-import {useSelector} from 'react-redux';
 
 const Menu = ({label, icon, onPress, theme}) => {
   const styles = getStyles(theme);
@@ -70,7 +68,14 @@ const Menu = ({label, icon, onPress, theme}) => {
           onPress={onPress}
           activeOpacity={0.7}
           style={styles.menuWrapper}>
-          {theme ? <IcCartActiveDark fill={colors.grey} style={{marginRight: ms(32)}} /> : <IcCartActive fill={colors.grey} style={{marginRight: ms(32)}} />}
+          {theme ? (
+            <IcCartActiveDark
+              fill={colors.grey}
+              style={{marginRight: ms(32)}}
+            />
+          ) : (
+            <IcCartActive fill={colors.grey} style={{marginRight: ms(32)}} />
+          )}
           <Text style={styles.menuLabel}>{label}</Text>
           <IcChevronRight />
         </TouchableOpacity>
@@ -81,7 +86,27 @@ const Menu = ({label, icon, onPress, theme}) => {
           onPress={onPress}
           activeOpacity={0.7}
           style={styles.menuWrapper}>
-          {theme ? <IcMapDark fill={colors.grey} style={{marginRight: ms(32)}} /> : <IcMap fill={colors.grey} style={{marginRight: ms(32)}} />}
+          {theme ? (
+            <IcMapDark fill={colors.grey} style={{marginRight: ms(32)}} />
+          ) : (
+            <IcMap fill={colors.grey} style={{marginRight: ms(32)}} />
+          )}
+          <Text style={styles.menuLabel}>{label}</Text>
+          <IcChevronRight />
+        </TouchableOpacity>
+      );
+    case 'Expenditure':
+      return (
+        <TouchableOpacity
+          onPress={onPress}
+          activeOpacity={0.7}
+          style={styles.menuWrapper}>
+          <IcChartBar
+            fill={colors.grey}
+            width={ms(24)}
+            height={mvs(24)}
+            style={{marginRight: ms(32)}}
+          />
           <Text style={styles.menuLabel}>{label}</Text>
           <IcChevronRight />
         </TouchableOpacity>
@@ -148,6 +173,7 @@ const ProfilePage = ({navigation}) => {
       getUserData();
     });
     return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation]);
   const onLogout = () => {
     Alert.alert(
@@ -230,6 +256,12 @@ const ProfilePage = ({navigation}) => {
           label="Alamat"
           icon={'Address'}
           onPress={() => navigation.navigate('AddressPage')}
+        />
+        <Menu
+          theme={theme}
+          label="Pengeluaran"
+          icon={'Expenditure'}
+          onPress={() => navigation.navigate('ExpenditureReportPage')}
         />
         <Menu theme={theme} label="Logout" icon={'Logout'} onPress={onLogout} />
       </View>

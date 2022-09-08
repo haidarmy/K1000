@@ -7,7 +7,9 @@ import ProductDummy2 from './Dummy/ProductDummy2.jpg';
 import ProductDummy3 from './Dummy/ProductDummy3.jpg';
 import ProductDummy4 from './Dummy/ProductDummy4.jpg';
 import ProductDummy5 from './Dummy/ProductDummy5.jpg';
+//Icons
 import GifLoading from './Gif/gif-loading.gif';
+import IcSalesReport from './Icons/ic-sales-report.svg';
 import IcBack from './Icons/ic-back.svg';
 import IcBackGrey from  './Icons/ic-back-grey.svg'
 import IcBackDark from './Icons/ic-back-dark.svg'
@@ -19,6 +21,8 @@ import IcCartInactive from './Icons/ic-cart-inactive.svg';
 import IcCash from './Icons/ic-cash.png';
 import IcCashWd from './Icons/ic-cashwd.svg';
 import IcChevronRight from './Icons/ic-chevron-right.svg';
+import IcChartBar from './Icons/ic-chart-bar.svg';
+import IcChartLine from './Icons/ic-chart-line.svg';
 import IcClipboard from './Icons/ic-clipboard.svg';
 import IcCloseSolid from './Icons/ic-close-solid.svg';
 import IcClose from './Icons/ic-close.svg';
@@ -33,7 +37,6 @@ import IcGallery from './Icons/ic-gallery.svg';
 import IcHamburger from './Icons/ic-hamburger.svg';
 import IcHeartRed from './Icons/ic-heart-red.svg';
 import IcHeartSolid from './Icons/ic-heart-solid.svg';
-//Icons
 import IcHomeActive from './Icons/ic-home-active.svg';
 import IcHomeActiveDark from './Icons/ic-home-active-dark.svg'
 import IcHomeInactive from './Icons/ic-home-inactive.svg';
@@ -150,6 +153,7 @@ export {
   IcMan,
   IcWoman,
   IcShipping,
+  IcSalesReport,
   IcStore,
   IcLogout,
   IcDropdown,
@@ -158,6 +162,8 @@ export {
   IcShowMore,
   IcShowLess,
   IcHamburger,
+  IcChartBar,
+  IcChartLine,
   ProductDummy1,
   ProductDummy2,
   ProductDummy3,

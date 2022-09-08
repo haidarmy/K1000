@@ -1,37 +1,38 @@
-import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import {createStackNavigator} from '@react-navigation/stack';
+import React from 'react';
 import {BottomNavigation} from '../components';
+import SideBarDrawer from '../components/SideBarDrawer';
 import {
   AddAddressPage,
   AddProductPage,
   AddressPage,
+  BalancePage,
   CartPage,
+  CheckoutPage,
+  CheckResiPage,
+  ExpenditureReportPage,
   HomePage,
+  InputResiPage,
   LoginPage,
+  OrderDetailPage,
+  OrderPage,
+  PaymentPage,
   ProductPage,
   ProfileDetailPage,
   ProfilePage,
+  SellingPage,
   SignUpPage,
   SplashScreen,
   StorePage,
+  SuccessAddToCartPage,
+  SuccessWithdrawPage,
   WelcomePage,
   WishlistPage,
-  SuccessAddToCartPage,
-  CheckoutPage,
-  PaymentPage,
-  OrderPage,
-  BalancePage,
-  SellingPage,
-  OrderDetailPage,
-  InputResiPage,
-  CheckResiPage,
-  SuccessWithdrawPage,
 } from '../pages';
-import { colors } from '../utils';
-import SideBarDrawer from '../components/SideBarDrawer';
 import FillIdentityCautionPage from '../pages/FillIdentityCautionPage';
+import SalesReportPage from '../pages/SalesReportPage';
 import SuccessDeliveredOrder from '../pages/SuccessDeliveredOrder';
 
 const Stack = createStackNavigator();
@@ -43,13 +44,13 @@ const StoreDrawer = () => {
     <Drawer.Navigator
       initialRouteName="StorePage"
       drawerType="slide"
-      drawerContent={props => <SideBarDrawer {...props}/>}
+      drawerContent={props => <SideBarDrawer {...props} />}
       overlayColor={'rgba(111, 95, 144, 0.075)'}
-      backBehavior='initialRoute'
-      >
+      backBehavior="initialRoute">
       <Drawer.Screen name="StorePage" component={StorePage} />
       <Drawer.Screen name="SellingPage" component={SellingPage} />
       <Drawer.Screen name="BalancePage" component={BalancePage} />
+      <Drawer.Screen name="SalesReport" component={SalesReportPage} />
     </Drawer.Navigator>
   );
 };
@@ -174,6 +175,11 @@ const Router = () => {
       <Stack.Screen
         name="FillIdentityCautionPage"
         component={FillIdentityCautionPage}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="ExpenditureReportPage"
+        component={ExpenditureReportPage}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

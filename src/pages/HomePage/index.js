@@ -1,26 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
-  StatusBar,
-  Dimensions,
-} from 'react-native';
-import {colors, colorsDark, getData} from '../../utils';
-import {SearchBar, FilterProduct} from '../../components';
-import Content from './Content';
-import Slider from './Slider';
+import {Dimensions, StatusBar, StyleSheet, View} from 'react-native';
 import Modal from 'react-native-modal';
+import {ms, mvs} from 'react-native-size-matters';
 import {connect, useDispatch} from 'react-redux';
+import {FilterProduct, SearchBar} from '../../components';
 import {getCategory} from '../../redux/action/CategoryAction';
 import {
   getListProduct,
   getProductByKeyword,
 } from '../../redux/action/ProductAction';
-import {s, vs, ms, mvs} from 'react-native-size-matters';
+import {colors, colorsDark} from '../../utils';
+import Content from './Content';
+import Slider from './Slider';
 
 const HomePage = ({
   navigation,
@@ -44,19 +35,19 @@ const HomePage = ({
 
   useEffect(() => {
     dispatch(getCategory());
-  }, []);
+  }, [dispatch]);
 
-  useEffect( () => {
+  useEffect(() => {
     dispatch(getListProduct(undefined, keyword));
     dispatch(getProductByKeyword(false));
-  }, [keyword]);
+  }, [dispatch, keyword]);
 
   useEffect(() => {
     dispatch(
       getListProduct(idCategory, undefined, idSort, rangeMaximum, rangeMinimum),
     );
     console.log(`🚀 → file: index.js → line 49 → useEffect → keyword`, keyword);
-  }, [idCategory, idSort, rangeMinimum, rangeMaximum]);
+  }, [idCategory, idSort, rangeMinimum, rangeMaximum, dispatch, keyword]);
 
   const styles = getStyles(theme);
   return (

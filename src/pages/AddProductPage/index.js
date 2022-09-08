@@ -197,11 +197,7 @@ const AddProductPage = ({
           ),
         );
       } else {
-        // dispatch(uploadProduct({...form, weight: parseFloat(form.weight)}));
-        console.log(
-          `🚀 → file: index.js → line 197 → addProductToDB → form`,
-          form.price,
-        );
+        dispatch(uploadProduct({...form, weight: parseFloat(form.weight)}));
       }
     } else {
       showError('Pastikan semua kolom terisi!');

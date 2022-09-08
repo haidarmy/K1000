@@ -12,6 +12,8 @@ import {
 } from '../../utils';
 import axios from 'axios';
 import {isArray} from 'lodash';
+import {updateProductCancelCount} from './SalesReportAction';
+import {updateProductCancelCountExpenditure} from './ExpenditureReportAction';
 
 export const UPDATE_ORDER = 'UPDATE_ORDER';
 export const GET_LIST_ORDER = 'GET_LIST_ORDER';
@@ -41,8 +43,8 @@ export const updateOrder = params => {
           //     dispatchSuccess(dispatch, UPDATE_ORDER, response ? response : []);
           //   })
           //   .catch(error => {
-          //     dispatchError(dispatch, UPDATE_ORDER, error);
-          //     showError(error);
+          //     dispatchError(dispatch, UPDATE_ORDER, error.message);
+          //     showError(error.message);
           //   });
 
           FIREBASE.database()
@@ -61,19 +63,19 @@ export const updateOrder = params => {
                   );
                 })
                 .catch(error => {
-                  dispatchError(dispatch, UPDATE_ORDER, error);
-                  showError(error);
+                  dispatchError(dispatch, UPDATE_ORDER, error.message);
+                  showError(error.message);
                 });
             })
             .catch(error => {
-              dispatchError(dispatch, UPDATE_ORDER, error);
-              showError(error);
+              dispatchError(dispatch, UPDATE_ORDER, error.message);
+              showError(error.message);
             });
         }
       })
       .catch(error => {
-        dispatchError(dispatch, UPDATE_ORDER, error);
-        showError(error);
+        dispatchError(dispatch, UPDATE_ORDER, error.message);
+        showError(error.message);
       });
   };
 };
@@ -93,11 +95,15 @@ export const getListOrder = uid => {
         querySnapshot.forEach(e => {
           dataSorted.unshift({...e.val()});
         });
-        dispatchSuccess(dispatch, GET_LIST_ORDER, dataSorted.length > 0 ? dataSorted : null);
+        dispatchSuccess(
+          dispatch,
+          GET_LIST_ORDER,
+          dataSorted.length > 0 ? dataSorted : null,
+        );
       })
       .catch(error => {
-        dispatchError(dispatch, GET_LIST_ORDER, error);
-        showError(error);
+        dispatchError(dispatch, GET_LIST_ORDER, error.message);
+        showError(error.message);
       });
   };
 };
@@ -127,6 +133,25 @@ export const updateStatusOrder = order_id => {
           .child('orderDetails')
           .orderByChild('status')
           .once('value', querySnapshot => {
+            const handleCancelCount = data => {
+              return Object.values(data)
+                .map(e =>
+                  Object.values(e.order).reduce(
+                    (acc, curr) => acc + curr.orderAmount,
+                    0,
+                  ),
+                )
+                .reduce((acc, curr) => acc + curr, 0);
+            };
+            //TODO need to be tested later
+            getData('user').then(res => {
+              dispatch(
+                updateProductCancelCountExpenditure(
+                  handleCancelCount(querySnapshot.val()),
+                  res.uid,
+                ),
+              );
+            });
             let newData = {};
             const pushData = () => {
               return new Promise(resolve => {
@@ -134,6 +159,14 @@ export const updateStatusOrder = order_id => {
                   let temp = Object.assign({}, querySnapshot.val()[key]);
                   temp.status = status;
                   newData[`${key}`] = temp;
+                  if (status === 'cancel') {
+                    const cancelmount = Object.values(temp.order).reduce(
+                      (acc, curr) => acc + curr.orderAmount,
+                      0,
+                    );
+                    const storeId = temp.store.storeId;
+                    dispatch(updateProductCancelCount(storeId, cancelmount));
+                  }
                 });
                 if (
                   Object.values(querySnapshot.val()).length ===
@@ -157,8 +190,8 @@ export const updateStatusOrder = order_id => {
                   );
                 })
                 .catch(error => {
-                  dispatchError(dispatch, UPDATE_STATUS_ORDER, error);
-                  showError(error);
+                  dispatchError(dispatch, UPDATE_STATUS_ORDER, error.message);
+                  showError(error.message);
                 });
             };
 
@@ -170,9 +203,9 @@ export const updateStatusOrder = order_id => {
           });
       })
       .catch(error => {
-        console.log('failed get axios', error);
-        dispatchError(dispatch, UPDATE_STATUS_ORDER, error);
-        showError(error);
+        console.log('failed get axios', error.message);
+        dispatchError(dispatch, UPDATE_STATUS_ORDER, error.message);
+        showError(error.message);
       });
   };
 };
@@ -194,8 +227,8 @@ export const completeStatusOrder = (orderId, storeId, balance) => {
             .ref('users/' + storeId)
             .update({balance: parseInt(balance) + parseInt(oldBalance)})
             .catch(error => {
-              dispatchError(dispatch, COMPLETE_STATUS_ORDER, error);
-              showError(error);
+              dispatchError(dispatch, COMPLETE_STATUS_ORDER, error.message);
+              showError(error.message);
             });
         }),
     ])
@@ -212,8 +245,8 @@ export const completeStatusOrder = (orderId, storeId, balance) => {
         });
       })
       .catch(error => {
-        dispatchError(dispatch, COMPLETE_STATUS_ORDER, error);
-        showError(error);
+        dispatchError(dispatch, COMPLETE_STATUS_ORDER, error.message);
+        showError(error.message);
       });
   };
 };
@@ -235,13 +268,13 @@ export const updateProductStock = data => {
               sold: parseInt(oldSold) + parseInt(item.orderAmount),
             })
             .catch(error => {
-              dispatchError(dispatch, UPDATE_PRODUCT_STOCK, error);
-              showError(error);
+              dispatchError(dispatch, UPDATE_PRODUCT_STOCK, error.message);
+              showError(error.message);
             });
         })
         .catch(error => {
-          dispatchError(dispatch, UPDATE_PRODUCT_STOCK, error);
-          showError(error);
+          dispatchError(dispatch, UPDATE_PRODUCT_STOCK, error.message);
+          showError(error.message);
         });
     });
   };

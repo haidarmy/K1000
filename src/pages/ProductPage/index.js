@@ -1,32 +1,29 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Modal,
-  Image,
-  Dimensions,
-  StatusBar,
   Alert,
+  Dimensions,
+  Image,
+  Modal,
+  ScrollView,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import ImageViewer from 'react-native-image-zoom-viewer';
+import {ms, mvs, s, vs} from 'react-native-size-matters';
 import {connect, useDispatch, useSelector} from 'react-redux';
-import {alignItems, height, textAlign, width} from 'styled-system';
 import {
+  IcBackGrey,
   IcCartInactive,
-  IcWishlistInactive,
-  IcBack,
-  IcHeartRed,
   IcClose,
-  ProductDummy1,
+  IcHeartRed,
   IcStore,
   IcTrash,
-  IcBackGrey,
+  IcWishlistInactive,
 } from '../../assets';
-import {SubmitButton, Gap, Number} from '../../components';
+import {Gap, Number, SubmitButton} from '../../components';
 import {addToCart, getCartList} from '../../redux/action/CartAction';
 import {deleteProduct} from '../../redux/action/StoreAction';
 import {
@@ -41,7 +38,6 @@ import {
   useForm,
   usePrevious,
 } from '../../utils';
-import {s, vs, ms, mvs} from 'react-native-size-matters';
 
 const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
   const dispatch = useDispatch();
@@ -50,9 +46,22 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
   const [isFavourite, setIsFavourite] = useState(false);
   const [dialog, setDialog] = useState(null);
   const [isActive, setIsActive] = useState(0);
-  const {productData, id, love} = route.params;
-  const {image, name, price, weight, description, store, stock, sold} =
-    productData;
+  const {productData, id, love, onViewCount} = route.params;
+  const {
+    image,
+    name,
+    price,
+    weight,
+    description,
+    store,
+    stock,
+    sold,
+    uid: storeId,
+  } = productData;
+
+  useEffect(() => {
+    onViewCount && onViewCount(storeId);
+  }, [dispatch, storeId, onViewCount]);
 
   const images = image.map(img => {
     return {
@@ -280,7 +289,11 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
               <Text style={styles.weight}>{weight} kg</Text>
               <Text
                 style={[
-                  styles.text('Poppins-Medium', 16, theme ? colorsDark.black : colors.black),
+                  styles.text(
+                    'Poppins-Medium',
+                    16,
+                    theme ? colorsDark.black : colors.black,
+                  ),
                   {textAlign: 'left'},
                 ]}>
                 Terjual {sold}
@@ -288,7 +301,11 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
               {route.params.store && (
                 <Text
                   style={[
-                    styles.text('Poppins-Medium', 16, theme ? colorsDark.black : colors.black),
+                    styles.text(
+                      'Poppins-Medium',
+                      16,
+                      theme ? colorsDark.black : colors.black,
+                    ),
                     {textAlign: 'left'},
                   ]}>
                   Stok {stock}
@@ -334,7 +351,12 @@ const ProductPage = ({navigation, route, setCartResult, getCartResult}) => {
                   </TouchableOpacity>
                 </View>
                 <Gap height={5} />
-                <Text style={styles.text('Poppins-Medium', 16, theme ? colorsDark.black : colors.black)}>
+                <Text
+                  style={styles.text(
+                    'Poppins-Medium',
+                    16,
+                    theme ? colorsDark.black : colors.black,
+                  )}>
                   Stok {stock}
                 </Text>
               </View>

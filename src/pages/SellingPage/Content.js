@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {
   Dimensions,
   StyleSheet,
@@ -29,13 +29,17 @@ const Content = ({
   status,
   jumpTo,
   keyword,
+  setTab
 }) => {
   const [uid, setUid] = useState(false);
   const [foundOnChild, setFoundOnChild] = useState(true);
   const dispatch = useDispatch();
 
+  // useLayoutEffect(() => {
+  // }, []);
+  
   useEffect(() => {
-    jumpTo('packed');
+    jumpTo(setTab ? setTab : 'packed');
     getData('user').then(res => {
       if (res) {
         setUid(res.uid);
@@ -59,8 +63,8 @@ const Content = ({
   };
 
   useEffect(() => {
-    if(keyword.length === 0){
-      setFoundOnChild(true)
+    if (keyword.length === 0) {
+      setFoundOnChild(true);
     }
   }, [keyword]);
 

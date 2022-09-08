@@ -21,7 +21,8 @@ import StorePage from './StorePage';
 import SuccessAddToCartPage from './SuccessAddToCartPage';
 import WelcomePage from './WelcomePage';
 import WishlistPage from './WishlistPage';
-import SuccessWithdrawPage from './SuccessWithdrawPage'
+import SuccessWithdrawPage from './SuccessWithdrawPage';
+import ExpenditureReportPage from './ExpenditureReportPage';
 
 export {
   AddAddressPage,
@@ -48,4 +49,5 @@ export {
   BalancePage,
   SellingPage,
   InputResiPage,
+  ExpenditureReportPage,
 };

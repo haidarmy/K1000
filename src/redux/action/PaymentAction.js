@@ -31,11 +31,11 @@ export const snapTransactions = data => {
           SNAP_TRANSACTIONS,
           response.data ? response.data : [],
         );
-        dispatchClear(dispatch, SNAP_TRANSACTIONS)
+        dispatchClear(dispatch, SNAP_TRANSACTIONS);
       })
       .catch(error => {
-        dispatchError(dispatch, SNAP_TRANSACTIONS, error);
-        showError(error);
+        dispatchError(dispatch, SNAP_TRANSACTIONS, error.message);
+        showError(error.message);
       });
   };
 };

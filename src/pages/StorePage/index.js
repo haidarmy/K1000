@@ -1,26 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  ScrollView,
-  TouchableOpacity,
-  StatusBar,
+  StatusBar, StyleSheet, TouchableOpacity, View
 } from 'react-native';
-import {colors, colorsDark, getData} from '../../utils';
-import {SearchBar, FilterProduct, Header, EmptyPage} from '../../components';
-import Content from './Content';
-import Slider from './Slider';
 import Modal from 'react-native-modal';
-import {IcFloatButton} from '../../assets';
-import {connect, useDispatch} from 'react-redux';
+import { ms, mvs } from 'react-native-size-matters';
+import { connect, useDispatch } from 'react-redux';
+import { IcFloatButton } from '../../assets';
+import { FilterProduct, Header, SearchBar } from '../../components';
+import { getCategory } from '../../redux/action/CategoryAction';
 import {
   deleteParameterStoreProduct,
-  getStoreProduct,
+  getStoreProduct
 } from '../../redux/action/StoreAction';
-import {getCategory} from '../../redux/action/CategoryAction';
-import {s, vs, ms, mvs} from 'react-native-size-matters';
+import { colors, colorsDark } from '../../utils';
+import Content from './Content';
+import Slider from './Slider';
 
 const StorePage = ({
   navigation,
@@ -67,7 +61,6 @@ const StorePage = ({
         label="Toko Saya"
         onPress={() => navigation.navigate('ProfilePage')}
       />
-      {/* <EmptyPage illustration="EmptyProduct" text="Toko Anda Kosong" /> */}
       <Modal
         statusBarTranslucent
         style={{margin: 0, justifyContent: 'flex-end'}}
@@ -80,12 +73,9 @@ const StorePage = ({
       </Modal>
       <View style={styles.content}>
         <View style={{paddingHorizontal: ms(20)}}>
-          {/* Search */}
           <SearchBar onPress={toggleModal} Filter Store type="store" />
-          {/* Slider */}
           <Slider />
         </View>
-        {/* Content */}
         <Content onPress={() => navigation.navigate('ProductPage')} />
         <TouchableOpacity
           activeOpacity={0.9}
@@ -94,7 +84,6 @@ const StorePage = ({
           <IcFloatButton fill={colors.default} />
         </TouchableOpacity>
       </View>
-      {/* Navbar */}
     </View>
   );
 };

@@ -10,8 +10,8 @@ import {
   View,
 } from 'react-native';
 import Collapsible from 'react-native-collapsible';
-import {ScrollView} from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
+import {ms, mvs} from 'react-native-size-matters';
 import {useDispatch, useSelector} from 'react-redux';
 import {Number, SubmitButton} from '..';
 import {
@@ -22,24 +22,24 @@ import {
   IcStore,
   IllDefaultAvatar,
 } from '../../assets';
+import { updateProductSoldAndRevenueAndCategoryCountExpenditure } from '../../redux/action/ExpenditureReportAction';
 import {
   completeStatusOrder,
   updateProductStock,
   updateStatusOrder,
 } from '../../redux/action/OrderAction';
 import {calculateShippingCost} from '../../redux/action/RajaOngkir';
+import {updateProductSoldAndRevenueAndCategoryCount} from '../../redux/action/SalesReportAction';
 import {
   colors,
   colorsDark,
   fullAddressToCityId,
+  getData,
   thousandsSeparators,
-  usePrevious,
 } from '../../utils';
 import Gap from '../Gap';
 import Item from './Item';
 import ShippingModal from './ShippingModal';
-import {s, vs, ms, mvs} from 'react-native-size-matters';
-import EmptySearchResult from '../EmptySearchResult';
 
 const OrderItem = ({
   isFound,
@@ -111,7 +111,7 @@ const OrderItem = ({
   };
 
   useEffect(() => {
-    if (status !== 'packed' && status !== 'shipped' && status !== 'finished') {
+    if (status === 'pending') {
       if (data?.orderId) {
         dispatch(updateStatusOrder(data.orderId));
       }
@@ -161,10 +161,33 @@ const OrderItem = ({
       );
     } else if (type === 'order' && status === 'shipped') {
       const completeOrder = async () => {
+        const revenue = data.subTotal - data.shipping.cost;
+        const soldAmount = Object.values(data.order).reduce(
+          (acc, curr) => acc + curr.orderAmount,
+          0,
+        );
         dispatch(
           completeStatusOrder(data.orderId, data.store.storeId, subTotal),
         );
         dispatch(updateProductStock(data.order));
+        dispatch(
+          updateProductSoldAndRevenueAndCategoryCount(
+            data.store.storeId,
+            soldAmount,
+            revenue,
+            data.order,
+          ),
+        );
+        //TODO need to be tested later
+        const {uid} = await getData('user')
+        dispatch(
+          updateProductSoldAndRevenueAndCategoryCountExpenditure(
+            soldAmount,
+            revenue,
+            data.order,
+            uid
+          ),
+        );
       };
       return (
         <View style={{width: '40%'}}>
@@ -233,7 +256,7 @@ const OrderItem = ({
         style={styles.itemContainer}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           {type === 'selling' ? (
-              <Image
+            <Image
               source={
                 user.avatar
                   ? {uri: 'data:image/png;base64,' + user.avatar}
@@ -473,7 +496,7 @@ const getStyles = theme =>
     image: {
       height: mvs(36),
       width: ms(36),
-      borderRadius: ms(16),
+      borderRadius: ms(18),
       borderWidth: ms(1),
       borderColor: colors.default,
     },

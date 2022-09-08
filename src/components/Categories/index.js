@@ -1,13 +1,15 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {connect, useDispatch} from 'react-redux';
-import {useState} from 'react/cjs/react.development';
 import {
   getListProduct,
   getProductByCategory,
   getProductBySort,
 } from '../../redux/action/ProductAction';
-import {getStoreProduct, getStoreProductByCategory} from '../../redux/action/StoreAction';
+import {
+  getStoreProduct,
+  getStoreProductByCategory,
+} from '../../redux/action/StoreAction';
 import {colors} from '../../utils/';
 import {s, vs, ms, mvs} from 'react-native-size-matters';
 

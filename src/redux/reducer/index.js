@@ -13,6 +13,8 @@ import OrdersReducer from './orders';
 import SellingReducer from './selling';
 import WithdrawReducer from './withdraw';
 import DarkModeReducer from './darkmode';
+import SalesReportReducer from './sales-report';
+import ExpenditureReportReducer from './expenditure-report';
 
 const rootReducer = combineReducers({
   AuthReducer,
@@ -29,6 +31,8 @@ const rootReducer = combineReducers({
   SellingReducer,
   WithdrawReducer,
   DarkModeReducer,
+  SalesReportReducer,
+  ExpenditureReportReducer,
 });
 
 export default rootReducer;

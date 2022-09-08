@@ -1,20 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {colors, colorsDark, getData} from '../../utils';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  RefreshControl,
-} from 'react-native';
-import {EmptyPage, ProductCard, ProductSkeleton} from '../../components';
-import {connect, useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/core';
-import {getListProduct} from '../../redux/action/ProductAction';
-import {flexDirection} from 'styled-system';
+import React, {useCallback, useEffect, useState} from 'react';
+import {RefreshControl, ScrollView, Text} from 'react-native';
 import {ScaledSheet} from 'react-native-size-matters';
+import {connect, useDispatch} from 'react-redux';
+import {EmptyPage, ProductCard, ProductSkeleton} from '../../components';
 import EmptySearchResult from '../../components/EmptySearchResult';
+import {updateProductViewCountExpenditure} from '../../redux/action/ExpenditureReportAction';
+import {getListProduct} from '../../redux/action/ProductAction';
+import {updateProductViewCount} from '../../redux/action/SalesReportAction';
+import {colors, colorsDark, getData} from '../../utils';
 
 const Content = ({
   getListProductResult,
@@ -28,6 +22,7 @@ const Content = ({
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const [refreshing, setRefreshing] = useState(false);
+  const [userId, setUserId] = useState();
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -35,7 +30,21 @@ const Content = ({
     if (!getListProductLoading) {
       setRefreshing(false);
     }
+  }, [dispatch, getListProductLoading]);
+  useEffect(() => {
+    getData('user').then(res => {
+      setUserId(res.uid);
+    });
   }, []);
+
+  const handleUpdateViewCount = useCallback(
+    storeId => {
+      dispatch(updateProductViewCount(storeId));
+      dispatch(updateProductViewCountExpenditure(userId));
+    },
+    [dispatch, userId],
+  );
+
   const styles = getStyles(theme);
   return (
     <ScrollView
@@ -61,6 +70,7 @@ const Content = ({
           // const love = false;
           return (
             <ProductCard
+              onViewCount={handleUpdateViewCount}
               sold={productData.sold}
               stock={productData.stock}
               image={{uri: productData.image[0]}}
@@ -71,7 +81,14 @@ const Content = ({
               key={key}
               id={getListProductResult[key]?.productId}
               onNavigate={() =>
-                navigation.navigate('ProductPage', {productData, id: key, love})
+                navigation.navigate('ProductPage', {
+                  productData,
+                  id: key,
+                  love: Object.keys(
+                    getWishlistResult?.productList ?? {},
+                    productData.productId,
+                  ),
+                })
               }
               love={Object.keys(getWishlistResult?.productList ?? {}).includes(
                 productData.productId,
