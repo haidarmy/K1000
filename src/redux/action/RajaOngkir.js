@@ -1,15 +1,13 @@
 import axios from 'axios';
 import {
-  API_HEADER_RAJAONGKIR,
-  API_RAJAONGKIR,
   API_TIMEOUT,
   dispatchError,
   dispatchLoading,
   dispatchSuccess,
   showError,
 } from '../../utils';
-
 export const CALCULATE_SHIPPING_COST = 'CALCULATE_SHIPPING_COST';
+import Config from 'react-native-config';
 
 export const calculateShippingCost = (
   origin = '501',
@@ -41,31 +39,39 @@ export const calculateShippingCost = (
     Promise.all([
       axios({
         method: 'POST',
-        url: API_RAJAONGKIR + 'cost',
+        url: Config.RAJAONGKIR_API,
         timeout: API_TIMEOUT,
-        headers: API_HEADER_RAJAONGKIR,
+        headers: {
+          key: Config.RAJAONGKIR_API_KEY,
+          'content-type': 'application/x-www-form-urlencoded',
+        },
         data: formDataJne,
       }),
       axios({
         method: 'POST',
-        url: API_RAJAONGKIR + 'cost',
+        url: Config.RAJAONGKIR_API,
         timeout: API_TIMEOUT,
-        headers: API_HEADER_RAJAONGKIR,
+        headers: {
+          key: Config.RAJAONGKIR_API_KEY,
+          'content-type': 'application/x-www-form-urlencoded',
+        },
         data: formDataPos,
       }),
       axios({
         method: 'POST',
-        url: API_RAJAONGKIR + 'cost',
+        url: Config.RAJAONGKIR_API,
         timeout: API_TIMEOUT,
-        headers: API_HEADER_RAJAONGKIR,
+        headers: {
+          key: Config.RAJAONGKIR_API_KEY,
+          'content-type': 'application/x-www-form-urlencoded',
+        },
         data: formDataTiki,
       }),
     ])
       .then(response => {
         // Success
-        console.clear();
         const res = response.map(res => {
-          return 'testos', res.data.rajaongkir.results[0];
+          return res.data.rajaongkir.results[0];
         });
         console.log('res', res);
         dispatchSuccess(dispatch, CALCULATE_SHIPPING_COST, res ? res : []);

@@ -1,31 +1,18 @@
 import firebase from 'firebase';
+import Config from 'react-native-config';
 
 firebase.initializeApp({
-  // apiKey: 'AIzaSyC44Nzh64esK5GNUNy37CgldkIPrNODRs8',
+  apiKey: Config.FIREBASE_API_KEY,
 
-  // authDomain: 'k-1000.firebaseapp.com',
+  authDomain: Config.FIREBASE_API_AUTH,
 
-  // projectId: 'k-1000',
+  projectId: Config.FIREBASE_API_PROJECT_ID,
 
-  // storageBucket: 'k-1000.appspot.com',
+  storageBucket: Config.FIREBASE_API_STORAGE_BUCKET,
 
-  // messagingSenderId: '472799783217',
+  messagingSenderId: Config.FIREBASE_API_MESSAGING_SENDER_ID,
 
-  // databaseUrl: 'https://k-1000-default-rtdb.asia-southeast1.firebasedatabase.app/',
-
-  // appId: '1:472799783217:web:472f5a38ad682e7dd2a810',
-
-  apiKey: 'AIzaSyCBRLlcfw9OLjfsAYWw2ANUXjrX0KJDdL8',
-
-  authDomain: 'k-1000-de337.firebaseapp.com',
-
-  projectId: 'k-1000-de337',
-
-  storageBucket: 'k-1000-de337.appspot.com',
-
-  messagingSenderId: '460469984302',
-
-  appId: '1:460469984302:web:0b91327aa050039f5913bf',
+  appId: Config.FIREBASE_API_APP_ID,
 });
 
 const FIREBASE = firebase;

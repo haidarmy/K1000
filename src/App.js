@@ -18,7 +18,6 @@ const MainApp = () => {
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
   useEffect(() => {
-    console.log(`🚀 → file: App.js → line 22 → useEffect → colorScheme`, colorScheme)
     LogBox.ignoreAllLogs(true)
     dispatch(setDarkMode(colorScheme));
   }, [colorScheme]);

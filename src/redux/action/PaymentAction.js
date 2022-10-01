@@ -1,16 +1,13 @@
 import axios from 'axios';
 import {
   API_TIMEOUT,
-  URL_MIDTRANS,
-  HEADER_MIDTRANS,
+  dispatchClear,
+  dispatchError,
+  dispatchLoading,
+  dispatchSuccess,
   showError,
 } from '../../utils';
-import {
-  dispatchLoading,
-  dispatchError,
-  dispatchSuccess,
-  dispatchClear,
-} from '../../utils';
+import Config from 'react-native-config';
 
 export const SNAP_TRANSACTIONS = 'SNAP_TRANSACTIONS';
 
@@ -20,8 +17,12 @@ export const snapTransactions = data => {
 
     axios({
       method: 'POST',
-      url: URL_MIDTRANS + 'transactions',
-      headers: HEADER_MIDTRANS,
+      url: Config.MIDTRANS_API + 'transactions',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: Config.MIDTRANS_API_KEY,
+      },
       data: data,
       timeout: API_TIMEOUT,
     })

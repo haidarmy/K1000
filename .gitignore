@@ -24,6 +24,9 @@ DerivedData
 #Java Android
 *.hprof
 
+#environment
+.env
+
 # Android/IntelliJ
 #
 build/

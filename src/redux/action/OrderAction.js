@@ -1,19 +1,16 @@
+import axios from 'axios';
 import FIREBASE from '../../config/FIREBASE';
 import {
-  dispatchClear,
+  API_TIMEOUT,
   dispatchError,
   dispatchLoading,
   dispatchSuccess,
-  showError,
-  API_TIMEOUT,
-  URL_MIDTRANS_STATUS,
-  HEADER_MIDTRANS,
   getData,
+  showError,
 } from '../../utils';
-import axios from 'axios';
-import {isArray} from 'lodash';
-import {updateProductCancelCount} from './SalesReportAction';
 import {updateProductCancelCountExpenditure} from './ExpenditureReportAction';
+import {updateProductCancelCount} from './SalesReportAction';
+import Config from 'react-native-config';
 
 export const UPDATE_ORDER = 'UPDATE_ORDER';
 export const GET_LIST_ORDER = 'GET_LIST_ORDER';
@@ -113,8 +110,12 @@ export const updateStatusOrder = order_id => {
     dispatchLoading(dispatch, UPDATE_STATUS_ORDER);
     axios({
       method: 'GET',
-      url: URL_MIDTRANS_STATUS + `${order_id}/status`,
-      headers: HEADER_MIDTRANS,
+      url: Config.MIDTRANS_API_STATUS + `${order_id}/status`,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: Config.MIDTRANS_API_KEY,
+      },
       timeout: API_TIMEOUT,
     })
       .then(response => {

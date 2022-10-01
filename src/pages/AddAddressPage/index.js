@@ -1,26 +1,20 @@
-import React, {useState, useEffect} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ActivityIndicator,
-  StatusBar,
-} from 'react-native';
-import {IcPin} from '../../assets';
-import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator, StatusBar, View} from 'react-native';
 import Geocoder from 'react-native-geocoding';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import {ms, mvs} from 'react-native-size-matters';
+import {useSelector} from 'react-redux';
+import {IcPin} from '../../assets';
 import {colors, colorsDark, getData, mapStyle} from '../../utils';
 import AddressDetail from './AddressDetail';
-import {s, vs, ms, mvs} from 'react-native-size-matters';
-import {display, padding} from 'styled-system';
-import {useSelector} from 'react-redux';
+import Config from 'react-native-config';
 
 const AddAddressPage = ({route}) => {
   const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
   const styles = getStyles(theme);
-  Geocoder.init('AIzaSyD4FwkBipsAqdlu-HiWgSWfmoxirTNjDMc');
+  Geocoder.init(Config.GOOGLE_API_KEY);
   const [pin, setPin] = useState({
     latitude: null,
     longitude: null,
@@ -61,7 +55,7 @@ const AddAddressPage = ({route}) => {
       error => alert(error.message),
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
     );
-  }, []);
+  }, [pin]);
 
   return pin.latitude ? (
     <View style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
@@ -88,7 +82,7 @@ const AddAddressPage = ({route}) => {
             setRegion(true);
           }}
           query={{
-            key: 'AIzaSyD4FwkBipsAqdlu-HiWgSWfmoxirTNjDMc',
+            key: Config.GOOGLE_API_KEY,
             language: 'id',
             components: 'country:id',
             types: 'establishment',
