@@ -27,6 +27,10 @@ DerivedData
 #environment
 .env
 
+#Android Bundle Residue
+android/app/src/main/assets/index.android.bundle
+android/app/src/main/res/
+
 # Android/IntelliJ
 #
 build/
