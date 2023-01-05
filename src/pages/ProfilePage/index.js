@@ -212,14 +212,14 @@ const ProfilePage = ({navigation}) => {
       />
       <Gap height={mvs(64)} />
       <View style={styles.profileContainer}>
-        <Image
-          source={
-            profile.avatar
-              ? {uri: 'data:image/png;base64,' + profile.avatar}
-              : IllDefaultAvatar
-          }
-          style={styles.image}
-        />
+        {profile.avatar ? (
+          <Image
+            source={{uri: 'data:image/png;base64,' + profile.avatar}}
+            style={styles.image}
+          />
+        ) : (
+          <IllDefaultAvatar width={ms(150)} height={mvs(150)} />
+        )}
         <Text style={styles.name}>{profile.name}</Text>
       </View>
       <View>
@@ -242,7 +242,7 @@ const ProfilePage = ({navigation}) => {
           onPress={() => {
             getData('user').then(res => {
               if (!res?.number || !res?.address) {
-                navigation.replace('FillIdentityCautionPage', {
+                navigation.navigate('FillIdentityCautionPage', {
                   originPage: 'StoreDrawer',
                 });
               } else {

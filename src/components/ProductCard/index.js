@@ -47,7 +47,7 @@ const ProductCard = ({
   love,
   id,
   sold,
-  onViewCount
+  onViewCount,
 }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -110,7 +110,7 @@ const ProductCard = ({
       id,
       love: love || isFavourite,
       store,
-      onViewCount
+      onViewCount,
     });
   };
   const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
@@ -153,67 +153,75 @@ const ProductCard = ({
           </View>
         )}
       </ImageBackground>
-      <View style={{marginHorizontal: ms(16), paddingBottom: mvs(10)}}>
+      <View
+        style={{
+          marginHorizontal: ms(16),
+          paddingBottom: mvs(10),
+          height: store ? mvs(210) : mvs(150),
+          justifyContent: 'space-between',
+        }}>
         <View style={{marginBottom: mvs(8)}}>
           {stock <= 10 && !store ? (
             <Text style={styles.text.stock}>Sisa {stock}</Text>
           ) : null}
           <Text style={styles.text.title}>{name}</Text>
         </View>
-        <View style={styles.info}>
-          <View style={{flex: 1}}>
-            <Number number={price} textStyle={styles.text.price} />
-            <View style={{flexDirection: 'row'}}>
-              <Text style={styles.text.weight}>{weight} kg</Text>
-              {sold && !store ? (
-                <Text style={styles.text.weight}> | Terjual {sold} </Text>
-              ) : null}
+        <View>
+          <View style={styles.info}>
+            <View style={{flex: 1}}>
+              <Number number={price} textStyle={styles.text.price} />
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.text.weight}>{weight} kg</Text>
+                {sold && !store ? (
+                  <Text style={styles.text.weight}> | Terjual {sold} </Text>
+                ) : null}
+              </View>
             </View>
           </View>
+          {store && (
+            <>
+              <Gap height={mvs(10)} />
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Text
+                  style={styles.textStock(
+                    'Poppins-SemiBold',
+                    ms(16),
+                    theme ? colorsDark.black : colors.black,
+                  )}>
+                  Stok
+                </Text>
+                <Text
+                  style={styles.textStock(
+                    'Poppins-SemiBold',
+                    ms(16),
+                    theme ? colorsDark.black : colors.black,
+                  )}>
+                  {stock}
+                </Text>
+              </View>
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Text
+                  style={styles.textStock(
+                    'Poppins-SemiBold',
+                    ms(16),
+                    theme ? colorsDark.black : colors.black,
+                  )}>
+                  Terjual
+                </Text>
+                <Text
+                  style={styles.textStock(
+                    'Poppins-SemiBold',
+                    ms(16),
+                    theme ? colorsDark.black : colors.black,
+                  )}>
+                  {sold}
+                </Text>
+              </View>
+            </>
+          )}
         </View>
-        {store && (
-          <>
-            <Gap height={mvs(10)} />
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text
-                style={styles.textStock(
-                  'Poppins-SemiBold',
-                  ms(16),
-                  theme ? colorsDark.black : colors.black,
-                )}>
-                Stok
-              </Text>
-              <Text
-                style={styles.textStock(
-                  'Poppins-SemiBold',
-                  ms(16),
-                  theme ? colorsDark.black : colors.black,
-                )}>
-                {stock}
-              </Text>
-            </View>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text
-                style={styles.textStock(
-                  'Poppins-SemiBold',
-                  ms(16),
-                  theme ? colorsDark.black : colors.black,
-                )}>
-                Terjual
-              </Text>
-              <Text
-                style={styles.textStock(
-                  'Poppins-SemiBold',
-                  ms(16),
-                  theme ? colorsDark.black : colors.black,
-                )}>
-                {sold}
-              </Text>
-            </View>
-          </>
-        )}
       </View>
       {store && (
         <TouchableOpacity activeOpacity={0.8} style={styles.delete}>

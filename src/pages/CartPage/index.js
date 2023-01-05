@@ -138,7 +138,7 @@ const CartPage = ({
               onPress={() => {
                 getData('user').then(res => {
                   if (!res?.number || !res?.address) {
-                    navigation.replace('FillIdentityCautionPage', {
+                    navigation.navigate('FillIdentityCautionPage', {
                       originPage: 'CheckoutPage',
                       getCartResult,
                     });

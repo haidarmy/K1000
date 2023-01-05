@@ -45,13 +45,13 @@ export const getUserBankAccount = uid => {
       .child(uid)
       .orderByChild('date')
       .once('value', querySnapshot => {
-        if (querySnapshot.val()) {
+        // if (querySnapshot.val()) {
           let dataSorted = [];
           querySnapshot.forEach(e => {
             dataSorted.unshift({...e.val()});
           });
           dispatchSuccess(dispatch, GET_USER_BANK_ACCOUNT, dataSorted);
-        }
+        // }
       })
       .catch(error => {
         dispatchError(dispatch, GET_USER_BANK_ACCOUNT, error.message);

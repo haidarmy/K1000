@@ -42,11 +42,12 @@ const SearchBar = ({
   const navigation = useNavigation();
   const [input, setInput] = useCustomState(false);
   const search = () => {
-    const arr = input.toLowerCase().split(' ');
-    for (var i = 0; i < arr.length; i++) {
-      arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
-    }
-    const keyword = arr.join(' ');
+    // const arr = input.toLowerCase().split(' ');
+    // for (var i = 0; i < arr.length; i++) {
+    //   arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
+    // }
+    // const keyword = arr.join(' ');
+    const keyword = input
     if (keyword.length === 0) {
       if (type === 'home') {
         dispatch(getListProduct());

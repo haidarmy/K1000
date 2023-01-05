@@ -28,7 +28,10 @@ const LoginPage = ({navigation, loginResult, loginLoading}) => {
   const prevLoginResult = usePrevious(loginResult);
   useEffect(() => {
     if ((loginResult!==false) && loginResult !== prevLoginResult) {
-        navigation.replace('MainApp');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MainApp' }],
+        });
     }
   }, [loginResult]);
   const [isSecureEntry, setIsSecureEntry] = useState(true);

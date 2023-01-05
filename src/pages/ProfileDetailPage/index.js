@@ -1,18 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-  StatusBar,
-  ActivityIndicator,
-  ScrollView,
+  ActivityIndicator, Dimensions, Image, ScrollView, StatusBar, StyleSheet,
+  Text, TouchableOpacity, View
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {AvatarDummy, IllDefaultAvatar, ProductDummy1} from '../../assets';
-import {Gap, Header, SubmitButton, ImagePickerModal} from '../../components';
+import { ms, mvs } from 'react-native-size-matters';
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { IllDefaultAvatar } from '../../assets';
+import { Gap, Header, ImagePickerModal, SubmitButton } from '../../components';
+import { updateProfile } from '../../redux/action/ProfileAction';
 import {
   colors,
   colorsDark,
@@ -21,16 +18,10 @@ import {
   showError,
   showSucces,
   storeData,
-  stringToDate,
-  useForm,
-  usePrevious,
+  stringToDate, usePrevious
 } from '../../utils';
-import ProfileField from './ProfileField';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import GenderModal from './GenderModal';
-import {connect, useDispatch, useSelector} from 'react-redux';
-import {updateProfile} from '../../redux/action/ProfileAction';
-import {s, vs, ms, mvs} from 'react-native-size-matters';
+import ProfileField from './ProfileField';
 
 const ProfileDetailPage = ({navigation, updateProfileResult, route}) => {
   const theme = useSelector(state => state.DarkModeReducer.isDarkMode);
@@ -192,14 +183,14 @@ const ProfileDetailPage = ({navigation, updateProfileResult, route}) => {
         <View style={styles.content}>
           <View style={styles.profileContainer}>
             <TouchableOpacity activeOpacity={0.7} onPress={toggleModalPhoto}>
-              <Image
-                source={
-                  profile.avatar
-                    ? {uri: 'data:image/png;base64,' + profile.avatar}
-                    : IllDefaultAvatar
-                }
-                style={styles.imageWrapper}
-              />
+              {profile.avatar ? (
+                <Image
+                  source={{uri: 'data:image/png;base64,' + profile.avatar}}
+                  style={styles.imageWrapper}
+                />
+              ) : (
+                <IllDefaultAvatar width={ms(120)} height={mvs(120)}/>
+              )}
             </TouchableOpacity>
             <Gap height={mvs(12)} />
             <TouchableOpacity activeOpacity={0.7} onPress={toggleModalPhoto}>
@@ -214,7 +205,6 @@ const ProfileDetailPage = ({navigation, updateProfileResult, route}) => {
           <View style={{flex: 1, marginBottom: mvs(20)}}>
             <ProfileField
               label="Nama"
-              value="1"
               onPress={() => setEditName(toggle => !toggle)}
               edit={editName}
               value={profile.name}

@@ -15,6 +15,7 @@ import {
 import {BarChart, LineChart} from 'react-native-chart-kit';
 import {ms, mvs} from 'react-native-size-matters';
 import {useDispatch, useSelector} from 'react-redux';
+import {backgroundColor} from 'styled-system';
 import ToggleSwitch from 'toggle-switch-react-native';
 import {VictoryLegend, VictoryPie, VictoryTooltip} from 'victory-native';
 import {IcChartBar, IcChartLine} from '../../assets';
@@ -56,7 +57,7 @@ export default function SalesReportTemplate({
   const handleSalesData = useMemo(
     () =>
       dataReportResult
-        ? Object.values(dataReportResult).map(({revenue}) => revenue)
+        ? Object.values(dataReportResult ?? {}).map(({revenue}) => revenue)
         : [0, 0, 0, 0, 0, 0, 0],
     [dataReportResult],
   );
@@ -64,7 +65,9 @@ export default function SalesReportTemplate({
   const handleSalesDataLabel = useMemo(
     () =>
       dataReportResult
-        ? Object.values(dataReportResult).map(({date}) => getDateLabel(date))
+        ? Object.values(dataReportResult ?? {}).map(({date}) =>
+            getDateLabel(date),
+          )
         : [],
     [dataReportResult],
   );
@@ -72,8 +75,8 @@ export default function SalesReportTemplate({
   const handleCategoryData = useMemo(() => {
     return dataReportResult && !showPieChart
       ? Object.values(
-          Object.values(dataReportResult)
-            .map(datum => Object.values(datum.categoryList))
+          Object.values(dataReportResult ?? {})
+            .map(datum => Object.values(datum.categoryList ?? {}))
             .flat()
             .reduce((acc, {sold, ...r}) => {
               const key = JSON.stringify(r);
@@ -81,7 +84,7 @@ export default function SalesReportTemplate({
               // eslint-disable-next-line prettier/prettier
               return ((acc[key].sold += sold), acc);
               // return ((acc[key].sold += sold), acc);
-            }, {}),
+            }, {}) ?? {},
         )
       : [];
   }, [dataReportResult, showPieChart]);
@@ -102,7 +105,7 @@ export default function SalesReportTemplate({
   const handleSalesDetails = useMemo(() => {
     return dataReportResult
       ? Object.values(
-          Object.values(dataReportResult)
+          Object.values(dataReportResult ?? {})
             .map(e => e.salesDetails)
             .reduce((acc, {cancel, sold, viewed, ...r}) => {
               const key = JSON.stringify(r);
@@ -113,7 +116,7 @@ export default function SalesReportTemplate({
                 (acc[key].viewed += viewed),
                 acc
               );
-            }, {}),
+            }, {}) ?? {},
         )
       : [];
   }, [dataReportResult]);
@@ -269,7 +272,7 @@ export default function SalesReportTemplate({
             },
           }}
           colorScale={graphicColor}
-          itemsPerRow={3}
+          itemsPerRow={2}
           data={handleCategoryData}
         />
       </View>
@@ -291,6 +294,7 @@ export default function SalesReportTemplate({
         data={chartData}
         withDots={false}
         withVerticalLines={false}
+        withHorizontalLines={(dataReportResult ?? {}).length ? true : false}
         width={chartStyle.width}
         height={chartStyle.height}
         chartConfig={{
@@ -536,7 +540,11 @@ export default function SalesReportTemplate({
         />
       ) : (
         <View style={styles.salesInfo}>
-          {salesInfoItem(undefined, 'Dilihat', handleSalesDetails[0]?.viewed ?? 0)}
+          {salesInfoItem(
+            undefined,
+            'Dilihat',
+            handleSalesDetails[0]?.viewed ?? 0,
+          )}
           {salesInfoItem(
             undefined,
             type === 'SALES' ? 'Terjual' : 'Dibeli',
@@ -563,6 +571,16 @@ export default function SalesReportTemplate({
           <View style={styles.loading}>
             <ActivityIndicator size={ms(28)} color={colors.default} />
           </View>
+        </View>
+      );
+    }
+    if (Object.values(dataReportResult ?? {}).length === 0) {
+      return (
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          {renderBarChart}
+          <Text style={{...styles.salesInfoItemValue, textAlign: 'center', position: 'absolute'}}>
+            {`Tidak ada data untuk\nditampilkan`}
+          </Text>
         </View>
       );
     }
@@ -598,7 +616,9 @@ export default function SalesReportTemplate({
           <Gap height={mvs(10)} />
           {renderRevenueChart}
           <Gap height={mvs(20)} />
-          {renderPieToggle}
+          {Object.values(dataReportResult ?? {}).length
+            ? renderPieToggle
+            : null}
           {showPieChart && <Gap height={mvs(20)} />}
           {!showPieChart && renderPieChart}
           {renderSaleInfo}
@@ -726,4 +746,13 @@ const getStyles = theme =>
       justifyContent: 'center',
       alignItems: 'center',
     },
+    noChartData: {
+      backgroundColor: colors.default,
+      opacity: 0.9,
+      height: mvs(240),
+      width: '95%',
+      borderRadius: mvs(10),
+      justifyContent: 'center',
+      alignItems: 'center',
+    }
   });

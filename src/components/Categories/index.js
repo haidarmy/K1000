@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
   wrapper: (sliderState, id) => ({
     borderRadius: ms(10),
     padding: mvs(4),
+    marginBottom: mvs(4),
     paddingHorizontal: ms(12),
     // marginRight: 24,
     maxWidth: 'auto',

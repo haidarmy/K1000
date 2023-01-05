@@ -29,8 +29,8 @@ export const getUserSalesReport = (uid, type, isFirstRender) => {
       .startAt(getCurrentDate(new Date(), 'START', type))
       .endAt(getCurrentDate(new Date(), 'END', type))
       .once('value', querySnapshot => {
-        if (querySnapshot.val()) {
-          const res = Object.values(querySnapshot.val());
+        // if (querySnapshot.val()) {
+          const res = Object.values(querySnapshot.val() ?? {});
           const isThereUndefinedData = () => {
             switch (type) {
               case 'WEEKLY':
@@ -43,18 +43,18 @@ export const getUserSalesReport = (uid, type, isFirstRender) => {
                 break;
             }
           };
-          const customDate = type === 'MONTHLY' && res[res.length - 1].date;
+          const customDate = type === 'MONTHLY' && (res[res.length - 1] ?? {}).date;
           const newData = isThereUndefinedData()
             ? handleUndefinedData(
-                querySnapshot.val(),
+                querySnapshot.val() ?? {},
                 type,
                 uid,
                 getCurrentDate(new Date(), undefined, undefined, true),
-                customDate,
+                customDate ?? "",
               )
             : querySnapshot.val();
-          dispatchSuccess(dispatch, GET_USER_SALES_REPORT, newData);
-        }
+          dispatchSuccess(dispatch, GET_USER_SALES_REPORT, Object.values(querySnapshot.val() ?? {}).length ? newData : null);
+        // }
       })
       .catch(error => {
         dispatchError(dispatch, GET_USER_SALES_REPORT, error.message);

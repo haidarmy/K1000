@@ -48,7 +48,7 @@ const CategorySelector = ({
       <View style={styles.categorySelector.page}>
         <View style={styles.categorySelector.container}>
           <Text style={{...styles.categorySelector.text, color: colors.grey}}>
-            Pilih Category...
+            Pilih Kategori...
           </Text>
           {categoryData
             ? Object.keys(categoryData).map(key => {
@@ -273,7 +273,7 @@ const AddProductPage = ({
           }
           placeholder="Nama Produk"
           label="Nama Produk"
-          maxlength={20}
+          maxlength={32}
         />
         <InputField
           currencyMasked
@@ -365,8 +365,8 @@ const AddProductPage = ({
                 ? route.params.productData.categoryName
                 : form.categoryName
             }
-            placeholder="Pilih Category"
-            label="Category"
+            placeholder="Pilih Kategori"
+            label="Kategori"
             disabled
           />
           <View style={styles.dropdownWrapper}>

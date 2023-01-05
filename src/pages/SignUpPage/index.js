@@ -45,7 +45,10 @@ const SignUpPage = ({navigation, registerResult}) => {
   const prevRegisterResult = usePrevious(registerResult);
   useEffect(() => {
     if ((registerResult!==false) && registerResult !== prevRegisterResult) {
-      navigation.replace('MainApp');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainApp' }],
+      });
   }
   }, [registerResult]);
 

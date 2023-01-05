@@ -105,7 +105,7 @@ const BankAccount = ({
         </TouchableOpacity>
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {getBankAccountResult ? (
+        {getBankAccountResult.length ? (
           checkSearchResult() ? (
             Object.keys(getBankAccountResult)
               .filter(e => filteredAccount(e))

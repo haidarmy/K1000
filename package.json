@@ -27,7 +27,7 @@
     "lodash": "^4.17.21",
     "react": "17.0.1",
     "react-hook-form": "^7.27.1",
-    "react-native": "^0.64.0",
+    "react-native": "^0.64.4",
     "react-native-barcode-mask": "^1.2.4",
     "react-native-camera": "^4.2.1",
     "react-native-chart-kit": "^6.12.0",

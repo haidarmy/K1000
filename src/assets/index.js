@@ -71,7 +71,7 @@ import IcBsi from './Icons/ic-bsi.svg';
 import IcBtn from './Icons/ic-btn.svg';
 import IcMandiri from './Icons/ic-mandiri.svg';
 //Illustration
-import IllDefaultAvatar from './Illustrations/ill-default-avatar.png';
+import IllDefaultAvatar from './Illustrations/ill-default-avatar.svg';
 import IllEmptyAddress from './Illustrations/ill-empty-address.svg';
 import IllEmptyCart from './Illustrations/ill-empty-cart.svg';
 import IllEmptyProduct from './Illustrations/ill-empty-product.svg';
