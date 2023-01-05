@@ -14,14 +14,28 @@ yarn install
 ## Usage
 
 ```sh
-yarn start && yarn android
+yarn start
+yarn android
 ```
+The project has already been set with the required credentials and keys using `.env` files you can also set your own keys and credentials in the same files.
+See the `.env.example` file for the example.
 
-## Run tests
+## Demo
 
-```sh
-yarn run test
-```
+![20230105_215507](https://user-images.githubusercontent.com/39584334/210811172-31a3520c-f65a-45fa-a713-dcc0389e712f.gif)
+![20230105_215621](https://user-images.githubusercontent.com/39584334/210810650-fb6d34ac-5be3-410b-b653-6d9d692194a3.gif)
+
+
+## Built With
+
+- [React Navigation](https://reactnavigation.org/)
+- [NodeJS](https://nodejs.org/en/)
+- [Firebase](https://firebase.google.com/)
+- [React Native](https://reactnative.dev/)
+- [Redux](https://redux.js.org/)
+- [Axios](https://axios-http.com/docs/intro)
+- [Midtrans](https://midtrans.com)
+- [Rajaongkir API](https://rajaongkir.com)
 
 ## Author
 
@@ -34,5 +48,6 @@ yarn run test
 
 Give a ⭐️ if this project helped you!
 
-***
+
+
 _This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
