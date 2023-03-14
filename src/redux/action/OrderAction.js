@@ -183,7 +183,7 @@ export const updateStatusOrder = order_id => {
                 .child('orderDetails')
                 .update(newData)
                 .then(response => {
-                  getData('user').then(res => getListOrder(res.uid));
+                  getData('user').then(res => dispatch(getListOrder(res.uid)));
                   dispatchSuccess(
                     dispatch,
                     UPDATE_STATUS_ORDER,

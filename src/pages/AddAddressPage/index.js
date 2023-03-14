@@ -7,7 +7,7 @@ import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {ms, mvs} from 'react-native-size-matters';
 import {useSelector} from 'react-redux';
 import {IcPin} from '../../assets';
-import {colors, colorsDark, getData, mapStyle} from '../../utils';
+import {colors, colorsDark, getData, mapStyle, showError} from '../../utils';
 import AddressDetail from './AddressDetail';
 import Config from 'react-native-config';
 
@@ -40,8 +40,12 @@ const AddAddressPage = ({route}) => {
       setUserData(res);
     });
   };
+
   useEffect(() => {
     getUserData();
+  }, []);
+
+  useEffect(() => {
     Geolocation.getCurrentPosition(
       position => {
         // alert(JSON.stringify(position));
@@ -52,10 +56,10 @@ const AddAddressPage = ({route}) => {
           longitude,
         });
       },
-      error => alert(error.message),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+      error => showError(error.message),
+      {enableHighAccuracy: true, timeout: 50000, maximumAge: 1000},
     );
-  }, [pin]);
+  }, [pin.latitude, pin.longitude]);
 
   return pin.latitude ? (
     <View style={{flex: 1, paddingTop: StatusBar.currentHeight}}>

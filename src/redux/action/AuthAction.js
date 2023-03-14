@@ -25,6 +25,7 @@ export const registerUser = form => {
         dispatchSuccess(dispatch, REGISTER_USER, newData)
         //Save to localStorage(Asyncstorage)
         storeData('user', newData);
+        dispatch(getWishlist(success.user.uid));
         //Clear Data from redux
         dispatchClear(dispatch, REGISTER_USER)
       })
