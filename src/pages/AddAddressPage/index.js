@@ -1,12 +1,18 @@
 import Geolocation from '@react-native-community/geolocation';
-import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, StatusBar, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  ActivityIndicator,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Geocoder from 'react-native-geocoding';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {ms, mvs} from 'react-native-size-matters';
 import {useSelector} from 'react-redux';
-import {IcPin} from '../../assets';
+import {IcClose, IcPin} from '../../assets';
 import {colors, colorsDark, getData, mapStyle, showError} from '../../utils';
 import AddressDetail from './AddressDetail';
 import Config from 'react-native-config';
@@ -41,14 +47,11 @@ const AddAddressPage = ({route}) => {
     });
   };
 
-  useEffect(() => {
-    getUserData();
-  }, []);
 
   useEffect(() => {
+    getUserData();
     Geolocation.getCurrentPosition(
       position => {
-        // alert(JSON.stringify(position));
         const {longitude, latitude} = position.coords;
         setPin({
           ...pin,
@@ -59,7 +62,13 @@ const AddAddressPage = ({route}) => {
       error => showError(error.message),
       {enableHighAccuracy: true, timeout: 50000, maximumAge: 1000},
     );
-  }, [pin.latitude, pin.longitude]);
+  }, []);
+
+  const placesRef = useRef();
+
+  const clearInput = () => {
+    placesRef.current?.clear();
+  };
 
   return pin.latitude ? (
     <View style={{flex: 1, paddingTop: StatusBar.currentHeight}}>
@@ -69,12 +78,27 @@ const AddAddressPage = ({route}) => {
       />
       <View style={{alignItems: 'center'}}>
         <GooglePlacesAutocomplete
+          ref={placesRef}
           fetchDetails={true}
           GooglePlacesSearchQuery={{
             rankby: 'distance',
           }}
           placeholder="Search"
-          onPress={(data, details = null) => {
+          debounce={2000}
+          renderRightButton={() =>
+            placesRef.current?.getAddressText()?.length ? (
+              <TouchableOpacity
+                onPress={clearInput}
+                style={{
+                  position: 'absolute',
+                  right: mvs(10),
+                  top: mvs(8),
+                }}>
+                <IcClose />
+              </TouchableOpacity>
+            ) : null
+          }
+          onPress={(_, details = null) => {
             console.log(
               `Lat ${details.geometry.location.lat} Long ${details.geometry.location.lng}`,
             );
@@ -148,7 +172,7 @@ const getStyles = theme => ({
   autoComplete: {
     container: {
       position: 'absolute',
-      width: '90%',
+      width: '95%',
       zIndex: 1,
       top: mvs(15),
     },
@@ -160,8 +184,9 @@ const getStyles = theme => ({
       borderRadius: ms(5),
       paddingVertical: mvs(5),
       paddingHorizontal: ms(10),
+      paddingRight: ms(35),
       fontSize: ms(16),
-      flex: 1,
+      // flex: 1,
       fontFamily: 'Poppins-Medium',
     },
     poweredContainer: {

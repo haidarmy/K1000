@@ -184,7 +184,7 @@ const BalancePage = ({navigation, addRequestWithdrawResult}) => {
             </View>
             <TouchableOpacity
               activeOpacity={0.7}
-              style={styles.selectedShippingWrapper}
+              style={styles.selectedAccountWrapper}
               onPress={() => accountList()}>
               <>
                 <View style={styles.iconWrapper}>
@@ -311,7 +311,7 @@ const getStyles = theme =>
       alignItems: 'center',
     },
     resCalc: {
-      flex: 3,
+      flex: 2,
       backgroundColor: theme ? colorsDark.white : colors.white,
       justifyContent: 'center',
       alignItems: 'center',
@@ -335,7 +335,7 @@ const getStyles = theme =>
       flexDirection: 'row',
       marginBottom: mvs(20),
     },
-    selectedShippingWrapper: {
+    selectedAccountWrapper: {
       padding: mvs(15),
       borderWidth: ms(1),
       borderRadius: ms(10),

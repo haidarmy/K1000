@@ -311,7 +311,7 @@ const getStyles = theme =>
       fontSize: ms(20),
       color: colors.default,
     },
-    imageWrapper: {height: mvs(120), width: ms(120), borderRadius: ms(60)},
+    imageWrapper: {width: '35%', aspectRatio: 1, borderRadius: ms(60)},
     loadingWrapper: {
       zIndex: 1,
       position: 'absolute',

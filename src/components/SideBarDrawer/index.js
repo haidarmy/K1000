@@ -174,8 +174,8 @@ const getStyles = theme =>
       borderRadius: ms(10),
     }),
     avatar: {
-      width: ms(80),
-      height: mvs(80),
+      width: '30%',
+      aspectRatio: 1, 
       borderWidth: ms(2),
       borderColor: colors.default,
       borderRadius: ms(40),

@@ -210,7 +210,6 @@ const ProfilePage = ({navigation}) => {
         barStyle={theme ? 'light-content' : 'dark-content'}
         backgroundColor={theme ? colorsDark.white : colors.white}
       />
-      <Gap height={mvs(64)} />
       <View style={styles.profileContainer}>
         {profile.avatar ? (
           <Image
@@ -283,12 +282,15 @@ const getStyles = theme =>
       alignItems: 'center',
       justifyContent: 'center',
       flex: 1,
+      padding: mvs(16),
     },
     image: {
-      height: mvs(150),
-      width: ms(150),
+      // height: mvs(150),
+      // width: ms(150),
+      height: '50%',
+      aspectRatio: 1,
       marginBottom: mvs(20),
-      borderRadius: ms(75),
+      borderRadius: mvs(100),
       borderWidth: ms(3),
       borderColor: colors.default,
     },
